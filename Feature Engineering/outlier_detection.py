@@ -1,4 +1,4 @@
-import dataset_import as di
+import dataset_handle as dh
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -21,10 +21,10 @@ def check_outlier(dataframe, col_name):
         return True
     else:
         return False
-df_titanic = di.load_dataset("titanic.csv")
-di.dataset_details(df_titanic)
-di.plot_hist(df_titanic, "Fare")
-di.plot_boxplot(df_titanic, "Fare")
+df_titanic = dh.load_dataset("titanic.csv")
+dh.dataset_details(df_titanic)
+dh.plot_hist(df_titanic, "Fare")
+dh.plot_boxplot(df_titanic, "Fare")
 
 #############################################
 # Outlier Detection
@@ -32,8 +32,8 @@ di.plot_boxplot(df_titanic, "Fare")
 # Outlier Detection with Graphs
 # Boxplot
 #############################################
-# Boxplot is a graphical method to visualize the distribution of data based on 
-# the five-number summary: minimum, first quartile, median, third quartile, and maximum.
+# Boxplot is a graphical method to visualize the dhstribution of data based on 
+# the five-number summary: minimum, first quartile, medhan, third quartile, and maximum.
 #############################################
 
 # sns.boxplot(x=df_titanic["Fare"])
