@@ -16,9 +16,15 @@ def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
 
 def check_outlier(dataframe, col_name):
     lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
-    pass
+    
+    if dataframe[dataframe[col_name] <lower_limit] | dataframe[dataframe[col_name] > upper_limit]:
+        return True
+    else:
+        return False
 df_titanic = di.load_dataset("titanic.csv")
-# di.dataset_details(df_titanic)
+di.dataset_details(df_titanic)
+di.plot_hist(df_titanic, "Fare")
+di.plot_boxplot(df_titanic, "Fare")
 
 #############################################
 # Outlier Detection
@@ -30,11 +36,14 @@ df_titanic = di.load_dataset("titanic.csv")
 # the five-number summary: minimum, first quartile, median, third quartile, and maximum.
 #############################################
 
-# sns.boxplot(x=df_titanic["Age"])
+# sns.boxplot(x=df_titanic["Fare"])
 # plt.show()
 
 low, up = outlier_thresholds(df_titanic, "Fare")
 print("Low limit: ", low)
 print("Up limit: ", up)
 
-print(df_titanic[df_titanic["Fare"] > up].index)
+print(df_titanic[(df_titanic["Age"] < low)])
+
+
+# print(df_titanic[(df_titanic["Fare"] > up) | (df_titanic["Fare"] < low)])
