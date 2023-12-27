@@ -24,6 +24,7 @@ def check_outlier(dataframe, col_name):
 df_titanic = dh.load_dataset("titanic.csv")
 dh.dataset_details(df_titanic)
 dh.plot_hist(df_titanic, "Fare")
+dh.plot_hist(df_titanic, "Fare", bin_type=9)
 dh.plot_boxplot(df_titanic, "Fare")
 
 #############################################
