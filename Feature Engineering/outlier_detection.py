@@ -20,7 +20,8 @@ def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
 def check_outlier(dataframe, col_name):
     lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
     
-    if dataframe[dataframe[col_name] <lower_limit] | dataframe[dataframe[col_name] > upper_limit]:
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
         return True
     else:
         return False
@@ -96,7 +97,13 @@ def remove_outliers(dataframe, col_name):
     
     return df_without_outliers
 
+def replace_with_thresholds(dataframe, variable):
+    
+    low_limit, up_limit = outlier_thresholds(dataframe=dataframe, col_name=variable)
 
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+    
 
 df_titanic = dh.load_dataset("titanic.csv")
 
@@ -132,3 +139,11 @@ for col in num_cols:
     new_df_titanic = remove_outliers(df_titanic, col)
 
 print(df_titanic.shape[0] - new_df_titanic.shape[0])
+
+# Replace outliers with thresholds
+for col in num_cols:
+    print(col, grap_outliers(df_titanic, col, index=True))
+    check_outlier(df_titanic, col)
+    replace_with_thresholds(df_titanic, col)
+
+check_outlier(df_titanic, "Age")
