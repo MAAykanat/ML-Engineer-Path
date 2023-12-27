@@ -84,6 +84,20 @@ def grap_outliers(dataframe, col_name, index=False):
         outlier_index = dataframe[(dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit)].index
         return outlier_index
 
+def remove_outliers(dataframe, col_name):
+    # Removes outliers from the data set.
+    """Returns
+    ------
+        df_without_outliers: dataframe
+                Dataframe without outliers
+    """
+    low_limit, up_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+    df_without_outliers = dataframe[~((dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit))]
+    
+    return df_without_outliers
+
+
+
 df_titanic = dh.load_dataset("titanic.csv")
 
 dh.dataset_details(df_titanic)
@@ -106,8 +120,15 @@ print("Low limit: ", low)
 print("Up limit: ", up)
 
 print(df_titanic[(df_titanic["Age"] < low)])
-
-grap_column_names(df_titanic)
+categorical_cols, num_cols, categorical_but_cardinal = grap_column_names(df_titanic)
 outlier_index = grap_outliers(df_titanic, "Age", index=True)
 print(len(outlier_index))
-# print(df_titanic[(df_titanic["Fare"] > up) | (df_titanic["Fare"] < low)])
+
+
+# Grap and remove outliers
+# Crate new data set without outliers
+for col in num_cols:
+    print(col, grap_outliers(df_titanic, col, index=True))
+    new_df_titanic = remove_outliers(df_titanic, col)
+
+print(df_titanic.shape[0] - new_df_titanic.shape[0])
