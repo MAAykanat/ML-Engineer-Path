@@ -2,7 +2,7 @@ import dataset_handle as dh
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
     # Outlier thresholds for any attribute
     # Interquantile range = q3 - q1
     # Up limit = q3 + 1.5 * interquantile range
@@ -66,6 +66,24 @@ def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     print(f'numeric_but_categorical: {len(numeric_but_categorical)}')
     return categorical_cols, num_cols, categorical_but_cardinal
 
+def grap_outliers(dataframe, col_name, index=False):
+    # It graps and prints the outliers in the data set.
+    # If index = True, it returns the indexes of the outliers.
+    """Returns
+    ------
+        outlier_index: list
+                List of outlier indexes
+    """
+    low_limit, up_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit)].shape[0] > 10:
+        print(dataframe[(dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit)].head())
+    else:
+        print(dataframe[(dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit)])
+    if index:
+        outlier_index = dataframe[(dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit)].index
+        return outlier_index
+
 df_titanic = dh.load_dataset("titanic.csv")
 
 dh.dataset_details(df_titanic)
@@ -77,8 +95,8 @@ dh.dataset_details(df_titanic)
 # Boxplot is a graphical method to visualize the dhstribution of data based on 
 # the five-number summary: minimum, first quartile, medhan, third quartile, and maximum.
 #############################################
-dh.plot_boxplot(df_titanic, "Fare")
-dh.plot_hist(df_titanic, "Fare")
+# dh.plot_boxplot(df_titanic, "Fare")
+# dh.plot_hist(df_titanic, "Fare")
 #############################################
 # Outlier Detection
 #############################################
@@ -90,4 +108,6 @@ print("Up limit: ", up)
 print(df_titanic[(df_titanic["Age"] < low)])
 
 grap_column_names(df_titanic)
+outlier_index = grap_outliers(df_titanic, "Age", index=True)
+print(len(outlier_index))
 # print(df_titanic[(df_titanic["Fare"] > up) | (df_titanic["Fare"] < low)])
