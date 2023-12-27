@@ -2,8 +2,11 @@ import dataset_handle as dh
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
-    
+def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+    # Outlier thresholds for any attribute
+    # Interquantile range = q3 - q1
+    # Up limit = q3 + 1.5 * interquantile range
+    # Low limit = q1 - 1.5 * interquantile range
     quartile1 = dataframe[col_name].quantile(q1)
     quartile3 = dataframe[col_name].quantile(q3)
     
@@ -21,24 +24,64 @@ def check_outlier(dataframe, col_name):
         return True
     else:
         return False
-df_titanic = dh.load_dataset("titanic.csv")
-dh.dataset_details(df_titanic)
-dh.plot_hist(df_titanic, "Fare")
-dh.plot_hist(df_titanic, "Fare", bin_type=9)
-dh.plot_boxplot(df_titanic, "Fare")
 
-#############################################
-# Outlier Detection
+def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
+    """
+    It gives the names of categorical, numerical and categorical but cardinal variables in the data set.
+    Note: Categorical variables with numerical appearance are also included."""
+
+    """
+    Cardinal Variables: Variables that are categorical and do not carry information, 
+    that is, have too many classes, are called variables with high cardinality.
+    """
+
+    """
+    Returns
+    ------
+        categorical_cols: list
+                Categorical variable list
+        num_cols: list
+                Numeric variable list
+        categorical_but_cardinal: list
+                Categorical variables with high cardinality list
+    """
+    # categorical_cols, categorical_but_cardinal
+    categorical_cols = [col for col in dataframe.columns if dataframe[col].dtypes == "O"]
+    numeric_but_categorical = [col for col in dataframe.columns if dataframe[col].nunique() < categorical_th and
+                   dataframe[col].dtypes != "O"]
+    categorical_but_cardinal = [col for col in dataframe.columns if dataframe[col].nunique() > cardinal_th and
+                   dataframe[col].dtypes == "O"]
+    categorical_cols = categorical_cols + numeric_but_categorical
+    categorical_cols = [col for col in categorical_cols if col not in categorical_but_cardinal]
+
+    # num_cols
+    num_cols = [col for col in dataframe.columns if dataframe[col].dtypes != "O"]
+    num_cols = [col for col in num_cols if col not in numeric_but_categorical]
+
+    print(f"Observations: {dataframe.shape[0]}")
+    print(f"Variables: {dataframe.shape[1]}")
+    print(f'categorical_cols: {len(categorical_cols)}')
+    print(f'num_cols: {len(num_cols)}')
+    print(f'categorical_but_cardinal: {len(categorical_but_cardinal)}')
+    print(f'numeric_but_categorical: {len(numeric_but_categorical)}')
+    return categorical_cols, num_cols, categorical_but_cardinal
+
+df_titanic = dh.load_dataset("titanic.csv")
+
+dh.dataset_details(df_titanic)
 #############################################
 # Outlier Detection with Graphs
 # Boxplot
+# Histogram
 #############################################
 # Boxplot is a graphical method to visualize the dhstribution of data based on 
 # the five-number summary: minimum, first quartile, medhan, third quartile, and maximum.
 #############################################
-
-# sns.boxplot(x=df_titanic["Fare"])
-# plt.show()
+dh.plot_boxplot(df_titanic, "Fare")
+dh.plot_hist(df_titanic, "Fare")
+#############################################
+# Outlier Detection
+#############################################
 
 low, up = outlier_thresholds(df_titanic, "Fare")
 print("Low limit: ", low)
@@ -46,5 +89,5 @@ print("Up limit: ", up)
 
 print(df_titanic[(df_titanic["Age"] < low)])
 
-
+grap_column_names(df_titanic)
 # print(df_titanic[(df_titanic["Fare"] > up) | (df_titanic["Fare"] < low)])

@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 
 import matplotlib.pyplot as plt
+from scipy.stats import skew, iqr
 
 PATH = "D:\!!!MAAykanat Dosyalar\Miuul\Feature Engineering\\feature_engineering\datasets"
 
@@ -22,7 +23,7 @@ def dataset_details(df):
 def plot_hist(df, col_name, bin_type = None):
 
     if bin_type == None:
-        plt.hist(df[col_name], color="red", alpha=0.75, linewidth=4., joinstyle='miter')
+        plt.hist(df[col_name], color="red")
         plt.title(col_name + " Attribute Distribution\nDefault binning-10")
     elif bin_type == 1:
         # Square root binning
@@ -38,11 +39,11 @@ def plot_hist(df, col_name, bin_type = None):
         plt.title(col_name + " Attribute Distribution\nRice Rule")
     elif bin_type == 4:
         # Doane's formula
-        plt.hist(df[col_name], bins=int(1 + np.log2(len(df[col_name])) + np.log2(1 + np.abs(skew(df[col_name]))/se(df[col_name]))))
+        plt.hist(df[col_name], bins=int(1 + np.log2(len(df[col_name])) + np.log2(1 + np.abs(skew(df[col_name]))/5)))
         plt.title(col_name + " Attribute Distribution\nDoane's formula")
     elif bin_type == 5:
         # Scott's normal reference rule
-        plt.hist(df[col_name], bins=int((max(df[col_name])-min(df[col_name]))/(3.5*se(df[col_name])*np.power(len(df[col_name]), -1/3))))
+        plt.hist(df[col_name], bins=int((max(df[col_name])-min(df[col_name]))/(3.5*np.std(df) * len(df)**(-1/3))))
         plt.title(col_name + " Attribute Distribution\nScott's normal reference rule")
     elif bin_type == 6:
         # Freedman-Diaconis' choice
