@@ -1,4 +1,8 @@
+import numpy as np
+
 import dataset_handle as dh
+
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -9,17 +13,17 @@ def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
     # Low limit = q1 - 1.5 * interquantile range
     quartile1 = dataframe[col_name].quantile(q1)
     quartile3 = dataframe[col_name].quantile(q3)
-    
+
     interquantile_range = quartile3 - quartile1
-    
+
     up_limit = quartile3 + 1.5 * interquantile_range
     low_limit = quartile1 - 1.5 * interquantile_range
-    
+
     return low_limit, up_limit
 
 def check_outlier(dataframe, col_name):
     lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
-    
+
     if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
         print(f'{col_name} have outlier')
         return True
@@ -32,7 +36,7 @@ def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     Note: Categorical variables with numerical appearance are also included."""
 
     """
-    Cardinal Variables: Variables that are categorical and do not carry information, 
+    Cardinal Variables: Variables that are categorical and do not carry information,
     that is, have too many classes, are called variables with high cardinality.
     """
 
@@ -94,16 +98,16 @@ def remove_outliers(dataframe, col_name):
     """
     low_limit, up_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
     df_without_outliers = dataframe[~((dataframe[col_name] < low_limit) | (dataframe[col_name] > up_limit))]
-    
+
     return df_without_outliers
 
 def replace_with_thresholds(dataframe, variable):
-    
+
     low_limit, up_limit = outlier_thresholds(dataframe=dataframe, col_name=variable)
 
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
-    
+
 
 df_titanic = dh.load_dataset("titanic.csv")
 
@@ -113,7 +117,7 @@ dh.dataset_details(df_titanic)
 # Boxplot
 # Histogram
 #############################################
-# Boxplot is a graphical method to visualize the dhstribution of data based on 
+# Boxplot is a graphical method to visualize the dhstribution of data based on
 # the five-number summary: minimum, first quartile, medhan, third quartile, and maximum.
 #############################################
 # dh.plot_boxplot(df_titanic, "Fare")
@@ -147,3 +151,43 @@ for col in num_cols:
     replace_with_thresholds(df_titanic, col)
 
 check_outlier(df_titanic, "Age")
+
+
+#############################################
+# Multivariate Outlier Analysis: Local Outlier Factor
+#############################################
+# Local Outlier Factor (LOF) is a score that tells us how isolated a certain data point is based on the
+# density of the local neighborhood of the data point. The higher the LOF value for an observation, the more
+# likely it is to be an outlier.
+#############################################
+
+from sklearn.neighbors import LocalOutlierFactor
+
+# df_titanic = dh.load_dataset("titanic.csv")
+df_diamons = sns.load_dataset("diamonds")
+
+df_diamons = df_diamons.select_dtypes(include=["float64", "int64"])
+df_diamons = df_diamons.dropna()
+
+lof = LocalOutlierFactor(n_neighbors=20)
+lof.fit_predict(df_diamons)
+
+df_scores = lof.negative_outlier_factor_
+np.sort(df_scores)[0:30]
+
+# Plotting the outlier scores
+# Elbow analysis
+# Plot to define the threshold value
+scores= pd.DataFrame(np.sort(df_scores))
+scores.plot(stacked=True, xlim=[0,20], style=".-")
+# plt.show() # Exaple: in 3th index, the value is -4.98 and there is elbow. Highly steep slope.
+
+th = np.sort(df_scores)[3]
+
+df_diamons[df_scores < th]
+
+print(df_diamons.describe([0.01, 0.05, 0.75, 0.90, 0.99]).T) # 0.01, 0.05, 0.75, 0.90, 0.99 are quantiles
+
+print(df_diamons[df_scores < th].index) # Outlier index according to LOF
+
+print(df_diamons[df_scores < th].drop(axis=0, labels = df_diamons[df_scores < th].index)) # Drop outliers according to LOF
