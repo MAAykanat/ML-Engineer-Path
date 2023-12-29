@@ -1,4 +1,5 @@
 import dataset_handle as dh
+import outlier_detection
 
 import pandas as pd
 import numpy as np
@@ -6,6 +7,8 @@ import matplotlib.pyplot as plt
 
 import missingno as msno
 
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.impute import KNNImputer
 
 def missing_values_table(dataframe, null_columns_name = False):
     """
@@ -89,14 +92,41 @@ df_titanic.loc[(df_titanic["Age"].isnull()) & (df_titanic["Sex"]=="male"), "Age"
 print(df_titanic.isnull().sum())
 
 ###################
+# Solution-3. Filling with KNN
+###################
+
+df= dh.load_dataset("titanic.csv")
+categorical_cols, numerical_cols, target_cols = outlier_detection.grap_column_names(df)
+
+numerical_cols = [col for col in numerical_cols if col not in "PassengerId"]
+
+dff = pd.get_dummies(df[categorical_cols + numerical_cols], drop_first=True)
+print(dff.head())
+
+scaler = MinMaxScaler()
+dff = pd.DataFrame(scaler.fit_transform(dff), columns=dff.columns)
+print(dff.head())
+
+imputer = KNNImputer(n_neighbors=5)
+dff_filled = pd.DataFrame(imputer.fit_transform(dff), coloumns=dff.columns)
+print(dff_filled.head())
+
+dff = pd.DataFrame(dff_filled, columns=dff.columns)
+
+df["age_imputed_knn"] = dff["Age"]
+
+print(df.head())
+
+###################
 # Analysis of the Relationship between Variables and Missing Values
 ###################
 
-msno.bar(df_titanic)
+"""msno.bar(df=df_titanic, figsize=(8,6), fontsize=8, color="steelblue")
 plt.show()
 
-msno.matrix(df_titanic)
+msno.matrix(df=df_titanic, figsize=(8,6), fontsize=8, color=(0.5,0,0))
 plt.show()
 
-msno.heatmap(df_titanic)
+msno.heatmap(df=df_titanic,figsize=(8,6))
 plt.show()
+"""
