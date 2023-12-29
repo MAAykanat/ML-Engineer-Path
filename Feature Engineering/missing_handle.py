@@ -41,7 +41,7 @@ df_titanic.isnull().sum().sort_values(ascending=False) # Sort the number of null
 
 na_columns = [col for col in df_titanic.columns if df_titanic[col].isnull().sum() > 0]
 
-print(missing_values_table(df_titanic))
+# print(missing_values_table(df_titanic))
 
 ########################
 # HADLING MISSING VALUES
@@ -52,3 +52,21 @@ print(missing_values_table(df_titanic))
 ########################
 
 df_titanic.dropna() # Delete all rows with null values
+
+########################
+# Solution-2. Filling
+########################
+
+df_titanic.fillna(0) # Fill all null values with 0
+
+df_titanic["Age"].fillna(df_titanic["Age"].mean()) # Fill all null values with mean of the column
+df_titanic["Age"].fillna(df_titanic["Age"].median()) # Fill all null values with median of the column
+
+# Fill all null values with mean of the column if the column is not object type
+# Numeric Varianbles Fill with Mean or Median
+df_titanic.apply(lambda col : col.fillna(col.mean()) if (col.dtype != "O") else col, axis=0)
+
+# Fill all null values with mode of the column if the column is object type and has less than 10 unique values
+# Categorical Variables Fill with Mode
+df_titanic=df_titanic.apply(lambda col: col.fillna(col.mode()[0]) if (col.dtype=="O" and len(col.unique()) <=10) else col ,axis=0)
+
