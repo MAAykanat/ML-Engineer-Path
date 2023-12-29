@@ -2,11 +2,8 @@ import dataset_handle as dh
 
 def missing_values_table(dataframe):
     
-    na_columns = []
+    na_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
 
-    for col in dataframe.columns:
-        if dataframe[col].isnull().sum() > 0:
-            na_columns.append(col)
     return na_columns    
 
 df_titanic = dh.load_dataset("titanic.csv")
