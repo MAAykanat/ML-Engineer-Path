@@ -42,3 +42,13 @@ df_titanic.isnull().sum().sort_values(ascending=False) # Sort the number of null
 na_columns = [col for col in df_titanic.columns if df_titanic[col].isnull().sum() > 0]
 
 print(missing_values_table(df_titanic))
+
+########################
+# HADLING MISSING VALUES
+########################
+
+########################
+# Solution-1. Deleting
+########################
+
+df_titanic.dropna() # Delete all rows with null values
