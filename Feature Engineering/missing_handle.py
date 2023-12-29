@@ -2,6 +2,10 @@ import dataset_handle as dh
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
+import missingno as msno
+
 
 def missing_values_table(dataframe, null_columns_name = False):
     """
@@ -83,3 +87,16 @@ df_titanic.loc[(df_titanic["Age"].isnull()) & (df_titanic["Sex"]=="female"), "Ag
 df_titanic.loc[(df_titanic["Age"].isnull()) & (df_titanic["Sex"]=="male"), "Age"] = df_titanic.groupby("Sex")["Age"].mean()["male"]
 
 print(df_titanic.isnull().sum())
+
+###################
+# Analysis of the Relationship between Variables and Missing Values
+###################
+
+msno.bar(df_titanic)
+plt.show()
+
+msno.matrix(df_titanic)
+plt.show()
+
+msno.heatmap(df_titanic)
+plt.show()
