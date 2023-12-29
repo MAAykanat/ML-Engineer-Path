@@ -70,3 +70,16 @@ df_titanic.apply(lambda col : col.fillna(col.mean()) if (col.dtype != "O") else 
 # Categorical Variables Fill with Mode
 df_titanic=df_titanic.apply(lambda col: col.fillna(col.mode()[0]) if (col.dtype=="O" and len(col.unique()) <=10) else col ,axis=0)
 
+###################
+# Filling with Cateorical Breakdown 
+###################
+
+# Mean with Sex Breakdown
+print(df_titanic.groupby("Sex")["Age"].mean())
+print(df_titanic.groupby("Sex")["Age"].median())
+
+# Fill all null values with mean in terms of Sex
+df_titanic.loc[(df_titanic["Age"].isnull()) & (df_titanic["Sex"]=="female"), "Age"] = df_titanic.groupby("Sex")["Age"].mean()["female"]
+df_titanic.loc[(df_titanic["Age"].isnull()) & (df_titanic["Sex"]=="male"), "Age"] = df_titanic.groupby("Sex")["Age"].mean()["male"]
+
+print(df_titanic.isnull().sum())
