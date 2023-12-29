@@ -4,6 +4,17 @@ import pandas as pd
 import numpy as np
 
 def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+    """
+    # Calculate total missing values in each column
     null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
 
     number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
@@ -31,7 +42,3 @@ df_titanic.isnull().sum().sort_values(ascending=False) # Sort the number of null
 na_columns = [col for col in df_titanic.columns if df_titanic[col].isnull().sum() > 0]
 
 print(missing_values_table(df_titanic))
-
-# print(n_miss)
-# print("*"*50)
-# print(ratio)
