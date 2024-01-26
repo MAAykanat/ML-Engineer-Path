@@ -87,3 +87,8 @@ df_application=dh.load_dataset("application_train.csv")
 print(df_application["EMERGENCYSTATE_MODE"].value_counts())
 print(df_application["EMERGENCYSTATE_MODE"].nunique()) # 2 categories Yes and No
 print(df_application["EMERGENCYSTATE_MODE"].unique()) # Be aware of NONE value
+
+# Eliminate binart columns from the dataset and check the number of unique values in the remaining columns
+ohe_cols = [col for col in df_application.columns if 10 >= df_application[col].nunique() > 2]
+
+one_hot_encoder(df_application, ohe_cols, drop_first=True) #Result
