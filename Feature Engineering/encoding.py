@@ -57,3 +57,12 @@ for col in binarycol_application:
     df_application = label_encoder(df_application, col)
 
 print(df_application[binarycol_application].head())
+
+#######################
+#Be NOTICE:
+#######################
+df_application=dh.load_dataset("application_train.csv")
+
+print(df_application["EMERGENCYSTATE_MODE"].value_counts())
+print(df_application["EMERGENCYSTATE_MODE"].nunique()) # 2 categories Yes and No
+print(df_application["EMERGENCYSTATE_MODE"].unique()) # Be aware of NONE value
