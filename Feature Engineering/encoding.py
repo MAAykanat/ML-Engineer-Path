@@ -33,10 +33,27 @@ def check_binary_col(dataframe):
     return binary_columns
 
 df_titanic = dh.load_dataset("titanic.csv")
+df_application = dh.load_dataset("application_train.csv")   
 
-print(df_titanic.head())
+binarycol_titanic = check_binary_col(df_titanic)
+binarycol_application = check_binary_col(df_application)
 
-le=LabelEncoder()
-le.fit_transform(df_titanic["Sex"])
+# print(check_binary_col(df_titanic))
+print(df_application[binarycol_application].head())
 
-print(check_binary_col(df_titanic))
+#######################
+#NOTES:
+# We can use the label_encoder function to encode the binary columns.
+# But, we should be careful about the binary columns.
+# Because, some binary columns are not binary in fact.
+# For example, the binary columns in the application_train dataset are not binary.
+# They are categorical.
+# So, we should encode them with label_encoder function.
+# We can use the check_binary_col function to check the binary columns.
+# Then, we can encode them with label_encoder function.
+# LaberEncoder function includes also NONE value. CAREFUL!
+#######################
+for col in binarycol_application:
+    df_application = label_encoder(df_application, col)
+
+print(df_application[binarycol_application].head())
