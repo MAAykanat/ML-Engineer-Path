@@ -32,6 +32,27 @@ def check_binary_col(dataframe):
     binary_columns = [col for col in dataframe.columns if dataframe[col].nunique() == 2 and dataframe[col].dtypes == "O"]
     return binary_columns
 
+def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
+    """
+    This function encodes the categorical variables to numericals.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    categorical_columns : list
+        The name of the column to be encoded.
+    drop_first : bool, optional
+        The default is True.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    dataframe = pd.get_dummies(dataframe, columns=categorical_columns, drop_first=drop_first)
+    return dataframe
+
 df_titanic = dh.load_dataset("titanic.csv")
 df_application = dh.load_dataset("application_train.csv")   
 
