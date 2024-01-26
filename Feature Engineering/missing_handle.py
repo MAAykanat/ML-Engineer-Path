@@ -117,7 +117,7 @@ df["age_imputed_knn"] = dff["Age"]
 
 print(df.head())
 
-###################
+##################
 # Analysis of the Relationship between Variables and Missing Values
 ###################
 
