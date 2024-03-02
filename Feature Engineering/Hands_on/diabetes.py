@@ -128,6 +128,24 @@ print(missing_values_table(dataframe=df, null_columns_name=True))
 ###############################
 #### Correlation Heat Map
 ###############################
+"""
 correlation = df.corr("kendall")
 sns.heatmap(correlation, annot=True, fmt=".2f")
 plt.show()
+"""
+
+print(df.head())
+print(categorical_col)
+
+counter = df.shape[0]
+df_copy = df.copy()
+
+#Correct Dataset convert 0 to NaN
+for col in numeric_col:
+    for i in range(counter):
+        if df_copy[col][i] == 0:
+            df_copy[col][i] = None
+
+print(df_copy.head())
+
+print(missing_values_table(dataframe=df_copy, null_columns_name=True))
