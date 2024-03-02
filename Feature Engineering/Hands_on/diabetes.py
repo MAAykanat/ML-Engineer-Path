@@ -44,6 +44,29 @@ def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     print(f'numeric_but_categorical: {len(numeric_but_categorical)}')
     return categorical_cols, num_cols, categorical_but_cardinal
 
+def outlier_thresholds(dataframe, col_name, q1=0.25, q3=0.75):
+    # Outlier thresholds for any attribute
+    # Interquantile range = q3 - q1
+    # Up limit = q3 + 1.5 * interquantile range
+    # Low limit = q1 - 1.5 * interquantile range
+    quartile1 = dataframe[col_name].quantile(q1)
+    quartile3 = dataframe[col_name].quantile(q3)
+
+    interquantile_range = quartile3 - quartile1
+
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+
+    return low_limit, up_limit
+
+def check_outlier(dataframe, col_name):
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
 
 PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Diabetes Dataset"
 df=pd.read_csv(PATH + "\diabetes.csv")
@@ -68,4 +91,8 @@ print(categorical_col)
 for col in numeric_col:
     print(f"Column is {col}")
     print(df.groupby("Outcome")[col].mean())
+    print("Is there outlier or not?")
+    print(check_outlier(dataframe=df, col_name=col))
     print("*"*50)
+
+
