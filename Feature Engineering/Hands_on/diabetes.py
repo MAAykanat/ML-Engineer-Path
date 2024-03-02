@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+import missingno as msno
+
 def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     """
     It gives the names of categorical, numerical and categorical but cardinal variables in the data set.
@@ -120,3 +122,6 @@ for col in numeric_col:
 
 # No missing variable something is wrong
 print(missing_values_table(dataframe=df, null_columns_name=True))
+
+msno.bar(df)
+plt.show()
