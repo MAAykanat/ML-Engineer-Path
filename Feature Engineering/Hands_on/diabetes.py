@@ -123,5 +123,11 @@ for col in numeric_col:
 # No missing variable something is wrong
 print(missing_values_table(dataframe=df, null_columns_name=True))
 
-msno.bar(df)
+# msno.bar(df)
+# plt.show()
+###############################
+#### Correlation Heat Map
+###############################
+correlation = df.corr("kendall")
+sns.heatmap(correlation, annot=True, fmt=".2f")
 plt.show()
