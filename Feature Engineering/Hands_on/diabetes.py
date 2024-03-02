@@ -68,6 +68,29 @@ def check_outlier(dataframe, col_name):
     else:
         return False
 
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+    
+    if null_columns_name:
+        return null_columns
+
 PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Diabetes Dataset"
 df=pd.read_csv(PATH + "\diabetes.csv")
 
@@ -95,4 +118,5 @@ for col in numeric_col:
     print(check_outlier(dataframe=df, col_name=col))
     print("*"*50)
 
-
+# No missing variable something is wrong
+print(missing_values_table(dataframe=df, null_columns_name=True))
