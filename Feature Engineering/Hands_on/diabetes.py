@@ -93,7 +93,7 @@ def missing_values_table(dataframe, null_columns_name = False):
     if null_columns_name:
         return null_columns
 
-PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Diabetes Dataset"
+PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Feature Engineering\Görevler\Görev-1 Diabetes Dataset"
 df=pd.read_csv(PATH + "\diabetes.csv")
 
 ###############################
@@ -149,3 +149,16 @@ for col in numeric_col:
 print(df_copy.head())
 
 print(missing_values_table(dataframe=df_copy, null_columns_name=True))
+
+# sns.boxplot(x="Pregnancies", data=df_copy)
+msno.matrix(df_copy)
+# plt.show()
+
+###############################
+#### Handling Missing Values###
+###############################
+print(df_copy.head())
+df_copy.loc[(df_copy["Insulin"].isnull()) & (df_copy["Outcome"]==0), "Insulin"] = df_copy.groupby("Outcome")["Insulin"].mean()[0]
+print(df_copy.head())
+
+print(type(df["Outcome"]))
