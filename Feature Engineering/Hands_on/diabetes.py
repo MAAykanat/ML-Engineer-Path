@@ -162,4 +162,7 @@ df_copy.loc[(df_copy["Insulin"].isnull()) & (df_copy["Outcome"]==0), "Insulin"] 
 df_copy.loc[(df_copy["Insulin"].isnull()) & (df_copy["Outcome"]==1), "Insulin"] = df_copy.groupby("Outcome")["Insulin"].mean()[1]
 print(df_copy.head())
 
-print(type(df["Outcome"]))
+df_copy.correlation = df_copy.corr("kendall")
+sns.heatmap(df_copy.correlation, annot=True, fmt=".2f")
+plt.show()
+
