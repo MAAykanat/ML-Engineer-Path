@@ -8,6 +8,7 @@ import seaborn as sns
 convert it to letter and add NUM at the beginning.
 """
 ###########################################
+print("*"*100)
 
 df_car_crush = sns.load_dataset("car_crashes")
 
@@ -25,6 +26,24 @@ print(df_car_crush_columns)
 Write "FLAG" at the end of the variable names.
 """
 ###########################################
-
+print("*"*100)
 
 print([(col + "_FLAG").upper() if "NO" not in col.upper() else col.upper() for col in df_car_crush.columns ])
+
+############################################
+# Assignment-3:
+"""Using the List Comprehension structure, 
+you can find the variable names that are DIFFERENT from the ones given below.
+Select the names of the variables and create a new dataframe.
+og_list = ['abbrev', 'no_previoues']
+"""
+###########################################
+print("*"*100)
+
+og_list = ['abbrev', 'no_previous']
+
+print([col for col in df_car_crush.columns if col not in og_list])
+
+df_new = df_car_crush.loc[:, [col for col in df_car_crush.columns if col not in og_list]]
+
+print(df_new.head())
