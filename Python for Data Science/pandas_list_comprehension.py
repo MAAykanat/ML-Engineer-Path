@@ -25,3 +25,6 @@ print(df_car_crush_columns)
 Write "FLAG" at the end of the variable names.
 """
 ###########################################
+
+
+print([(col + "_FLAG").upper() if "NO" not in col.upper() else col.upper() for col in df_car_crush.columns ])
