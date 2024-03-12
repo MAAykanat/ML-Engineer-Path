@@ -2,8 +2,19 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+############################################
+# Assignment-1:
+"""Capitalize the names of numeric variables in the car_crashes data by using the List Comprehension structure.
+convert it to letter and add NUM at the beginning.
+"""
+###########################################
+
 df_car_crush = sns.load_dataset("car_crashes")
 
 print(df_car_crush.head())
 print(df_car_crush.info())
 print(df_car_crush.describe().T)
+
+df_car_crush.columns = [("NUM_"+col).upper() for col in df_car_crush.columns]
+print(df_car_crush.columns)
+print(df_car_crush.head())
