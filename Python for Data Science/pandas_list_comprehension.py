@@ -134,5 +134,11 @@ print(df_titanic["age"].fillna(df_titanic["age"].median(), inplace=True))
 print(df_titanic["age"].isnull().sum())
 
 #Task 15:
-
 print(df_titanic.groupby(["pclass", "sex"]).agg({"survived": ["sum", "count", "mean"]}))
+
+#Task 16:
+def age_flag(x):
+    return 1 if x < 30 else 0
+
+df_titanic["age_flag"] = df_titanic["age"].apply(lambda x: age_flag(x))
+print(df_titanic.head())
