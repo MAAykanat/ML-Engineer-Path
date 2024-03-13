@@ -142,3 +142,7 @@ def age_flag(x):
 
 df_titanic["age_flag"] = df_titanic["age"].apply(lambda x: age_flag(x))
 print(df_titanic.head())
+
+#Task 17:
+df_tips = sns.load_dataset("tips")
+print(df_tips.head())
