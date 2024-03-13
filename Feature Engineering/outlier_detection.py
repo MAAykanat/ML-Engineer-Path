@@ -108,7 +108,7 @@ def replace_with_thresholds(dataframe, variable):
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
 
-def cat_summary(dataframe, col_name, plot=False):
+def categorical_col_summary(dataframe, col_name, plot=False):
     """
     This function shows the frequency of categorical variables.
 
