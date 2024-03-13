@@ -57,8 +57,8 @@ Task 3: Find the number of unique values for each column.
 Task 4: Find the number of unique values of the pclass variable.
 Task 5: Find the number of unique values of the pclass and parch variables.
 Task 6: Check the type of the embarked variable. Change its type to category and check again.
-Task 7: Show all the wisdoms of those with embarked value C.
-Task 8: Show all the wisdoms of those whose embarked value is not S.
+Task 7: Show all the information of those whose embarked value is C.
+Task 8: Show all the information of those whose embarked value is not S.
 Task 9: Show all the information about passengers who are women and under 30 years old.
 Task 10: Show Fare the information of passengers older than 500 or older than 70 years old.
 Task 11: Find the sum of the null values in each variable.
