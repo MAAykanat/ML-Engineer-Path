@@ -120,3 +120,10 @@ print(df_titanic.isnull().sum())
 #Task 12:
 df_titanic.drop("who", axis=1, inplace=True)
 print(df_titanic.head())
+
+#Task 13:
+print(type(df_titanic["deck"].mode()))
+print("Mode of deck variable: ",df_titanic["deck"].mode()[0])
+print(df_titanic["deck"].isnull().sum())
+print(df_titanic["deck"].fillna(df_titanic["deck"].mode()[0], inplace=True))
+print(df_titanic["deck"].isnull().sum())
