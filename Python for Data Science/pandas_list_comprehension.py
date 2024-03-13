@@ -127,3 +127,8 @@ print("Mode of deck variable: ",df_titanic["deck"].mode()[0])
 print(df_titanic["deck"].isnull().sum())
 print(df_titanic["deck"].fillna(df_titanic["deck"].mode()[0], inplace=True))
 print(df_titanic["deck"].isnull().sum())
+
+#Task 14:
+print(df_titanic["age"].isnull().sum())
+print(df_titanic["age"].fillna(df_titanic["age"].median(), inplace=True))
+print(df_titanic["age"].isnull().sum())
