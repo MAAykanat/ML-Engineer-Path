@@ -146,3 +146,6 @@ print(df_titanic.head())
 #Task 17:
 df_tips = sns.load_dataset("tips")
 print(df_tips.head())
+
+#Task 18:
+print(df_tips.groupby("time").agg({"total_bill": ["sum", "min", "max", "mean"]}))
