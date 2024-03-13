@@ -149,3 +149,8 @@ print(df_tips.head())
 
 #Task 18:
 print(df_tips.groupby("time").agg({"total_bill": ["sum", "min", "max", "mean"]}))
+
+#Task 19:
+print(df_tips.groupby(["day","time"]).agg({"total_bill": ["sum", "min", "max", "mean"]}))
+
+print(df_tips["day"].unique())
