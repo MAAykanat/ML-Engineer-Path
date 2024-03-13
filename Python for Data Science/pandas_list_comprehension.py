@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+pd.reset_option('^display.', silent=True)
+# pd.set_option('display.max_columns', 50)
 
 ############################################
 # Assignment-1:
@@ -105,3 +107,7 @@ print(df_titanic[df_titanic["embarked"] == "C"])
 
 #Task 8:
 print(df_titanic[df_titanic["embarked"] != "S"])
+
+#Task 9:
+print("Task9: ")
+print(df_titanic[(df_titanic["sex"]=="female") & (df_titanic["age"]<30)].head())
