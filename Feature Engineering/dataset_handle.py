@@ -11,6 +11,19 @@ def load_dataset(dataset_name, path=PATH):
     df = pd.read_csv(path + "\\" + dataset_name)
     return df
 
+def check_df(dataframe, head=5):
+    print("Dataframe shape: ", dataframe.shape)
+    print("*"*50)
+    print("Dataframe info: \n", dataframe.info())
+    print("*"*50)
+    print("Dataframe describe: \n", dataframe.describe().T)
+    print("*"*50)
+    print("Dataframe head: \n", dataframe.head(head))
+    print("*"*50)
+    print("Dataframe tail: \n", dataframe.tail(head))
+    print("*"*50)
+    print("Dataframe missing values: \n", dataframe.isnull().sum())
+
 def dataset_details(df):
     print("Dataset shape: ", df.shape)
     print("*"*50)
