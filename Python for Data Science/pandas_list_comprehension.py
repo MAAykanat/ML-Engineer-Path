@@ -94,3 +94,8 @@ print("# of Unique variable of pclass: ",df_titanic["pclass"].nunique())
 
 #Task 5:
 print("# of Unique variable of pclass and parch:\n",df_titanic[["pclass","parch"]].nunique())
+
+#Task 6:
+print("1-Type of embarked variable: ",df_titanic["embarked"].dtype)
+df_titanic["embarked"] = df_titanic["embarked"].astype("category")
+print("2-Type of embarked variable: ",df_titanic["embarked"].dtype)
