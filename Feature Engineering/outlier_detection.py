@@ -152,6 +152,8 @@ def numerical_col_summary(dataframe, col_name, plot=False):
     print("##########################################")
     if plot:
         sns.histplot(dataframe[col_name], kde=True)
+        plt.xlabel(col_name)
+        plt.title(f"{col_name} Distribution")
         plt.show()
 
 df_titanic = dh.load_dataset("titanic.csv")
