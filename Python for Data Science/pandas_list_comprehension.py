@@ -79,3 +79,13 @@ Task 23: Sort from largest to smallest according to the total_bill_tip_sum varia
 ###########################################
 print("*"*100)
 
+#Task 1:
+df_titanic = sns.load_dataset("titanic")
+print(df_titanic.head())
+
+#Task 2:
+print(df_titanic["sex"].value_counts())
+
+#Task 3:
+print(df_titanic.nunique())
+# [for col in df_titanic.columns]
