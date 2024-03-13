@@ -108,6 +108,13 @@ def replace_with_thresholds(dataframe, variable):
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
 
+def cat_summary(dataframe, col_name, plot=False):
+    print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
+                        "Ratio": 100 * dataframe[col_name].value_counts() / len(dataframe)}))
+    print("##########################################")
+    if plot:
+        sns.countplot(x=dataframe[col_name], data=dataframe)
+        plt.show()
 
 df_titanic = dh.load_dataset("titanic.csv")
 
