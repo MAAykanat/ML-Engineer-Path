@@ -153,4 +153,7 @@ print(df_tips.groupby("time").agg({"total_bill": ["sum", "min", "max", "mean"]})
 #Task 19:
 print(df_tips.groupby(["day","time"]).agg({"total_bill": ["sum", "min", "max", "mean"]}))
 
-print(df_tips["day"].unique())
+print("*"*100)
+#Task 20:
+print(df_tips[(df_tips["time"]=="Lunch") & (df_tips["sex"]== "Female")].head(50).sort_values(by=["day"], ascending=False))
+print(df_tips[(df_tips["time"]=="Lunch") & (df_tips["sex"]== "Female")].groupby(["day"]).agg({"total_bill": ["sum", "min", "max", "mean"]}))
