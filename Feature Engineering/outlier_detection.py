@@ -196,6 +196,22 @@ def target_summary_with_numerical(dataframe, target, numerical_col):
     print("##########################################")
 
 def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
+    """
+    This function returns the list of columns with high correlation.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    plot : bool, optional
+        The default is False.
+    corr_th : float, optional
+        The default is 0.90.
+    Returns
+    -------
+    drop_list: list
+        List of columns with high correlation.    
+    """
     corr = dataframe.corr()
     cor_matrix = corr.abs()
     upper_triangle_matrix = cor_matrix.where(np.triu(np.ones(cor_matrix.shape), k=1).astype(bool))
