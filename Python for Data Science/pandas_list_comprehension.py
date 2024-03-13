@@ -91,3 +91,6 @@ print(df_titanic.nunique())
 
 #Task 4:
 print("# of Unique variable of pclass: ",df_titanic["pclass"].nunique())
+
+#Task 5:
+print("# of Unique variable of pclass and parch:\n",df_titanic[["pclass","parch"]].nunique())
