@@ -176,6 +176,25 @@ def target_summary_with_categorical(dataframe, target, categorical_col):
     print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean()}), end="\n\n\n")
     print("##########################################")
 
+def target_summary_with_numerical(dataframe, target, numerical_col):
+    """
+    This function shows the mean of the target variable according to the numerical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    numerical_col : str
+        The name of the numerical variable.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe.groupby(target).agg({numerical_col: "mean"}), end="\n\n\n")
+    print("##########################################")
+
 df_titanic = dh.load_dataset("titanic.csv")
 
 dh.dataset_details(df_titanic)
