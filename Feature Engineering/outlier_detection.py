@@ -195,6 +195,20 @@ def target_summary_with_numerical(dataframe, target, numerical_col):
     print(dataframe.groupby(target).agg({numerical_col: "mean"}), end="\n\n\n")
     print("##########################################")
 
+def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
+    corr = dataframe.corr()
+    cor_matrix = corr.abs()
+    upper_triangle_matrix = cor_matrix.where(np.triu(np.ones(cor_matrix.shape), k=1).astype(bool))
+    drop_list = [col for col in upper_triangle_matrix.columns if any(upper_triangle_matrix[col] > corr_th)]
+    if plot:
+        import seaborn as sns
+        import matplotlib.pyplot as plt
+        sns.set(rc={'figure.figsize': (15, 15)})
+        sns.heatmap(corr, cmap="RdBu")
+        plt.show()
+    return drop_list
+
+
 df_titanic = dh.load_dataset("titanic.csv")
 
 dh.dataset_details(df_titanic)
