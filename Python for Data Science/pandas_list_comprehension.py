@@ -132,3 +132,7 @@ print(df_titanic["deck"].isnull().sum())
 print(df_titanic["age"].isnull().sum())
 print(df_titanic["age"].fillna(df_titanic["age"].median(), inplace=True))
 print(df_titanic["age"].isnull().sum())
+
+#Task 15:
+
+print(df_titanic.groupby(["pclass", "sex"]).agg({"survived": ["sum", "count", "mean"]}))
