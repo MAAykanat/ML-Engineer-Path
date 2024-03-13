@@ -88,4 +88,6 @@ print(df_titanic["sex"].value_counts())
 
 #Task 3:
 print(df_titanic.nunique())
-# [for col in df_titanic.columns]
+
+#Task 4:
+print("# of Unique variable of pclass: ",df_titanic["pclass"].nunique())
