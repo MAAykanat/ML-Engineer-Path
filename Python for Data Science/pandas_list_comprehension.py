@@ -113,3 +113,6 @@ print(df_titanic[(df_titanic["sex"]=="female") & (df_titanic["age"]<30)].head())
 
 #Task 10:
 print(df_titanic[(df_titanic["fare"]>500) | (df_titanic["age"]>70)].head())
+
+#Task 11:
+print(df_titanic.isnull().sum())
