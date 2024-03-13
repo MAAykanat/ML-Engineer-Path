@@ -164,3 +164,7 @@ print(df_tips.loc[(df_tips["size"]<3) & (df_tips["total_bill"]>10)].mean())
 #Task 22:
 df_tips["total_bill_tip_sum"] = df_tips["total_bill"] + df_tips["tip"]
 print(df_tips.head())
+
+#Task 23:
+df_new=df_tips.sort_values(by=["total_bill_tip_sum"], ascending=False)[:30]
+print(df_new)
