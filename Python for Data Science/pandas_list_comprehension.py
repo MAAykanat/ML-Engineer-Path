@@ -62,7 +62,7 @@ Task 6: Check the type of the embarked variable. Change its type to category and
 Task 7: Show all the information of those whose embarked value is C.
 Task 8: Show all the information of those whose embarked value is not S.
 Task 9: Show all the information about passengers who are women and under 30 years old.
-Task 10: Show Fare the information of passengers older than 500 or older than 70 years old.
+Task 10: Show Fare the information of passengers higher than 500 or older than 70 years old.
 Task 11: Find the sum of the null values in each variable.
 Task 12: Remove the who variable from the dataframe.
 Task 13: Fill the empty values in the deck variable with the most repeated value (mode) of the deck variable.
@@ -109,5 +109,7 @@ print(df_titanic[df_titanic["embarked"] == "C"])
 print(df_titanic[df_titanic["embarked"] != "S"])
 
 #Task 9:
-print("Task9: ")
 print(df_titanic[(df_titanic["sex"]=="female") & (df_titanic["age"]<30)].head())
+
+#Task 10:
+print(df_titanic[(df_titanic["fare"]>500) | (df_titanic["age"]>70)].head())
