@@ -15,10 +15,32 @@ def check_df(dataframe, head=5):
     print("Dataframe describe: \n", dataframe.describe([0, 0.05, 0.50, 0.95, 0.99, 1]).T)
     print("*"*50)
     print("Dataframe missing values: \n", dataframe.isnull().sum())
-
+#################################
+# ASSIGNEMNT-1
+#################################
 df = pd.read_excel(".\Python for Data Science\datasets\miuul_gezinomi.xlsx")
 #Task-1: Details of the dataset
 #check_df(df)
 
 #Task-2: Unique values of the SaleCityName object variable
-print(df["SaleCityName"].unique())
+# print(df["SaleCityName"].unique())
+"""
+['Antalya' 'İzmir' 'Diğer' 'Aydın' 'Muğla' 'Girne']
+"""
+# print(df["SaleCityName"].value_counts())
+"""
+Antalya    31649
+Muğla      10662
+Aydın      10646
+Diğer       3245
+İzmir       2507
+Girne        455
+"""
+#Task-3: Unique values of the ConceptName object variable
+# print(len(df["ConceptName"].unique()))
+print("*"*50)
+#Task-4: Number of unique values of the ConceptName object variable
+print(df["ConceptName"].value_counts())
+
+#Task-5: Total earnings from sales by each city
+print(df.groupby("SaleCityName").agg({"Price": "sum"}))
