@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-pd.reset_option('^display.', silent=True)
-# pd.set_option('display.max_columns', 50)
+
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 1000)
 
 ############################################
 # Assignment-1:
