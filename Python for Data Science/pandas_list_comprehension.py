@@ -99,3 +99,9 @@ print("# of Unique variable of pclass and parch:\n",df_titanic[["pclass","parch"
 print("1-Type of embarked variable: ",df_titanic["embarked"].dtype)
 df_titanic["embarked"] = df_titanic["embarked"].astype("category")
 print("2-Type of embarked variable: ",df_titanic["embarked"].dtype)
+
+#Task 7:
+print(df_titanic[df_titanic["embarked"] == "C"])
+
+#Task 8:
+print(df_titanic[df_titanic["embarked"] != "S"])
