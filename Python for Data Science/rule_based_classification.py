@@ -46,3 +46,17 @@ print(df.groupby(by=["COUNTRY","SOURCE"]).agg({"PRICE": "mean"}))
 #####################
 
 print(df.groupby(by=["COUNTRY", "SOURCE", "SEX", "AGE"]).agg({"PRICE": "mean"}))
+
+#####################
+# STEP-3
+#####################
+
+agg_df=df.groupby(by=["COUNTRY", "SOURCE", "SEX", "AGE"]).agg({"PRICE": "mean"}).sort_values("PRICE", ascending=False)
+print(agg_df.head())
+
+#####################
+# STEP-4
+#####################
+
+agg_df.reset_index(inplace=True)
+print(agg_df.head())
