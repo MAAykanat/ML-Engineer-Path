@@ -74,3 +74,11 @@ print(agg_df.head())
 agg_df["AGE_CAT"]=agg_df["AGE_CAT"].agg(lambda x: str(x).replace(r', ', '_').replace(r'(', '').replace(r']', ''))
 
 print(agg_df.head())
+
+#####################
+# STEP-6
+#####################
+
+agg_df["customer_level_based"]=agg_df[["COUNTRY","SOURCE", "SEX", "AGE_CAT"]].agg(lambda x: '_'.join(x).upper(), axis=1)
+
+print(agg_df.head())
