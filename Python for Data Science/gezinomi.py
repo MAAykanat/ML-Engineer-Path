@@ -91,3 +91,11 @@ print(df.groupby(by=["SaleCityName", "ConceptName", "Seasons"]).agg({"Price": ["
 #Task-3: Groupby City-Concept-CInDay in mean and count 
 print("*"*50)
 print(df.groupby(by=["SaleCityName", "ConceptName", "CInDay"]).agg({"Price": ["mean", "count"]}))
+
+#################################
+# ASSIGNEMNT-4
+#################################
+# Task: Groupby City-Concept-Season and order in terms of price
+print("*"*50)
+agg_df = df.groupby(by=["SaleCityName", "ConceptName", "Seasons"]).agg({"Price": "mean"}).sort_values(by="Price", ascending=False)
+print(agg_df.head()) 
