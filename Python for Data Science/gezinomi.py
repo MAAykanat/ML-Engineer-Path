@@ -99,3 +99,20 @@ print(df.groupby(by=["SaleCityName", "ConceptName", "CInDay"]).agg({"Price": ["m
 print("*"*50)
 agg_df = df.groupby(by=["SaleCityName", "ConceptName", "Seasons"]).agg({"Price": "mean"}).sort_values(by="Price", ascending=False)
 print(agg_df.head()) 
+
+#################################
+# ASSIGNEMNT-5
+#################################
+#Task: Make index_names as Price
+print("*"*50)
+agg_df.reset_index(inplace=True)
+check_df(agg_df)
+
+#################################
+# ASSIGNEMNT-6
+#################################
+#Task: Create new coloumn from other coloumns
+print("*"*50)
+agg_df["sales_level_based"] = agg_df[["SaleCityName", "ConceptName", "Seasons"]].agg(lambda x: '_'.join(x), axis=1)
+
+print(agg_df.head())
