@@ -75,4 +75,4 @@ bins = [-1, 7, 30, 90, df["SaleCheckInDayDiff"].max()]
 labels = ["Last Minuters", "Potential Planners", "Planners", "Early Bookers"]
 
 df["EB_Score"] = pd.cut(df["SaleCheckInDayDiff"], bins=bins, labels=labels)
-print(df.head(20))
+df.head(50).to_excel("eb_score.xlsx", index=False)
