@@ -60,3 +60,17 @@ print(agg_df.head())
 
 agg_df.reset_index(inplace=True)
 print(agg_df.head())
+
+#####################
+# STEP-5
+#####################
+
+bins = [-1,18,19,23,24,30,31,40,41,70]
+
+agg_df["AGE_CAT"] = pd.cut(agg_df["AGE"], bins=bins)
+# agg_df["AGE_CAT"] = agg_df["AGE_CAT"].str.replace(r'[(),]', '_')
+print(agg_df.head())
+
+agg_df["AGE_CAT"]=agg_df["AGE_CAT"].agg(lambda x: str(x).replace(r', ', '_').replace(r'(', '').replace(r']', ''))
+
+print(agg_df.head())
