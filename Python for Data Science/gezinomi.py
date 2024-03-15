@@ -51,3 +51,7 @@ print(df.groupby("SaleCityName").agg({"Price": "sum"}))
 #Task-6: Total earnings from sales by each concept
 print("*"*50)
 print(df.groupby("ConceptName").agg({"Price": "sum"}))
+
+#Task-7: Average PRICE by cities
+print("*"*50)
+print(df.groupby(by=['SaleCityName']).agg({"Price": "mean"}))
