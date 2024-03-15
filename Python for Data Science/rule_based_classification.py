@@ -90,3 +90,10 @@ print(agg_df.head())
 agg_df["Segment"]=pd.qcut(agg_df["PRICE"], 4, ["D","C","B","A"])
 
 print(agg_df.head())
+
+#####################
+# STEP-8
+#####################
+new_user= "TUR_ANDROID_FEMALE_31_40"
+
+print(agg_df[agg_df["customer_level_based"]==new_user])
