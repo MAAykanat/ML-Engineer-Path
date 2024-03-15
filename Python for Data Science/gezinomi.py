@@ -80,10 +80,14 @@ df["EB_Score"] = pd.cut(df["SaleCheckInDayDiff"], bins=bins, labels=labels)
 #################################
 # ASSIGNEMNT-3
 #################################
-#Task-1: Groupby Şehir-Concept-EB Score in mean and count 
+#Task-1: Groupby City-Concept-EB Score in mean and count 
 print("*"*50)
 print(df.groupby(by=["SaleCityName", "ConceptName", "EB_Score"]).agg({"Price": ["mean", "count"]}))
 
-#Task-2: Groupby Şehir-Concept- Sezon in mean and count 
+#Task-2: Groupby City-Concept-Sezon in mean and count 
 print("*"*50)
 print(df.groupby(by=["SaleCityName", "ConceptName", "Seasons"]).agg({"Price": ["mean", "count"]}))
+
+#Task-3: Groupby City-Concept-CInDay in mean and count 
+print("*"*50)
+print(df.groupby(by=["SaleCityName", "ConceptName", "CInDay"]).agg({"Price": ["mean", "count"]}))
