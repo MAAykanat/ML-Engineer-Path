@@ -61,3 +61,7 @@ print(df.groupby(by=['SaleCityName']).agg({"Price": "mean"}))
 #Task-8: Average PRICE by concepts
 print("*"*50)
 print(df.groupby(by=['ConceptName']).agg({"Price": np.mean})) #np.mean="mean"
+
+#Task-9: Average PRICE by city-concept
+print("*"*50)
+print(df.groupby(by=["SaleCityName", 'ConceptName']).agg({"Price": "mean"}))
