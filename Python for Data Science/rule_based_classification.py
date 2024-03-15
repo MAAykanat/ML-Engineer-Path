@@ -82,3 +82,11 @@ print(agg_df.head())
 agg_df["customer_level_based"]=agg_df[["COUNTRY","SOURCE", "SEX", "AGE_CAT"]].agg(lambda x: '_'.join(x).upper(), axis=1)
 
 print(agg_df.head())
+
+#####################
+# STEP-7
+#####################
+
+agg_df["Segment"]=pd.qcut(agg_df["PRICE"], 4, ["D","C","B","A"])
+
+print(agg_df.head())
