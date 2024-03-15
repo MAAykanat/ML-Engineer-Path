@@ -20,14 +20,16 @@ def check_df(dataframe, head=5):
 #################################
 df = pd.read_excel(".\Python for Data Science\datasets\miuul_gezinomi.xlsx")
 #Task-1: Details of the dataset
-#check_df(df)
+print("*"*50)
+check_df(df)
 
 #Task-2: Unique values of the SaleCityName object variable
-# print(df["SaleCityName"].unique())
+print("*"*50)
+print(df["SaleCityName"].unique())
 """
 ['Antalya' 'İzmir' 'Diğer' 'Aydın' 'Muğla' 'Girne']
 """
-# print(df["SaleCityName"].value_counts())
+print(df["SaleCityName"].value_counts())
 """
 Antalya    31649
 Muğla      10662
@@ -43,4 +45,9 @@ print("*"*50)
 print(df["ConceptName"].value_counts())
 
 #Task-5: Total earnings from sales by each city
+print("*"*50)
 print(df.groupby("SaleCityName").agg({"Price": "sum"}))
+
+#Task-6: Total earnings from sales by each concept
+print("*"*50)
+print(df.groupby("ConceptName").agg({"Price": "sum"}))
