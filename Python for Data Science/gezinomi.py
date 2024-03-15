@@ -116,3 +116,15 @@ print("*"*50)
 agg_df["sales_level_based"] = agg_df[["SaleCityName", "ConceptName", "Seasons"]].agg(lambda x: '_'.join(x), axis=1)
 
 print(agg_df.head())
+
+#################################
+# ASSIGNEMNT-7
+#################################
+#Task: Create Segment col from quantiles
+print("*"*50)
+
+agg_df["Segment"] = pd.qcut(x=agg_df["Price"], q=4, labels=['D','C','B','A'])
+print(agg_df.head())
+print(agg_df.tail())
+print(agg_df.groupby(by="Segment").agg({"Price": [np.mean, np.max, np.sum]}))
+
