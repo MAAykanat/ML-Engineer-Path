@@ -65,3 +65,14 @@ print(df.groupby(by=['ConceptName']).agg({"Price": np.mean})) #np.mean="mean"
 #Task-9: Average PRICE by city-concept
 print("*"*50)
 print(df.groupby(by=["SaleCityName", 'ConceptName']).agg({"Price": "mean"}))
+
+#################################
+# ASSIGNEMNT-2
+#################################
+#Task-1: Convert the SaleCheckInDiff variable to a new categorical variable named EB_Score.
+
+bins = [-1, 7, 30, 90, df["SaleCheckInDayDiff"].max()]
+labels = ["Last Minuters", "Potential Planners", "Planners", "Early Bookers"]
+
+df["EB_Score"] = pd.cut(df["SaleCheckInDayDiff"], bins=bins, labels=labels)
+print(df.head(20))
