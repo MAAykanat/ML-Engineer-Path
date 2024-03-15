@@ -69,10 +69,17 @@ print(df.groupby(by=["SaleCityName", 'ConceptName']).agg({"Price": "mean"}))
 #################################
 # ASSIGNEMNT-2
 #################################
-#Task-1: Convert the SaleCheckInDiff variable to a new categorical variable named EB_Score.
+#Task: Convert the SaleCheckInDiff variable to a new categorical variable named EB_Score.
 
 bins = [-1, 7, 30, 90, df["SaleCheckInDayDiff"].max()]
 labels = ["Last Minuters", "Potential Planners", "Planners", "Early Bookers"]
 
 df["EB_Score"] = pd.cut(df["SaleCheckInDayDiff"], bins=bins, labels=labels)
-df.head(50).to_excel("eb_score.xlsx", index=False)
+# df.head(50).to_excel("eb_score.xlsx", index=False)
+
+#################################
+# ASSIGNEMNT-3
+#################################
+#Task: 
+print("*"*50)
+print(df.groupby(by=["SaleCityName", "ConceptName", "EB_Score"]).agg({"Price": ["mean", "count"]}))
