@@ -1,5 +1,7 @@
 import pandas as pd
 import seaborn as sns
+import numpy as np
+
 
 def check_df(dataframe, head=5):
     print("Dataframe shape: ", dataframe.shape)
@@ -55,3 +57,7 @@ print(df.groupby("ConceptName").agg({"Price": "sum"}))
 #Task-7: Average PRICE by cities
 print("*"*50)
 print(df.groupby(by=['SaleCityName']).agg({"Price": "mean"}))
+
+#Task-8: Average PRICE by concepts
+print("*"*50)
+print(df.groupby(by=['ConceptName']).agg({"Price": np.mean})) #np.mean="mean"
