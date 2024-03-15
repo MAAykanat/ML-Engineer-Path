@@ -113,7 +113,7 @@ check_df(agg_df)
 #################################
 #Task: Create new coloumn from other coloumns
 print("*"*50)
-agg_df["sales_level_based"] = agg_df[["SaleCityName", "ConceptName", "Seasons"]].agg(lambda x: '_'.join(x), axis=1)
+agg_df["sales_level_based"] = agg_df[["SaleCityName", "ConceptName", "Seasons"]].agg(lambda x: '_'.join(x).upper(), axis=1)
 
 print(agg_df.head())
 
@@ -128,3 +128,25 @@ print(agg_df.head())
 print(agg_df.tail())
 print(agg_df.groupby(by="Segment").agg({"Price": [np.mean, np.max, np.sum]}))
 
+#################################
+# ASSIGNEMNT-8
+#################################
+#Task-1: 
+"""
+How much income does it mean for a person who wants to have an all-inclusive holiday 
+in Antalya in high season?
+"""
+print("*"*50)
+new_user = "ANTALYA_HERŞEY DAHIL_HIGH"
+print(type(agg_df["sales_level_based"]==new_user))
+print(agg_df[agg_df["sales_level_based"]==new_user])
+print("Price of hotel is ",agg_df[agg_df["sales_level_based"]==new_user]["Price"].to_string(index=False))
+
+
+#Task-2: 
+"""
+In which segment will a holidaymaker 
+who goes to a half-board hotel in Kyrenia in low season be included?
+"""
+new_user2= "GIRNE_YARIM PANSIYON_LOW"
+print("Segment is ", agg_df[agg_df["sales_level_based"]==new_user2]["Segment"].to_string(index=False))
