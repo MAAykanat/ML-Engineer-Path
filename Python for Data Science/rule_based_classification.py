@@ -20,6 +20,10 @@ def check_df(dataframe, head=5):
 df= pd.read_csv(".\Python for Data Science\datasets\persona.csv")
 check_df(df)
 
+###################
+# STEP-1
+###################
+
 print(df["SOURCE"].unique())
 print(df["SOURCE"].value_counts())
 
@@ -36,3 +40,9 @@ print(df.groupby(by="COUNTRY").agg({"PRICE": ["sum", "mean"]}))
 print(df.groupby(by="SOURCE").agg({"PRICE": "sum"}))
 
 print(df.groupby(by=["COUNTRY","SOURCE"]).agg({"PRICE": "mean"}))
+
+#####################
+# STEP-2
+#####################
+
+print(df.groupby(by=["COUNTRY", "SOURCE", "SEX", "AGE"]).agg({"PRICE": "mean"}))
