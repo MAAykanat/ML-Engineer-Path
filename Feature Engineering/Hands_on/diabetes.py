@@ -165,6 +165,18 @@ for col in numeric_col:
 print(df_copy.head())
 
 df_copy.correlation = df_copy.corr("kendall")
-sns.heatmap(df_copy.correlation, annot=True, fmt=".2f")
-plt.show()
+sns.heatmap(df_copy.correlation, annot=True, fmt=".2f", robust=True)
+# plt.show()
 
+###############################
+#### Create New Variables #####
+###############################
+
+df_copy = df_copy.sort_values("Age", ascending=False)
+
+bins = [-1, 3, 16, 30, 45, df_copy["Age"].max()]
+labels = ["Babies", "Chidren", "YoungAdults", "MidAgeAdults", "OldAdults"]
+
+df_copy["AgeCat"] = pd.cut(df_copy["Age"], bins=bins, labels=labels)
+
+print(df_copy.head()) 
