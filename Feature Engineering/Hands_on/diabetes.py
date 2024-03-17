@@ -14,6 +14,15 @@ print(df.head())
 ### EXPLORATORY DATA ANALYSIS - EDA ###
 #######################################
 
+# There are 6 steps to be taken in the EDA process.
+
+# 1. General Picture of the Dataset
+# 2. Catch Numeric and Categorical Values
+# 3. Categoical Variable Analysis
+# 4. Numeric Variable Analysis
+# 5. Target Variable Analysis (Dependent Variable) - Numerical
+# 6. Korrelation Analysis
+
 # 1. General Picture of the Dataset
 def check_df(dataframe, head=5):
     print("##################### Shape #####################")
@@ -166,7 +175,7 @@ print("#"*50)
 
 # 6. Korrelation Analysis
 
-# Correlation Matrix (Heatmap) - Numerical Variables
+# Correlation Matrix (Heatmap)
 
 df_corr = df.corr()
 
@@ -174,3 +183,4 @@ f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="viridis")
 ax.set_title("Correlation Heatmap", color="blue", fontsize=20)
 plt.show()
+
