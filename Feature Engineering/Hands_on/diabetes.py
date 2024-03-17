@@ -5,6 +5,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import missingno as msno
 
+from sklearn.preprocessing import LabelEncoder
+
+pd.set_option('display.max_columns', None)
+pd.set_option('max_colwidth', None)
+# pd.set_option('display.width', None)
+pd.set_option('display.max_rows', 20)
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Feature Engineering\Görevler\Görev-1 Diabetes Dataset"
 df=pd.read_csv(PATH + "\diabetes.csv")
@@ -292,7 +299,7 @@ print(df_copy.head())
 
 msno.matrix(df_copy)
 plt.title("Missing Values Matrix- After Filling")
-plt.show()
+# plt.show()
 
 # 2. Outlier Values Analysis
 # We will detect and suppres the outliers in the dataset.
@@ -413,7 +420,7 @@ df_copy.loc[((df_copy["Age"] >= 50)), "NEW_AGE_CAT"] = "senior"
 df_copy["NEW_BMI_LEVEL"] = pd.cut(df_copy["BMI"], [0, 18.5, 24.9, 29.9, 34.9, 100], labels=["Underweight", "Normal", "Overweight", "Obese", "Extremely Obese"])
 
 # New Category - NEW_GLUCOSE - Numeric to Categorical
-df_copy["NEW_GLUCOSE"] = pd.cut(df_copy["Glucose"], [0, 100, 125, df_copy["Glucose"].max()], labels=["Normal", "Prediabetes" ,"Diabetes"])
+df_copy["NEW_GLUCOSE_CAT"] = pd.cut(df_copy["Glucose"], [0, 100, 125, df_copy["Glucose"].max()], labels=["Normal", "Prediabetes" ,"Diabetes"])
 
 # Age-BMI Interaction
 df_copy.loc[(df_copy["BMI"]<18.5) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "UnderweightMature"
@@ -448,7 +455,48 @@ def set_insulin(dataframe, col= "Insulin"):
     else:
         return "Abnormal"
     
-df_copy["NEW_INSULIN"] = df_copy.apply(set_insulin, axis=1)
+df_copy["NEW_INSULIN_CAT"] = df_copy.apply(set_insulin, axis=1)
 df_copy["NEW_INSULIN*GLUCOSE"] = df_copy["Insulin"] * df_copy["Glucose"]
 
 print(df_copy.head())
+print(df_copy.shape)
+
+# 4. Encoding
+print("Old DataFrame")
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+print("New DataFrame")
+cat_cols_copy, num_cols_copy, cat_but_car_copy = grap_column_names(df_copy)
+
+# 4.1 Label Encoding
+
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    return dataframe
+
+# 2 Possible Solution to find Binary Columns
+# binary_col = [col for col in df_copy.columns if df_copy[col].dtypes=='O' and df_copy[col].nunique() == 2]
+binary_col = [col for col in cat_cols_copy if df_copy[col].nunique() == 2 and col not in ["Outcome"]]
+print(binary_col)
+
+print("Before Label Encoder:\n",df_copy.head())
+
+for col in binary_col:
+    label_encoder(df_copy, col)
+
+print("After Label Encoder:\n",df_copy.head())
+
