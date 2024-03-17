@@ -592,7 +592,7 @@ print(f"Auc: {round(roc_auc_score(y_pred,y_test), 2)}")
 def plot_importance(model, features, num=len(X), save=False):
     """
         Show to feature importance of the model.
-        
+
     Parameters
     ----------
     model : model
@@ -621,4 +621,34 @@ def plot_importance(model, features, num=len(X), save=False):
     if save:
         plt.savefig('importances.png')
 
-plot_importance(rf_model, X)
+# plot_importance(rf_model, X)
+print("#"*50)
+
+#######################################
+############ COMPARISON ###############
+#######################################
+# We will compare CREATED MODELS from the old and new datasets.
+
+
+# 1. Train-Test Split
+# We will split the dataset into two parts as train and test.
+
+y_original = df["Outcome"]
+X_original = df.drop(["Outcome"], axis=1)
+
+X_train_original, X_test_original, y_train_original, y_test_original = train_test_split(X_original, y_original, test_size=0.20, random_state=17)
+
+# 2. Model Building
+# We will build a model using the train dataset.
+
+rf_model_original = RandomForestClassifier(random_state=42).fit(X_train_original, y_train_original)
+y_pred_original = rf_model_original.predict(X_test_original)
+
+# 3. Model Evaluation
+# We will evaluate the model using the test dataset.
+
+print(f"Accuracy: {round(accuracy_score(y_pred_original, y_test_original), 2)}")
+print(f"Recall: {round(recall_score(y_pred_original, y_test_original),3)}")
+print(f"Precision: {round(precision_score(y_pred_original, y_test_original), 2)}")
+print(f"F1: {round(f1_score(y_pred_original, y_test_original), 2)}")
+print(f"Auc: {round(roc_auc_score(y_pred_original, y_test_original), 2)}")
