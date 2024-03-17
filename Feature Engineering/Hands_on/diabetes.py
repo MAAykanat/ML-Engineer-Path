@@ -652,3 +652,41 @@ print(f"Recall: {round(recall_score(y_pred_original, y_test_original),3)}")
 print(f"Precision: {round(precision_score(y_pred_original, y_test_original), 2)}")
 print(f"F1: {round(f1_score(y_pred_original, y_test_original), 2)}")
 print(f"Auc: {round(roc_auc_score(y_pred_original, y_test_original), 2)}")
+
+#######################################
+############# CONCLUSION ##############
+#######################################
+
+# Results for Original Dataset: 
+"""
+Accuracy: 0.79
+Recall: 0.816
+Precision: 0.54
+F1: 0.65
+Auc: 0.8
+"""
+
+# Results for New Dataset:
+"""
+Accuracy: 0.88
+Recall: 0.898
+Precision: 0.77
+F1: 0.83
+Auc: 0.89
+"""
+
+# Improvement:
+
+print("Accuracy: ", round(0.88-0.79, 2))
+print("Recall: ", round(0.898-0.816, 3))
+print("Precision: ", round(0.77-0.54, 2))
+print("F1: ", round(0.83-0.65, 2))
+print("Auc: ", round(0.89-0.8, 2))
+
+"""
+Accuracy: 9 %
+Recall: 0.082 %
+Precision: 0.23 %
+F1: 0.18 %
+Auc: 0.09 %
+"""
