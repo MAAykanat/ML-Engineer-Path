@@ -182,5 +182,65 @@ df_corr = df.corr()
 f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="viridis")
 ax.set_title("Correlation Heatmap", color="blue", fontsize=20)
-plt.show()
+# plt.show()
+
+#######################################
+######### FEATURE ENGINEERING #########
+#######################################
+# 1. Missing Values
+# 1.1 Find Missing Value Table
+df_copy = df.copy()
+
+# Insulin, SkinThickness, BloodPressure, BMI, Glucose, DiabetesPedigreeFunction, Age
+# These columns have 0 values. They cannot be 0. We will convert them to NaN.
+
+print("Before Zero-NaN:\n ", df_copy.head())
+
+
+#######################################
+# First Method - Convert 0 to NaN
+"""
+counter = df_copy.shape[0]
+
+for col in num_cols:
+    for i in range(counter):
+        if df_copy[col][i] == 0:
+            df_copy[col][i] = None
+"""
+#######################################
+# Second Method - Convert 0 to NaN
+zero_columns = [col for col in df_copy.columns if (df_copy[col].min() == 0 and col not in ["Pregnancies", "Outcome"])]
+print(zero_columns)
+
+for col in zero_columns:
+    df_copy[col] = np.where(df_copy[col] == 0, np.nan, df_copy[col])
+#######################################
+print("After Zero-NaN:\n ", df_copy.head())
+# print(df_copy.head())
+
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+    
+    if null_columns_name:
+        return null_columns  
+
+na_col = missing_values_table(dataframe=df_copy, null_columns_name=True)
+
 
