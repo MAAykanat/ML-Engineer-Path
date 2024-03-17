@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 
 import matplotlib.pyplot as plt
+import missingno as msno
 
 
 PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Feature Engineering\Görevler\Görev-1 Diabetes Dataset"
@@ -243,4 +244,39 @@ def missing_values_table(dataframe, null_columns_name = False):
 
 na_col = missing_values_table(dataframe=df_copy, null_columns_name=True)
 
+# 1.2 Missing Values - Target Variable Relationship
+# We will examine the relationship between the target variable and the missing values.
+# If there is a relationship, we will fill in the missing values with the median of the target variable.
 
+def missing_vs_target(dataframe, target, na_columns):
+    """
+    This function examines the relationship between the target variable and the missing values.
+    
+    Alternative of Library: missingno.matrix(dataframe)
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    na_columns : list
+        The name of the columns to be analyzed.
+    Returns
+    -------
+    None.
+
+    """
+    temp_df = dataframe.copy()
+    for col in na_columns:
+        temp_df[col + '_NA_FLAG'] = np.where(temp_df[col].isnull(), 1, 0)
+    na_flags = temp_df.loc[:, temp_df.columns.str.contains("_NA_")].columns
+    for col in na_flags:
+        print(pd.DataFrame({"TARGET_MEAN": temp_df.groupby(col)[target].mean(),
+                            "Count": temp_df.groupby(col)[target].count()}), end="\n\n\n")
+
+missing_vs_target(dataframe=df_copy, target="Outcome", na_columns=na_col)
+
+msno.matrix(df_copy)
+plt.title("Missing Values Matrix")
+plt.show()
