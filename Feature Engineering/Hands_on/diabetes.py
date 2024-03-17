@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import missingno as msno
 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -503,6 +504,9 @@ print("After Label Encoder:\n",df_copy.head())
 cat_cols_copy = [col for col in cat_cols_copy if col not in binary_col and col not in ["Outcome"]]
 print(cat_cols_copy)
 
+# 4.2 One-Hot Encoding
+# We will use the get_dummies method to perform one-hot encoding.
+
 def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
     """
     This function encodes the categorical variables to numericals.
@@ -527,3 +531,12 @@ df_copy = one_hot_encoder(df_copy, cat_cols_copy, drop_first=True)
 
 print(df_copy.head())
 print(df_copy.shape)
+
+# 5. Standardization
+# We will standardize the variables to make robust to model.
+
+print(num_cols_copy)
+
+scaler = StandardScaler()
+df_copy[num_cols_copy] = scaler.fit_transform(df_copy[num_cols_copy])
+print(df_copy.head())
