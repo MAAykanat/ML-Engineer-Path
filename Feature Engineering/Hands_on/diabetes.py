@@ -540,3 +540,6 @@ print(num_cols_copy)
 scaler = StandardScaler()
 df_copy[num_cols_copy] = scaler.fit_transform(df_copy[num_cols_copy])
 print(df_copy.head())
+
+# 6. Save the Dataset
+df_copy.to_csv(PATH + "\diabetes_cleaned.csv", index=False)
