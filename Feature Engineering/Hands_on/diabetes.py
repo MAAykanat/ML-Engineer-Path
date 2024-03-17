@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+import matplotlib.pyplot as plt
+
 
 PATH ="D:\!!!MAAykanat Dosyalar\Miuul\Feature Engineering\Görevler\Görev-1 Diabetes Dataset"
 df=pd.read_csv(PATH + "\diabetes.csv")
@@ -78,4 +80,32 @@ cat_cols, num_cols, cat_but_car = grap_column_names(df)
 print("Categorical Columns: ", cat_cols)
 print("Numeric Columns: ", num_cols)
 [print("Categorical but Cardinal EMPTY!!!") if cat_but_car == [] else print("Categorical but Cardinal: ", cat_but_car)]
+print("#"*50)
+
+# 3. Categoical Variable Analysis
+def cat_summary(dataframe, col_name, plot=False):
+    """
+    This function shows the frequency of categorical variables.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    plot : bool, optional
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+    print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
+                        "Ratio": 100 * dataframe[col_name].value_counts() / len(dataframe)}))
+    print("##########################################")
+    if plot:
+        sns.countplot(x=dataframe[col_name], data=dataframe)
+        plt.show()
+
+for col in cat_cols:
+    cat_summary(df,col)
 print("#"*50)
