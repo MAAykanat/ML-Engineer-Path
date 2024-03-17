@@ -399,3 +399,56 @@ print("#"*50)
 
 for col in df_copy.columns:
     print(f"{col}: {check_outlier(df_copy, col)}")
+
+# 3. Feature Generation
+# We will generate new features from the existing features.
+# We will use the domain knowledge and the relationship between the variables to generate new features.
+# We will create new variables by using the mathematical operations on the variables.
+
+# New Category - NEW_AGE_CAT - Numeric to Categorical
+df_copy.loc[((df_copy["Age"] >= 20) & (df_copy["Age"] < 50) ), "NEW_AGE_CAT"] = "mature"
+df_copy.loc[((df_copy["Age"] >= 50)), "NEW_AGE_CAT"] = "senior"
+
+# New Category - NEW_BMI_LEVEL - Numeric to Categorical
+df_copy["NEW_BMI_LEVEL"] = pd.cut(df_copy["BMI"], [0, 18.5, 24.9, 29.9, 34.9, 100], labels=["Underweight", "Normal", "Overweight", "Obese", "Extremely Obese"])
+
+# New Category - NEW_GLUCOSE - Numeric to Categorical
+df_copy["NEW_GLUCOSE"] = pd.cut(df_copy["Glucose"], [0, 100, 125, df_copy["Glucose"].max()], labels=["Normal", "Prediabetes" ,"Diabetes"])
+
+# Age-BMI Interaction
+df_copy.loc[(df_copy["BMI"]<18.5) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "UnderweightMature"
+df_copy.loc[(df_copy["BMI"]<18.5) & (df_copy["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "UnderweightSenior"
+
+df_copy.loc[(df_copy["BMI"]>=18.5) & (df_copy["BMI"]<24.9) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "NormalMature"
+df_copy.loc[(df_copy["BMI"]>=18.5) & (df_copy["BMI"]<24.9) & (df_copy["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "NormalSenior"
+
+df_copy.loc[(df_copy["BMI"]>=24.9) & (df_copy["BMI"]<29.9) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "OverweightMature"
+df_copy.loc[(df_copy["BMI"]>=24.9) & (df_copy["BMI"]<29.9) & (df_copy["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "OverweightSenior"
+
+df_copy.loc[(df_copy["BMI"]>=29.9) & (df_copy["BMI"]<34.9) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "ObeseMature"
+df_copy.loc[(df_copy["BMI"]>=29.9) & (df_copy["BMI"]<34.9) & (df_copy["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "ObeseSenior"
+
+df_copy.loc[(df_copy["BMI"]>=34.9) & (df_copy["BMI"]<100) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "ExtremelyObeseMature"
+df_copy.loc[(df_copy["BMI"]>=34.9) & (df_copy["BMI"]<100) & (df_copy["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "ExtremelyObeseSenior"
+
+# Age-Glucoce Interaction
+df_copy.loc[(df_copy["Glucose"]<100) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_GLUCOSE_NOM"] = "NormalMature"
+df_copy.loc[(df_copy["Glucose"]<100) & (df_copy["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "NormalSenior"
+
+df_copy.loc[(df_copy["Glucose"]>=100) & (df_copy["Glucose"]<125) & ((df_copy["Age"] >= 20) & (df_copy["Age"] < 50)), "NEW_AGE_GLUCOSE_NOM"] = "PrediabetesMature"
+df_copy.loc[(df_copy["Glucose"]>=100) & (df_copy["Glucose"]<125) & (df_copy["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "PrediabetesSenior"
+
+df_copy.loc[(df_copy["Glucose"]>=125) & (df_copy["Age"] >= 20) & (df_copy["Age"] < 50), "NEW_AGE_GLUCOSE_NOM"] = "DiabetesMature"
+df_copy.loc[(df_copy["Glucose"]>=125) & (df_copy["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "DiabetesSenior"
+
+def set_insulin(dataframe, col= "Insulin"):
+    # Binary Category - Insulin
+    if 16 <= dataframe[col] <= 166:
+        return "Normal"
+    else:
+        return "Abnormal"
+    
+df_copy["NEW_INSULIN"] = df_copy.apply(set_insulin, axis=1)
+df_copy["NEW_INSULIN*GLUCOSE"] = df_copy["Insulin"] * df_copy["Glucose"]
+
+print(df_copy.head())
