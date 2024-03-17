@@ -278,5 +278,18 @@ def missing_vs_target(dataframe, target, na_columns):
 missing_vs_target(dataframe=df_copy, target="Outcome", na_columns=na_col)
 
 msno.matrix(df_copy)
-plt.title("Missing Values Matrix")
+plt.title("Missing Values Matrix- Before Filling")
+# plt.show()
+
+# 1.3 Missing Values - Filling
+# We will fill in the missing values with the median of the target-Outcome (0-1) variable.
+
+for col in num_cols:
+    # Fill all null values with mean of target variable (Outcome)
+    df_copy.loc[(df_copy[col].isnull()) & (df_copy["Outcome"]==0), col] = df_copy.groupby("Outcome")[col].mean()[0]
+    df_copy.loc[(df_copy[col].isnull()) & (df_copy["Outcome"]==1), col] = df_copy.groupby("Outcome")[col].mean()[1]
+print(df_copy.head())
+
+msno.matrix(df_copy)
+plt.title("Missing Values Matrix- After Filling")
 plt.show()
