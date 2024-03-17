@@ -164,4 +164,13 @@ for col in num_cols:
     target_summary_with_num(df, "Outcome", col)
 print("#"*50)
 
+# 6. Korrelation Analysis
 
+# Correlation Matrix (Heatmap) - Numerical Variables
+
+df_corr = df.corr()
+
+f, ax = plt.subplots(figsize=(18, 18))
+sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="viridis")
+ax.set_title("Correlation Heatmap", color="blue", fontsize=20)
+plt.show()
