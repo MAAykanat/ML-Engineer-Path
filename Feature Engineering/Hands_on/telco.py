@@ -316,10 +316,6 @@ def missing_values_table(dataframe, null_columns_name = False):
 
 na_col = missing_values_table(dataframe=df_copy, null_columns_name=True)
 
-# 1.2 Missing Values - Target Variable Relationship
-# We will examine the relationship between the target variable and the missing values.
-# If there is a relationship, we will fill in the missing values with the median of the target variable.
-
 def missing_vs_target(dataframe, target, na_columns):
     """
     This function examines the relationship between the target variable and the missing values.
@@ -353,9 +349,6 @@ msno.matrix(df_copy)
 plt.title("Missing Values Matrix- Before Filling")
 # plt.show()
 
-# 1.3 Missing Values - Filling
-# We will fill in the missing values with the median of the target-Outcome (0-1) variable.
-
 for col in num_cols:
     # Fill all null values with mean of target variable (Outcome)
     df_copy.loc[(df_copy[col].isnull()) & (df_copy["Churn"]==0), col] = df_copy.groupby("Churn")[col].mean()[0]
@@ -369,7 +362,6 @@ plt.show()
 # 9. Correlation Matrix
 
 # Correlation Matrix (Heatmap)
-
 df_corr = df.corr()
 
 f, ax = plt.subplots(figsize=(18, 18))
