@@ -16,6 +16,15 @@ df = pd.read_csv(PATH + "\Telco-Customer-Churn.csv")
 ### EXPLORATORY DATA ANALYSIS - EDA ###
 #######################################
 
+# 1. General Picture of the Dataset
+# 2. Catch Numeric and Categorical Value
+# 3. Catetorical Variables Analysis
+# 4. Numeric Variables Analysis
+# 5. Target Variable Analysis (Dependent Variable) - Categorical
+# 6. Target Variable Analysis (Dependent Variable) - Numeric
+# 7. Outlier Detection
+# 8. Missing Value Analysis
+# 9. Correlation Matrix
 
 # 1. General Picture of the Dataset
 def check_df(dataframe, head=5):
@@ -368,3 +377,7 @@ f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 # plt.show()
+
+#######################################
+######### FEATURE ENGINEERING #########
+#######################################
