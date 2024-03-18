@@ -8,6 +8,10 @@ import missingno as msno
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score
+from sklearn.ensemble import RandomForestClassifier
+
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
@@ -485,7 +489,7 @@ for col in binary_col:
 print("After Label Encoder:\n",df_copy.head())
 
 # One-Hot Encoder
-cat_cols_copy = [col for col in cat_cols_copy if col not in binary_col and col not in ["Outcome"]]
+cat_cols_copy = [col for col in cat_cols_copy if col not in binary_col and col not in ["Churn"]]
 print(cat_cols_copy)
 
 def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
@@ -524,3 +528,35 @@ print(df_copy.head())
 # 6. Save the Dataset
 
 df_copy.to_csv(PATH + "\\telco_cleaned.csv", index=False)
+
+#######################################
+#### MODEL BUILDING AND EVALUATION ####
+#######################################
+# We will build a model and evaluate the model.
+
+# 1. Train-Test Split
+# 2. Model Building
+# 3. Model Evaluation
+
+# 1. Train-Test Split
+# We will split the dataset into two parts as train and test.
+
+y = df_copy["Churn"]
+X = df_copy.drop(["Churn", "customerID"], axis=1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=17)
+
+# 2. Model Building
+# We will build a model using the train dataset.
+
+rf_model = RandomForestClassifier(random_state=42).fit(X_train, y_train)
+y_pred = rf_model.predict(X_test)
+
+# 3. Model Evaluation
+# We will evaluate the model using the test dataset.
+
+print(f"Accuracy: {round(accuracy_score(y_pred, y_test), 2)}")
+print(f"Recall: {round(recall_score(y_pred,y_test),3)}")
+print(f"Precision: {round(precision_score(y_pred,y_test), 2)}")
+print(f"F1: {round(f1_score(y_pred,y_test), 2)}")
+print(f"Auc: {round(roc_auc_score(y_pred,y_test), 2)}")
