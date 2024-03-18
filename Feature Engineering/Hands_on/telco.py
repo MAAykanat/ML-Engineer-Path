@@ -560,3 +560,38 @@ print(f"Recall: {round(recall_score(y_pred,y_test),3)}")
 print(f"Precision: {round(precision_score(y_pred,y_test), 2)}")
 print(f"F1: {round(f1_score(y_pred,y_test), 2)}")
 print(f"Auc: {round(roc_auc_score(y_pred,y_test), 2)}")
+
+def plot_importance(model, features, num=len(X), save=False):
+    """
+        Show to feature importance of the model.
+
+    Parameters
+    ----------
+    model : model
+        The model to be analyzed.
+    features : pandas dataframe
+        The dataframe to be analyzed.
+    num : int, optional
+        The default is len(X).
+    save : bool, optional
+        To save the plot.
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+
+    feature_imp = pd.DataFrame({'Value': model.feature_importances_, 'Feature': features.columns})
+    print(feature_imp.sort_values("Value",ascending=False))
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1)
+    sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value",
+                                                                     ascending=False)[0:num])
+    plt.title('Feature Importance')
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig('importances.png')
+
+plot_importance(rf_model, X)
+print("#"*50)
