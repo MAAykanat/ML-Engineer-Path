@@ -366,7 +366,7 @@ print(df_copy.head())
 
 msno.matrix(df_copy)
 plt.title("Missing Values Matrix- After Filling")
-plt.show()
+# plt.show()
 
 # 9. Correlation Matrix
 
@@ -402,3 +402,44 @@ ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 """
 
 # 3. Feature Generation
+
+check_df(df_copy, 20)
+
+# Tenure Category
+df_copy["NEW_TENTURE_CAT"] = pd.cut(df_copy["tenure"], bins=[0, 12, 24, 36, 48, 60, 72], labels=["0-1 Year", "1-2 Year", "2-3 Year", "3-4 Year", "4-5 Year", "5-6 Year"])
+
+# Engaded - Contract is 1 or 2 years
+df_copy["NEW_ENGADED"] = df_copy["Contract"].apply(lambda x: 1 if x in ["One year", "Two year"] else 0)
+
+# Young-Seniour Citizen - Mount to Month Contract
+df_copy["NEW_YOUNG_NOT_ENGADED"] = df_copy.apply(lambda x: 1 if (x["SeniorCitizen"] == 0) and (x["NEW_ENGADED"] == 0) else 0, axis=1)
+df_copy["NEW_YOUNG_ENGADED"] = df_copy.apply(lambda x: 1 if (x["SeniorCitizen"] == 0) and (x["NEW_ENGADED"] == 1) else 0, axis=1)
+
+df_copy["NEW_SENIOUR_NOT_ENGADED"] = df_copy.apply(lambda x: 1 if (x["SeniorCitizen"] == 1) and (x["NEW_ENGADED"] == 0) else 0, axis=1)
+df_copy["NEW_SENIOUR_ENGADED"] = df_copy.apply(lambda x: 1 if (x["SeniorCitizen"] == 1) and (x["NEW_ENGADED"] == 1) else 0, axis=1)
+
+# Total Services
+df_copy["NEW_TOTAL_SERVICES"] = (df_copy[['PhoneService', 'MultipleLines', 
+                                          'InternetService', 'OnlineSecurity', 
+                                          'OnlineBackup', 'DeviceProtection', 
+                                          'TechSupport', 'StreamingTV', 
+                                          'StreamingMovies']]=="Yes").sum(axis=1)
+
+# Any Streaming Service
+df_copy["NEW_FLAG_ANY_STREAMING"] = df_copy.apply(lambda x: 1 if (x["StreamingTV"]=="Yes") 
+                                                  or (x["StreamingMovies"]=="Yes") else 0, axis=1)
+
+# Is there automatic payment
+df_copy["NEW_FLAG_AUTO_PAYMENT"] = df_copy["PaymentMethod"].apply(lambda x: 1 if x in ["Bank transfer (automatic)","Credit card (automatic)"] else 0)
+
+# Average Monthly Charges
+df_copy["NEW_AVERAGE_MONTHLY_CHARGES"] = df_copy["TotalCharges"] / (df_copy["tenure"]+1)
+
+# Recent Price Activity Ratio
+df_copy["NEW_INCREASE"] = df_copy["NEW_AVERAGE_MONTHLY_CHARGES"] / df_copy["MonthlyCharges"]
+
+# Average Service Price
+df_copy["NEW_AVERAGE_SERVICE_PRICE"] = df_copy["MonthlyCharges"] / (df_copy["NEW_TOTAL_SERVICES"]+1)
+
+print(df_copy.head())
+
