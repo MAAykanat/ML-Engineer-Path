@@ -31,7 +31,7 @@ def check_df(dataframe, head=5):
     print(dataframe.quantile([0, 0.05, 0.50, 0.95, 0.99, 1]).T)
 
 df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce") # Convert to numeric and if error occurs, convert it to NaN
-
+df["Churn"] = df["Churn"].apply(lambda x: 1 if x =="Yes" else 0) # Convert to 1 if "Yes", 0 if "No"
 check_df(df, 20)
 print("#"*50)
 
@@ -142,4 +142,38 @@ def numerical_col_summary(dataframe, col_name, plot=False):
 
 for col in num_cols:
     numerical_col_summary(df,col)
+print("#"*50)
+
+# 5. Target Variable Analysis (Dependent Variable) - Categorical
+def target_summary_with_categorical(dataframe, target, categorical_col):
+    """
+    This function shows the mean of the target variable according to the categorical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    categorical_col : str
+        The name of the categorical variable.
+    Returns
+    -------
+    None.
+    """
+
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean()}), end="\n\n\n")
+    print("##########################################")
+
+# print(pd.DataFrame({"TARGET_MEAN": df.groupby("InternetService")["Churn"].mean()}), end="\n\n\n")
+
+def target_summary_with_cat(dataframe, target, categorical_col):
+    print(categorical_col)
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean(),
+                        "Count": dataframe[categorical_col].value_counts(),
+                        "Ratio": 100 * dataframe[categorical_col].value_counts() / len(dataframe)}), end="\n\n\n")
+
+for col in cat_cols:
+    target_summary_with_cat(df, "Churn", col)
+
 print("#"*50)
