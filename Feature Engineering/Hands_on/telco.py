@@ -381,3 +381,24 @@ ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 #######################################
 ######### FEATURE ENGINEERING #########
 #######################################
+
+# There are 6 steps to be taken in the Feature Engineering process.
+# 1. Missing Values
+# 2. Outlier Values Analysis
+# 3. Feature Generation
+# 4. Encoding
+# 5. Standardization
+# 6. Save the Dataset
+
+# 1. Missing Values
+"""
+    It has been filled in the previous section. EDA - 8. Missing Value Analysis
+    df_copy is filled with the mean of the target variable.
+"""
+
+# 2. Outlier Values Analysis
+"""
+    There are no outlier values in the dataset.
+"""
+
+# 3. Feature Generation
