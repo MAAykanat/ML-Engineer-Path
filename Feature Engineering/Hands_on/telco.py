@@ -447,11 +447,13 @@ print(df_copy.head())
 
 # 4. Encoding
 
+# Grap Column Names Again
 print("Old DataFrame")
 cat_cols, num_cols, cat_but_car = grap_column_names(df)
 print("New DataFrame")
 cat_cols_copy, num_cols_copy, cat_but_car_copy = grap_column_names(df_copy)
 
+# Label Encoder
 def label_encoder(dataframe, binary_col):
     """
     This function encodes the binary variables to numericals.
@@ -480,3 +482,32 @@ for col in binary_col:
     label_encoder(df_copy, col)
 
 print("After Label Encoder:\n",df_copy.head())
+
+# One-Hot Encoder
+cat_cols_copy = [col for col in cat_cols_copy if col not in binary_col and col not in ["Outcome"]]
+print(cat_cols_copy)
+
+def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
+    """
+    This function encodes the categorical variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    categorical_columns : list
+        The name of the column to be encoded.
+    drop_first : bool, optional
+        Dummy trap. The default is True.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    dataframe = pd.get_dummies(dataframe, columns=categorical_columns, drop_first=drop_first)
+    return dataframe
+
+df_copy = one_hot_encoder(df_copy, cat_cols_copy, drop_first=True)
+
+print(df_copy.head())
+print(df_copy.shape)
