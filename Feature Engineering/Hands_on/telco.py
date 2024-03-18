@@ -612,10 +612,7 @@ print("#"*50)
 
 cat_cols_original, num_cols_original, cat_but_car_original = grap_column_names(df)
 
-for col in num_cols_original:
-    # Fill all null values with mean of target variable (Churn)
-    df.loc[(df[col].isnull()) & (df["Churn"]==0), col] = df.groupby("Churn")[col].mean()[0]
-    df.loc[(df[col].isnull()) & (df["Churn"]==1), col] = df.groupby("Churn")[col].mean()[1]
+df["TotalCharges"].fillna(df["TotalCharges"].median(), inplace=True) 
 
 binary_col_original = [col for col in cat_cols_original if df[col].nunique() == 2 and col not in ["Churn"]]
 
@@ -642,19 +639,53 @@ y_pred_original = rf_model_original.predict(X_test_original)
 # 3. Model Evaluation
 # We will evaluate the model using the test dataset.
 
-# print(f"Accuracy: {round(accuracy_score(y_pred_original, y_test_original), 2)}")
-# print(f"Recall: {round(recall_score(y_pred_original, y_test_original),3)}")
-# print(f"Precision: {round(precision_score(y_pred_original, y_test_original), 2)}")
-# print(f"F1: {round(f1_score(y_pred_original, y_test_original), 2)}")
-# print(f"Auc: {round(roc_auc_score(y_pred_original, y_test_original), 2)}")
+print(f"Accuracy: {round(accuracy_score(y_pred_original, y_test_original), 2)}")
+print(f"Recall: {round(recall_score(y_pred_original, y_test_original),3)}")
+print(f"Precision: {round(precision_score(y_pred_original, y_test_original), 2)}")
+print(f"F1: {round(f1_score(y_pred_original, y_test_original), 2)}")
+print(f"Auc: {round(roc_auc_score(y_pred_original, y_test_original), 2)}")
 
 """
 Accuracy: 0.79
-Recall: 0.65
-Precision: 0.49
-F1: 0.56
-Auc: 0.7
+Recall: 0.647
+Precision: 0.47
+F1: 0.55
+Auc: 0.74
 """
+
+def plot_importance(model, features, num=len(X), save=False):
+    """
+        Show to feature importance of the model.
+
+    Parameters
+    ----------
+    model : model
+        The model to be analyzed.
+    features : pandas dataframe
+        The dataframe to be analyzed.
+    num : int, optional
+        The default is len(X).
+    save : bool, optional
+        To save the plot.
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+
+    feature_imp = pd.DataFrame({'Value': model.feature_importances_, 'Feature': features.columns})
+    print(feature_imp.sort_values("Value",ascending=False))
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1)
+    sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value",
+                                                                     ascending=False)[0:num])
+    plt.title('Feature Importance')
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig('importances.png')
+
+plot_importance(rf_model_original, X_original)
 
 #######################################
 ############# CONCLUSION ##############
@@ -663,10 +694,10 @@ Auc: 0.7
 # Results for Original Dataset: 
 """
 Accuracy: 0.79
-Recall: 0.65
-Precision: 0.49
-F1: 0.56
-Auc: 0.7
+Recall: 0.647
+Precision: 0.47
+F1: 0.55
+Auc: 0.74
 """
 
 # Results for New Dataset:
