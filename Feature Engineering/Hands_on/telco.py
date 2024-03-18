@@ -145,28 +145,6 @@ for col in num_cols:
 print("#"*50)
 
 # 5. Target Variable Analysis (Dependent Variable) - Categorical
-def target_summary_with_categorical(dataframe, target, categorical_col):
-    """
-    This function shows the mean of the target variable according to the categorical variable.
-
-    Parameters
-    ----------
-    dataframe : pandas dataframe
-        The dataframe to be analyzed.
-    target : str
-        The name of the target variable.
-    categorical_col : str
-        The name of the categorical variable.
-    Returns
-    -------
-    None.
-    """
-
-    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean()}), end="\n\n\n")
-    print("##########################################")
-
-# print(pd.DataFrame({"TARGET_MEAN": df.groupby("InternetService")["Churn"].mean()}), end="\n\n\n")
-
 def target_summary_with_cat(dataframe, target, categorical_col):
     """
     This function shows the mean of the target variable according to the categorical variable.
@@ -191,4 +169,27 @@ def target_summary_with_cat(dataframe, target, categorical_col):
 for col in cat_cols:
     target_summary_with_cat(df, "Churn", col)
 
+print("#"*50)
+
+# 6. Target Variable Analysis (Dependent Variable) - Numeric
+def target_summary_with_num(dataframe, target, numerical_col):
+    """
+    This function shows the average of numerical variables according to the target variable.
+    
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    numerical_col : str
+        The name of the numerical variable.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe.groupby(target).agg({numerical_col: ["mean", "median", "count"]}), end="\n\n\n")
+
+for col in num_cols:
+    target_summary_with_num(df, "Churn", col)
 print("#"*50)
