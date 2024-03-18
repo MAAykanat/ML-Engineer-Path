@@ -193,3 +193,14 @@ def target_summary_with_num(dataframe, target, numerical_col):
 for col in num_cols:
     target_summary_with_num(df, "Churn", col)
 print("#"*50)
+
+# 9. Correlation Matrix
+
+# Correlation Matrix (Heatmap)
+
+df_corr = df.corr()
+
+f, ax = plt.subplots(figsize=(18, 18))
+sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
+ax.set_title("Correlation Heatmap", color="black", fontsize=20)
+plt.show()
