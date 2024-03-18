@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 
 import missingno as msno
 
+from sklearn.preprocessing import LabelEncoder
+
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
@@ -443,3 +445,38 @@ df_copy["NEW_AVERAGE_SERVICE_PRICE"] = df_copy["MonthlyCharges"] / (df_copy["NEW
 
 print(df_copy.head())
 
+# 4. Encoding
+
+print("Old DataFrame")
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+print("New DataFrame")
+cat_cols_copy, num_cols_copy, cat_but_car_copy = grap_column_names(df_copy)
+
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    return dataframe
+
+binary_col = [col for col in cat_cols_copy if df_copy[col].nunique() == 2 and col not in ["Churn"]]
+print(binary_col)
+
+print("Before Label Encoder:\n",df_copy.head())
+
+for col in binary_col:
+    label_encoder(df_copy, col)
+
+print("After Label Encoder:\n",df_copy.head())
