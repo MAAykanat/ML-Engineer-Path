@@ -168,6 +168,21 @@ def target_summary_with_categorical(dataframe, target, categorical_col):
 # print(pd.DataFrame({"TARGET_MEAN": df.groupby("InternetService")["Churn"].mean()}), end="\n\n\n")
 
 def target_summary_with_cat(dataframe, target, categorical_col):
+    """
+    This function shows the mean of the target variable according to the categorical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    categorical_col : str
+        The name of the categorical variable.
+    Returns
+    -------
+    None.
+    """
     print(categorical_col)
     print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean(),
                         "Count": dataframe[categorical_col].value_counts(),
