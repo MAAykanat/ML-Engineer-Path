@@ -30,6 +30,8 @@ def check_df(dataframe, head=5):
     print("##################### Quantiles #####################")
     print(dataframe.quantile([0, 0.05, 0.50, 0.95, 0.99, 1]).T)
 
+df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce") # Convert to numeric and if error occurs, convert it to NaN
+
 check_df(df, 20)
 print("#"*50)
 
