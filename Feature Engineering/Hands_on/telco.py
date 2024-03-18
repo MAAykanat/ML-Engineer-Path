@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import missingno as msno
 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -511,3 +512,12 @@ df_copy = one_hot_encoder(df_copy, cat_cols_copy, drop_first=True)
 
 print(df_copy.head())
 print(df_copy.shape)
+
+# 5. Standardization
+
+print(num_cols_copy)
+
+scaler = StandardScaler()
+df_copy[num_cols_copy] = scaler.fit_transform(df_copy[num_cols_copy])
+print(df_copy.head())
+
