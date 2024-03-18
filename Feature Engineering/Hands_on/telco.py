@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import missingno as msno
+
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
@@ -286,6 +288,83 @@ print("#"*50)
 # 8. Missing Value Analysis
 
 print(df.isnull().sum())
+
+df_copy = df.copy()
+
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+    
+    if null_columns_name:
+        return null_columns  
+
+na_col = missing_values_table(dataframe=df_copy, null_columns_name=True)
+
+# 1.2 Missing Values - Target Variable Relationship
+# We will examine the relationship between the target variable and the missing values.
+# If there is a relationship, we will fill in the missing values with the median of the target variable.
+
+def missing_vs_target(dataframe, target, na_columns):
+    """
+    This function examines the relationship between the target variable and the missing values.
+    
+    Alternative of Library: missingno.matrix(dataframe)
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    na_columns : list
+        The name of the columns to be analyzed.
+    Returns
+    -------
+    None.
+
+    """
+    temp_df = dataframe.copy()
+    for col in na_columns:
+        temp_df[col + '_NA_FLAG'] = np.where(temp_df[col].isnull(), 1, 0)
+    na_flags = temp_df.loc[:, temp_df.columns.str.contains("_NA_")].columns
+    for col in na_flags:
+        print(pd.DataFrame({"TARGET_MEAN": temp_df.groupby(col)[target].mean(),
+                            "Count": temp_df.groupby(col)[target].count()}), end="\n\n\n")
+
+missing_vs_target(dataframe=df_copy, target="Churn", na_columns=na_col)
+
+msno.matrix(df_copy)
+plt.title("Missing Values Matrix- Before Filling")
+# plt.show()
+
+# 1.3 Missing Values - Filling
+# We will fill in the missing values with the median of the target-Outcome (0-1) variable.
+
+for col in num_cols:
+    # Fill all null values with mean of target variable (Outcome)
+    df_copy.loc[(df_copy[col].isnull()) & (df_copy["Churn"]==0), col] = df_copy.groupby("Churn")[col].mean()[0]
+    df_copy.loc[(df_copy[col].isnull()) & (df_copy["Churn"]==1), col] = df_copy.groupby("Churn")[col].mean()[1]
+print(df_copy.head())
+
+msno.matrix(df_copy)
+plt.title("Missing Values Matrix- After Filling")
+plt.show()
 
 # 9. Correlation Matrix
 
