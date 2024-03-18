@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score
 from sklearn.ensemble import RandomForestClassifier
+from catboost import CatBoostClassifier
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -366,7 +367,7 @@ plt.title("Missing Values Matrix- Before Filling")
 # plt.show()
 
 for col in num_cols:
-    # Fill all null values with mean of target variable (Outcome)
+    # Fill all null values with mean of target variable (Churn)
     df_copy.loc[(df_copy[col].isnull()) & (df_copy["Churn"]==0), col] = df_copy.groupby("Churn")[col].mean()[0]
     df_copy.loc[(df_copy[col].isnull()) & (df_copy["Churn"]==1), col] = df_copy.groupby("Churn")[col].mean()[1]
 print(df_copy.head())
@@ -561,6 +562,14 @@ print(f"Precision: {round(precision_score(y_pred,y_test), 2)}")
 print(f"F1: {round(f1_score(y_pred,y_test), 2)}")
 print(f"Auc: {round(roc_auc_score(y_pred,y_test), 2)}")
 
+"""
+Accuracy: 0.78
+Recall: 0.637
+Precision: 0.47
+F1: 0.54
+Auc: 0.73
+"""
+
 def plot_importance(model, features, num=len(X), save=False):
     """
         Show to feature importance of the model.
@@ -593,5 +602,56 @@ def plot_importance(model, features, num=len(X), save=False):
     if save:
         plt.savefig('importances.png')
 
-plot_importance(rf_model, X)
+# plot_importance(rf_model, X)
 print("#"*50)
+
+#######################################
+############ COMPARISON ###############
+#######################################
+# We will compare CREATED MODELS from the old and new datasets.
+
+cat_cols_original, num_cols_original, cat_but_car_original = grap_column_names(df)
+
+for col in num_cols_original:
+    # Fill all null values with mean of target variable (Churn)
+    df.loc[(df[col].isnull()) & (df["Churn"]==0), col] = df.groupby("Churn")[col].mean()[0]
+    df.loc[(df[col].isnull()) & (df["Churn"]==1), col] = df.groupby("Churn")[col].mean()[1]
+
+binary_col_original = [col for col in cat_cols_original if df[col].nunique() == 2 and col not in ["Churn"]]
+
+for col in binary_col_original:
+    label_encoder(df, col)
+
+cat_cols_original = [col for col in cat_cols_original if col not in binary_col_original and col not in ["Churn"]]
+df = one_hot_encoder(df, cat_cols_original, drop_first=True)
+
+# 1. Train-Test Split
+# We will split the dataset into two parts as train and test.
+
+y_original = df["Churn"]
+X_original = df.drop(["Churn", "customerID"], axis=1)
+
+X_train_original, X_test_original, y_train_original, y_test_original = train_test_split(X_original, y_original, test_size=0.20, random_state=17)
+
+# 2. Model Building
+# We will build a model using the train dataset.
+
+rf_model_original = RandomForestClassifier(random_state=42).fit(X_train_original, y_train_original)
+y_pred_original = rf_model_original.predict(X_test_original)
+
+# 3. Model Evaluation
+# We will evaluate the model using the test dataset.
+
+# print(f"Accuracy: {round(accuracy_score(y_pred_original, y_test_original), 2)}")
+# print(f"Recall: {round(recall_score(y_pred_original, y_test_original),3)}")
+# print(f"Precision: {round(precision_score(y_pred_original, y_test_original), 2)}")
+# print(f"F1: {round(f1_score(y_pred_original, y_test_original), 2)}")
+# print(f"Auc: {round(roc_auc_score(y_pred_original, y_test_original), 2)}")
+
+"""
+Accuracy: 0.79
+Recall: 0.65
+Precision: 0.49
+F1: 0.56
+Auc: 0.7
+"""
