@@ -655,3 +655,26 @@ Precision: 0.49
 F1: 0.56
 Auc: 0.7
 """
+
+#######################################
+############# CONCLUSION ##############
+#######################################
+
+# Results for Original Dataset: 
+"""
+Accuracy: 0.79
+Recall: 0.65
+Precision: 0.49
+F1: 0.56
+Auc: 0.7
+"""
+
+# Results for New Dataset:
+"""
+Accuracy: 0.78
+Recall: 0.637
+Precision: 0.47
+F1: 0.54
+Auc: 0.73
+"""
+# No significant improvent 
