@@ -80,5 +80,79 @@ figure.set_ylabel("Sales")
 figure.set_xlabel("TV Advertising")
 plt.xlim(-10, 310)
 plt.ylim(bottom=0)
-plt.show()
+# plt.show()
 
+################################
+## Multiple Linear Regression ##
+################################
+
+X = df.drop('sales', axis=1)
+y = df[["sales"]]
+
+## Model
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
+
+reg_model = LinearRegression().fit(X_train, y_train)
+y_pred = reg_model.predict(X_test) 
+
+# bias (b)
+print("Bias is ", reg_model.intercept_[0])
+
+# weights (w)
+print("Weights are ", reg_model.coef_[0])
+print("#"*50)
+##############################
+##### Model Evaluation #######
+##############################
+
+y_pred_train = reg_model.predict(X_train)
+
+### Train Data
+#MSE (Mean Squared Error)
+mse_train = mean_squared_error(y_train, y_pred_train)
+print("MSE-train is ", mse_train)
+
+#RMSE (Root Mean Squared Error)
+rmse_train = np.sqrt(mse_train)
+print("RMSE-train is ", rmse_train)
+
+#MAE (Mean Absolute Error)
+mae_train = mean_absolute_error(y_train, y_pred_train)
+print("MAE-train is ", mae_train)
+
+#R-Squared (Coefficient of Determination) - Means how much of change in y can be explained by the change in X
+r2_train = reg_model.score(X_train, y_train)
+print("R-Squared-train is ", r2_train)
+
+"""
+MSE-train is  3.0168306076596774
+RMSE-train is  1.736902590147092
+MAE-train is  1.3288502460998388
+R-Squared-train is  0.8959372632325174
+"""
+
+print("#"*50)
+### Test Data
+#MSE (Mean Squared Error)
+mse_test = mean_squared_error(y_test, y_pred)
+print("MSE-test is ", mse_test)
+
+#RMSE (Root Mean Squared Error)
+rmse_test = np.sqrt(mse_test)
+print("RMSE-test is ", rmse_test)
+
+#MAE (Mean Absolute Error)
+mae_test = mean_absolute_error(y_test, y_pred)
+print("MAE-test is ", mae_test)
+
+#R-Squared (Coefficient of Determination) - Means how much of change in y can be explained by the change in X
+r2_test = reg_model.score(X_test, y_test)
+print("R-Squared-test is ", r2_test)
+
+"""
+MSE-test is  1.9918855518287906
+RMSE-test is  1.4113417558581587
+MAE-test is  1.0402154012924718
+R-Squared-test is  0.8927605914615384
+"""
