@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import train_test_split, cross_val_score
+
 def check_df(dataframe, head=5):
     print("Dataframe shape: ", dataframe.shape)
     print("*"*50)
@@ -20,3 +24,45 @@ def check_df(dataframe, head=5):
 df = pd.read_csv('Machine Learning/datasets/advertising.csv')
 
 check_df(df)
+
+##############################
+## Simple Linear Regression ##
+##############################
+
+X = df[["TV"]]
+y = df[["sales"]]
+
+print(type(X))
+
+reg_model = LinearRegression().fit(X, y)
+y_pred = reg_model.predict(X)
+
+# Formula: y_hat = b0 + b1*X
+
+print("b0 (bias) is ",reg_model.intercept_)
+print("b1 (weight) is ",reg_model.coef_)
+
+##############################
+##### Model Evaluation #######
+##############################
+
+#MSE (Mean Squared Error)
+mse = mean_squared_error(y, y_pred)
+print("MSE is ", mse)
+# 10.512652915656757
+
+#RMSE (Root Mean Squared Error)
+rmse = np.sqrt(mse)
+print("RMSE is ", rmse)
+# 3.2423221486546887
+
+#MAE (Mean Absolute Error)
+mae = mean_absolute_error(y, y_pred)
+print("MAE is ", mae)
+# 2.549806038927486
+
+#R-Squared (Coefficient of Determination) - Means how much of change in y can be explained by the change in X
+r2 = reg_model.score(X, y)
+print("R-Squared is ", r2)
+# 0.611875050850071
+
