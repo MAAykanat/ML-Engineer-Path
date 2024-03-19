@@ -156,3 +156,35 @@ RMSE-test is  1.4113417558581587
 MAE-test is  1.0402154012924718
 R-Squared-test is  0.8927605914615384
 """
+
+######################################################
+# Simple Linear Regression with Gradient Descent from Scratch
+######################################################
+
+#Cost Funtion MSE
+def cost_function(Y, b, w, X):
+    m = len(Y)
+    sse = 0
+
+    for i in range(0,m):
+        y_hat = b + w * X[i]
+        y = Y[i]
+        sse += (y_hat - y) **2
+    mse = sse / m
+    return mse
+
+# Update Weights
+def update_weights(Y, b, w, X, learning_rate):
+    m = len(Y)
+    b_derivative_sum = 0
+    w_derivative_sum = 0
+
+    for i in range(0,m):
+        y_hat = b + w * X[i]
+        y = Y[i]
+        b_derivative_sum += (y_hat-y)
+        w_derivative_sum += (y_hat-y) * X[i]
+    new_b = b - (learning_rate * (1 / (m * b_derivative_sum)))
+    new_w = w - (learning_rate * (1 / (m * w_derivative_sum)))
+
+    return new_b, new_w
