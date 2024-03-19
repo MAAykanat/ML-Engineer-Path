@@ -1,5 +1,7 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -65,4 +67,18 @@ print("MAE is ", mae)
 r2 = reg_model.score(X, y)
 print("R-Squared is ", r2)
 # 0.611875050850071
+
+##############################
+####### Visualization ########
+##############################
+
+figure = sns.regplot(x=X, y=y, data=df, 
+                     scatter_kws={'color': 'b', 's': 9}, 
+                     ci=False, color="r") # ci=False: Confidence Interval
+figure.set_title(f"Model Equation: Sales = {round(reg_model.intercept_[0], 2)} + TV*{round(reg_model.coef_[0][0], 2)}")
+figure.set_ylabel("Sales")
+figure.set_xlabel("TV Advertising")
+plt.xlim(-10, 310)
+plt.ylim(bottom=0)
+plt.show()
 
