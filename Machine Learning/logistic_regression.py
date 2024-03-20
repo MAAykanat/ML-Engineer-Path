@@ -279,3 +279,39 @@ for col in df.columns:
 for col in num_cols:
     print(f"{col}: {check_outlier(df, col)}")
 print("#"*50)
+
+# 8. Missing Value Analysis
+
+# There is no missing value, but there is something wrong Insulin glucose cannot be zero.
+# It should be fixed and changed to NaN
+
+
+
+print(df.isnull().sum())
+
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+    
+    if null_columns_name:
+        return null_columns  
+
+na_col = missing_values_table(dataframe=df, null_columns_name=True)
+
+print(na_col)
