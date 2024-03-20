@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import missingno as msno
 
 
 pd.set_option('display.max_columns', None)
@@ -322,3 +323,16 @@ def missing_values_table(dataframe, null_columns_name = False):
 na_col = missing_values_table(dataframe=df, null_columns_name=True)
 
 print(na_col)
+
+# Filling Missing Values
+# We will fill in the missing values with the median of the target-Outcome (0-1) variable.
+
+for col in num_cols:
+    df.loc[(df[col].isnull()) & (df["Outcome"]==0), col] = df.groupby("Outcome")[col].mean()[0]
+    df.loc[(df[col].isnull()) & (df["Outcome"]==1), col] = df.groupby("Outcome")[col].mean()[1]
+
+print(df.head())
+
+msno.matrix(df)
+plt.title("Missing Values Matrix - After Filling")
+plt.show()
