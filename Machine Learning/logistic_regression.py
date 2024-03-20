@@ -504,6 +504,19 @@ print(df.head())
 #######################################
 # We will build a model and evaluate the model.
 def plot_confusion_matrix(y, y_pred):
+    """
+    This function plots the confusion matrix.
+
+    Parameters
+    ----------
+    y : array
+        The true target variable.
+    y_pred : array
+        The predicted target variable.
+    Returns
+    -------
+    None.
+    """
 
     acc = round(accuracy_score(y, y_pred), 3)
     cm = confusion_matrix(y, y_pred)
