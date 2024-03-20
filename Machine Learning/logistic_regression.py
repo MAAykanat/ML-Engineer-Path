@@ -335,4 +335,13 @@ print(df.head())
 
 msno.matrix(df)
 plt.title("Missing Values Matrix - After Filling")
+# plt.show()
+
+# 9. Correlation Matrix
+
+df_corr = df.corr()
+
+f, ax = plt.subplots(figsize=(18, 18))
+sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
+ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 plt.show()
