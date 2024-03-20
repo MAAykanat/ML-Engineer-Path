@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import missingno as msno
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split, cross_validate
+from sklearn.metrics import accuracy_score, roc_auc_score, confusion_matrix, classification_report
+
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -509,3 +513,11 @@ print(df.head())
 
 df_cleaned = pd.read_csv("Machine Learning/datasets/diabetes_cleaned.csv")
 print(df_cleaned.head())
+
+y = df_cleaned["Outcome"]
+X = df_cleaned.drop(["Outcome"], axis=1)
+
+log_model = LogisticRegression().fit(X=X, y=y)
+
+print("Bias: \n",log_model.intercept_)
+print("\nWeights: \n",log_model.coef_)
