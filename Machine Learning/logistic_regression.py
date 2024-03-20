@@ -269,4 +269,13 @@ def replace_with_thresholds(dataframe, variable, q1=0.05, q3=0.95):
 for col in num_cols:
     print(f"{col}: {check_outlier(df, col)}")
 
+for col in df.columns:
+    # Check outliers and replace with thresholds if there is any
+    print(f"{col}: {check_outlier(df, col)}")
+    if check_outlier(df, col):
+        replace_with_thresholds(df, col)
+
+# There is OUTLIER --> Insulin
+for col in num_cols:
+    print(f"{col}: {check_outlier(df, col)}")
 print("#"*50)
