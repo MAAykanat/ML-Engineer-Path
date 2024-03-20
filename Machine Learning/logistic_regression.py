@@ -344,7 +344,7 @@ df_corr = df.corr()
 f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
-plt.show()
+# plt.show()
 
 #######################################
 ######### FEATURE ENGINEERING #########
@@ -421,3 +421,30 @@ df["NEW_INSULIN*GLUCOSE"] = df["Insulin"] * df["Glucose"]
 
 print(df.head())
 print(df.shape)
+
+# 4. Encoding
+# 4.1 Label Encoding
+
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    return dataframe
+
+binary_col = [col for col in cat_cols if df[col].nunique() == 2 and col not in ["Outcome"]]
+
+for col in binary_col:
+    label_encoder(df, col)
