@@ -490,4 +490,7 @@ print(df.head())
 
 scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
-print(df.head()) 
+print(df.head())
+
+ # 6. Save Dataset
+df.to_csv("Machine Learning/datasets/diabetes_cleaned.csv", index=False)
