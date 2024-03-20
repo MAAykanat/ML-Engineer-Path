@@ -281,11 +281,18 @@ for col in num_cols:
 print("#"*50)
 
 # 8. Missing Value Analysis
+"""
+There is no missing value, but there is something wrong Insulin glucose cannot be zero.
+It should be fixed and changed to NaN
+"""
+# Convert 0 to NaN
 
-# There is no missing value, but there is something wrong Insulin glucose cannot be zero.
-# It should be fixed and changed to NaN
+counter = df.shape[0]
 
-
+for col in num_cols:
+    for i in range(counter):
+        if df[col][i] == 0:
+            df[col][i] = None
 
 print(df.isnull().sum())
 
