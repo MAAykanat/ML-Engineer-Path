@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 import missingno as msno
 
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -484,3 +484,10 @@ def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
 df = one_hot_encoder(df, cat_cols, drop_first=True)
 
 print(df.head())
+
+# 5. Standardization
+# We will standardize the variables to make robust to model.
+
+scaler = StandardScaler()
+df[num_cols] = scaler.fit_transform(df[num_cols])
+print(df.head()) 
