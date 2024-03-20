@@ -493,4 +493,19 @@ df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
 
  # 6. Save Dataset
-df.to_csv("Machine Learning/datasets/diabetes_cleaned.csv", index=False)
+# df.to_csv("Machine Learning/datasets/diabetes_cleaned.csv", index=False)
+
+#######################################
+#### MODEL BUILDING AND EVALUATION ####
+#######################################
+# We will build a model and evaluate the model.
+
+# 1. Train-Test Split
+# 2. Model Building
+# 3. Model Evaluation
+
+# 1. Train-Test Split
+# We will split the dataset into two parts as train and test.
+
+df_cleaned = pd.read_csv("Machine Learning/datasets/diabetes_cleaned.csv")
+print(df_cleaned.head())
