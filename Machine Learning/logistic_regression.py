@@ -517,7 +517,21 @@ print(df_cleaned.head())
 y = df_cleaned["Outcome"]
 X = df_cleaned.drop(["Outcome"], axis=1)
 
-log_model = LogisticRegression().fit(X=X, y=y)
+# Hold-out Method
+X_train, X_test, y_train, y_test = train_test_split(X,
+                                                    y,
+                                                    test_size=0.20, random_state=17)
+
+# Model creation
+log_model = LogisticRegression().fit(X=X_train, y=y_train)
 
 print("Bias: \n",log_model.intercept_)
 print("\nWeights: \n",log_model.coef_)
+
+# Prediction
+y_pred = log_model.predict(X_test)
+
+print(classification_report(y_true=y_test, y_pred=y_pred))
+
+
+
