@@ -154,3 +154,30 @@ def numerical_col_summary(dataframe, col_name, plot=False):
 for col in num_cols:
     numerical_col_summary(df,col)
 print("#"*50)
+
+# 5. Target Variable Analysis (Dependent Variable) - Categorical
+
+# No NEED, Only TARGET variable is Categorical
+
+ # 6. Target Variable Analysis (Dependent Variable) - Numeric
+def target_summary_with_num(dataframe, target, numerical_col):
+    """
+    This function shows the average of numerical variables according to the target variable.
+    
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    numerical_col : str
+        The name of the numerical variable.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe.groupby(target).agg({numerical_col: ["mean", "median", "count"]}), end="\n\n\n")
+
+for col in num_cols:
+    target_summary_with_num(df, "Outcome", col)
+print("#"*50)
