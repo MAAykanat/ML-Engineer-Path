@@ -4,22 +4,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def check_df(dataframe, head=5):
-    print("Dataframe shape: ", dataframe.shape)
-    print("*"*50)
-    print("Dataframe coloumn types: ", dataframe.dtypes)
-    print("*"*50)
-    print("Dataframe head: \n", dataframe.head(head))
-    print("*"*50)
-    print("Dataframe tail: \n", dataframe.tail(head))
-    print("*"*50)
-    print("Dataframe info: \n", dataframe.info())
-    print("*"*50)
-    print("Dataframe describe: \n", dataframe.describe([0, 0.05, 0.50, 0.95, 0.99, 1]).T)
-    print("*"*50)
-    print("Dataframe missing values: \n", dataframe.isnull().sum())
 
+pd.set_option('display.max_columns', None)
+pd.set_option('max_colwidth', None)
+pd.set_option('display.max_rows', 20)
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 df = pd.read_csv('Machine Learning/datasets/diabetes.csv')
 
-check_df(df)
+print(df.head())
