@@ -181,3 +181,92 @@ def target_summary_with_num(dataframe, target, numerical_col):
 for col in num_cols:
     target_summary_with_num(df, "Outcome", col)
 print("#"*50)
+
+# 7. Outlier Detection
+def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+    """
+    This function calculates the lower and upper limits for the outliers.
+
+    Calculation:
+    Interquantile range = q3 - q1
+    Up limit = q3 + 1.5 * interquantile range
+    Low limit = q1 - 1.5 * interquantile range
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns
+    -------
+    low_limit, up_limit : float
+        The lower and upper limits for the outliers.
+    """
+
+    quartile1 = dataframe[col_name].quantile(q1)
+    quartile3 = dataframe[col_name].quantile(q3)
+
+    interquantile_range = quartile3 - quartile1
+
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+
+    return low_limit, up_limit
+
+def check_outlier(dataframe, col_name):
+    """
+        This function checks dataframe has outlier or not.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    Returns
+    -------
+    bool
+        True if the dataframe has outlier, False otherwise.
+    """
+
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
+    
+def replace_with_thresholds(dataframe, variable, q1=0.05, q3=0.95):
+    """
+    This function replaces the outliers with the lower and upper limits.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    variable : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns 
+    -------
+    None
+    """
+
+    low_limit, up_limit = outlier_thresholds(dataframe, variable, q1=0.05, q3=0.95)
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+
+# There is OUTLIER --> Insulin
+for col in num_cols:
+    print(f"{col}: {check_outlier(df, col)}")
+
+print("#"*50)
