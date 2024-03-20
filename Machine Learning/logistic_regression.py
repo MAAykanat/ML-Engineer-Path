@@ -345,3 +345,79 @@ f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 plt.show()
+
+#######################################
+######### FEATURE ENGINEERING #########
+#######################################
+
+# There are 6 steps to be taken in the Feature Engineering process.
+# 1. Missing Values
+# 2. Outlier Values Analysis
+# 3. Feature Generation
+# 4. Encoding
+# 5. Standardization
+# 6. Save the Dataset
+
+# 1. Missing Values
+"""
+    It has been filled in the previous section. EDA - 8. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 2. Outlier Values Analaysis
+"""
+    It has been filled in the previous section. EDA - 7. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 3. Feature Generation
+# Generate new features from existing ones.
+
+# New Category - NEW_AGE_CAT - Numeric to Categorical
+df.loc[((df["Age"] >= 20) & (df["Age"] < 50) ), "NEW_AGE_CAT"] = "mature"
+df.loc[((df["Age"] >= 50)), "NEW_AGE_CAT"] = "senior"
+
+# New Category - NEW_BMI_LEVEL - Numeric to Categorical
+df["NEW_BMI_LEVEL"] = pd.cut(df["BMI"], [0, 18.5, 24.9, 29.9, 34.9, 100], labels=["Underweight", "Normal", "Overweight", "Obese", "Extremely Obese"])
+
+# New Category - NEW_GLUCOSE - Numeric to Categorical
+df["NEW_GLUCOSE_CAT"] = pd.cut(df["Glucose"], [0, 100, 125, df["Glucose"].max()], labels=["Normal", "Prediabetes" ,"Diabetes"])
+
+# Age-BMI Interaction
+df.loc[(df["BMI"]<18.5) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "UnderweightMature"
+df.loc[(df["BMI"]<18.5) & (df["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "UnderweightSenior"
+
+df.loc[(df["BMI"]>=18.5) & (df["BMI"]<24.9) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "NormalMature"
+df.loc[(df["BMI"]>=18.5) & (df["BMI"]<24.9) & (df["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "NormalSenior"
+
+df.loc[(df["BMI"]>=24.9) & (df["BMI"]<29.9) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "OverweightMature"
+df.loc[(df["BMI"]>=24.9) & (df["BMI"]<29.9) & (df["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "OverweightSenior"
+
+df.loc[(df["BMI"]>=29.9) & (df["BMI"]<34.9) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "ObeseMature"
+df.loc[(df["BMI"]>=29.9) & (df["BMI"]<34.9) & (df["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "ObeseSenior"
+
+df.loc[(df["BMI"]>=34.9) & (df["BMI"]<100) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_BMI_NOM"] = "ExtremelyObeseMature"
+df.loc[(df["BMI"]>=34.9) & (df["BMI"]<100) & (df["Age"] >= 50), "NEW_AGE_BMI_NOM"] = "ExtremelyObeseSenior"
+
+# Age-Glucoce Interaction
+df.loc[(df["Glucose"]<100) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_GLUCOSE_NOM"] = "NormalMature"
+df.loc[(df["Glucose"]<100) & (df["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "NormalSenior"
+
+df.loc[(df["Glucose"]>=100) & (df["Glucose"]<125) & ((df["Age"] >= 20) & (df["Age"] < 50)), "NEW_AGE_GLUCOSE_NOM"] = "PrediabetesMature"
+df.loc[(df["Glucose"]>=100) & (df["Glucose"]<125) & (df["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "PrediabetesSenior"
+
+df.loc[(df["Glucose"]>=125) & (df["Age"] >= 20) & (df["Age"] < 50), "NEW_AGE_GLUCOSE_NOM"] = "DiabetesMature"
+df.loc[(df["Glucose"]>=125) & (df["Age"] >= 50), "NEW_AGE_GLUCOSE_NOM"] = "DiabetesSenior"
+
+def set_insulin(dataframe, col= "Insulin"):
+    # Binary Category - Insulin
+    if 16 <= dataframe[col] <= 166:
+        return "Normal"
+    else:
+        return "Abnormal"
+    
+df["NEW_INSULIN_CAT"] = df.apply(set_insulin, axis=1)
+df["NEW_INSULIN*GLUCOSE"] = df["Insulin"] * df["Glucose"]
+
+print(df.head())
+print(df.shape)
