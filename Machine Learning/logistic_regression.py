@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 import missingno as msno
 
+from sklearn.preprocessing import LabelEncoder
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -422,6 +423,9 @@ df["NEW_INSULIN*GLUCOSE"] = df["Insulin"] * df["Glucose"]
 print(df.head())
 print(df.shape)
 
+#Take New Coloumns 
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
 # 4. Encoding
 # 4.1 Label Encoding
 
@@ -444,7 +448,39 @@ def label_encoder(dataframe, binary_col):
     dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
     return dataframe
 
-binary_col = [col for col in cat_cols if df[col].nunique() == 2 and col not in ["Outcome"]]
+binary_col = [col for col in df.columns if df[col].dtypes=='O' and df[col].nunique() == 2]
+
+print("BINARY COLS",binary_col)
 
 for col in binary_col:
     label_encoder(df, col)
+
+# 4.2 One-Hot Encoding
+
+# Catch Categorical Variables After Binary Coloumns
+cat_cols = [col for col in cat_cols if col not in binary_col and col not in ["Outcome"]]
+print(cat_cols)
+
+def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
+    """
+    This function encodes the categorical variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    categorical_columns : list
+        The name of the column to be encoded.
+    drop_first : bool, optional
+        Dummy trap. The default is True.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    dataframe = pd.get_dummies(dataframe, columns=categorical_columns, drop_first=drop_first)
+    return dataframe
+
+df = one_hot_encoder(df, cat_cols, drop_first=True)
+
+print(df.head())
