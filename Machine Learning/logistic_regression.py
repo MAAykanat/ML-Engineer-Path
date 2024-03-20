@@ -503,6 +503,16 @@ print(df.head())
 #### MODEL BUILDING AND EVALUATION ####
 #######################################
 # We will build a model and evaluate the model.
+def plot_confusion_matrix(y, y_pred):
+
+    acc = round(accuracy_score(y, y_pred), 3)
+    cm = confusion_matrix(y, y_pred)
+
+    sns.heatmap(cm, annot=True, fmt=".0f")
+    plt.xlabel('y_pred', size=10)
+    plt.ylabel('y', size=10)
+    plt.title('Accuracy Score: {0}'.format(acc), size=10)
+    plt.show()
 
 # 1. Train-Test Split
 # 2. Model Building
@@ -533,5 +543,9 @@ y_pred = log_model.predict(X_test)
 
 print(classification_report(y_true=y_test, y_pred=y_pred))
 
+# xticklabels=["Not Diabetes", "Diabetes"], 
+                # yticklabels=["Not Diabetes", "Diabetes"] -- Can Be Added
+
+# plot_confusion_matrix(y_test, y_pred)
 
 
