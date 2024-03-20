@@ -548,4 +548,22 @@ print(classification_report(y_true=y_test, y_pred=y_pred))
 
 # plot_confusion_matrix(y_test, y_pred)
 
+"""
+              precision    recall  f1-score   support
+
+           0       0.85      0.93      0.89        97
+           1       0.85      0.72      0.78        57
+
+    accuracy                           0.85       154
+   macro avg       0.85      0.82      0.83       154
+weighted avg       0.85      0.85      0.85       154
+"""
+
+y_prob = log_model.predict_proba(X_test)[:, 1]
+print(roc_auc_score(y_test, y_prob))
+"""
+Area Under Curve: 0.9200578766503889
+"""
+
+
 
