@@ -514,6 +514,10 @@ def plot_confusion_matrix(y, y_pred):
     plt.title('Accuracy Score: {0}'.format(acc), size=10)
     plt.show()
 
+######################################################
+# Model Validation: Holdout
+######################################################
+
 # 1. Train-Test Split
 # 2. Model Building
 # 3. Model Evaluation
@@ -564,6 +568,28 @@ print(roc_auc_score(y_test, y_prob))
 """
 Area Under Curve: 0.9200578766503889
 """
+
+######################################################
+# Model Validation: 10-Fold Cross Validation
+######################################################
+
+y = df["Outcome"]
+X = df.drop("Outcome", axis=1)
+
+log_model = LogisticRegression().fit(X,y)
+
+crossValidate = cross_validate(estimator=log_model, 
+                               X=X, 
+                               y=y, 
+                               cv=10, 
+                               scoring=["accuracy", "precision", "recall", "f1", "roc_auc"])
+print(crossValidate)
+
+print("Accuracy:\n",crossValidate['test_accuracy'].mean())
+print("\nPrecision:\n",crossValidate['test_precision'].mean())
+print("\nRecall\n",crossValidate['test_recall'].mean())
+print("\nF1_Score:\n",crossValidate['test_f1'].mean())
+print("\nAUC:\n",crossValidate['test_roc_auc'].mean())
 
 
 
