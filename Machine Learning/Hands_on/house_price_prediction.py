@@ -452,6 +452,8 @@ df = df.drop(drop_list, axis=1)
 # 5. Standardization
 # 6. Save the Dataset
 
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
 # 1. Missing Values
 """
     It has been filled in the previous section. EDA - 8. Missing Value Analysis
@@ -499,3 +501,32 @@ print("BINARY COLS",binary_col)
 for col in binary_col:
     df = label_encoder(df, col)
 
+# 4.2 One-Hot Encoding
+
+# Catch Categorical Variables After Binary Coloumns
+cat_cols = [col for col in cat_cols if col not in binary_col and col not in ["Outcome"]]
+print(cat_cols)
+
+def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
+    """
+    This function encodes the categorical variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    categorical_columns : list
+        The name of the column to be encoded.
+    drop_first : bool, optional
+        Dummy trap. The default is True.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    dataframe = pd.get_dummies(dataframe, columns=categorical_columns, drop_first=drop_first)
+    return dataframe
+
+df = one_hot_encoder(df, cat_cols, drop_first=True)
+
+print(df.head())
