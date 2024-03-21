@@ -217,3 +217,174 @@ def target_summary_with_num(dataframe, target, numerical_col):
 for col in num_cols:
     target_summary_with_num(df, "SalePrice", col)
 print("#"*50)
+
+# 7. Outlier Detection
+def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+    """
+    This function calculates the lower and upper limits for the outliers.
+
+    Calculation:
+    Interquantile range = q3 - q1
+    Up limit = q3 + 1.5 * interquantile range
+    Low limit = q1 - 1.5 * interquantile range
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns
+    -------
+    low_limit, up_limit : float
+        The lower and upper limits for the outliers.
+    """
+
+    quartile1 = dataframe[col_name].quantile(q1)
+    quartile3 = dataframe[col_name].quantile(q3)
+
+    interquantile_range = quartile3 - quartile1
+
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+
+    return low_limit, up_limit
+
+def check_outlier(dataframe, col_name):
+    """
+        This function checks dataframe has outlier or not.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    Returns
+    -------
+    bool
+        True if the dataframe has outlier, False otherwise.
+    """
+
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
+    
+def replace_with_thresholds(dataframe, variable, q1=0.05, q3=0.95):
+    """
+    This function replaces the outliers with the lower and upper limits.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    variable : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns 
+    -------
+    None
+    """
+
+    low_limit, up_limit = outlier_thresholds(dataframe, variable, q1=0.05, q3=0.95)
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+
+# There are many outliers on this dataset. So, they will be surpassed.
+for col in num_cols:
+    print(f"{col}: {check_outlier(df, col)}")
+
+for col in num_cols:
+    # Check outliers and replace them with thresholds if there are any
+    if check_outlier(df, col):
+        replace_with_thresholds(df, col)
+print("#"*50)
+
+for col in num_cols:
+    print(f"{col}: {check_outlier(df, col)}")
+print("#"*50)
+
+# 8. Missing Value Analysis
+print(df.isnull().sum())
+
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+        The default is False.
+    Returns
+    -------
+    missing_values_table : pandas dataframe
+        A dataframe that contains the number and percentage of missing values in the dataframe.
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+
+    if null_columns_name:
+        return null_columns  
+
+missing_values_table(df, True)
+"""
+PoolQC          1453 99.520
+MiscFeature     1406 96.300
+Alley           1369 93.770
+Fence           1179 80.750
+FireplaceQu      690 47.260
+LotFrontage      259 17.740
+GarageFinish      81  5.550
+GarageQual        81  5.550
+GarageType        81  5.550
+GarageYrBlt       81  5.550
+GarageCond        81  5.550
+BsmtFinType2      38  2.600
+BsmtExposure      38  2.600
+BsmtFinType1      37  2.530
+BsmtQual          37  2.530
+BsmtCond          37  2.530
+MasVnrArea         8  0.550
+MasVnrType         8  0.550
+Electrical         1  0.070
+
+--> Drop PoolQC, MiscFeature, Alley, Fence too much missing values.
+--> Fill others
+"""
+df = df.drop(["PoolQC", "MiscFeature", "Alley", "Fence"], axis=1)
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
+missing_values_table(df, True) # Check again
+
+# Fill missing values
+
+for  col in num_cols:
+    df[col].fillna(df[col].median(), inplace=True)
+
+# for col in cat_cols:
+#     df[col].apply(lambda x: x.fillna(x.value_counts().index[0]))
+for col in cat_cols:
+    df[col].fillna(df[col].value_counts().index[0], inplace=True)
+
+# df = df.apply(lambda x: x.fillna(x.value_counts().index[0]))
+missing_values_table(df, True) # Check again
