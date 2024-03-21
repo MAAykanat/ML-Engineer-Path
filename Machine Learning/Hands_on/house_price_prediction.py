@@ -44,6 +44,14 @@ def check_df(dataframe, head=5):
 check_df(df)
 
 # 2. Catch Numeric and Categorical Value
+"""
+Observations: 1460
+Variables: 81
+categorical_cols: 53
+num_cols: 27
+categorical_but_cardinal: 1
+numeric_but_categorical: 11
+"""
 
 def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     """
@@ -152,4 +160,32 @@ def numerical_col_summary(dataframe, col_name, plot=False):
 
 for col in num_cols:
     numerical_col_summary(df,col)
+print("#"*50)
+
+# 5. Target Variable Analysis (Dependent Variable) - Categorical
+
+def target_summary_with_cat(dataframe, target, categorical_col):
+    """
+    This function shows the mean of the target variable according to the categorical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    categorical_col : str
+        The name of the categorical variable.
+    Returns
+    -------
+    None.
+    """
+    print(categorical_col)
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean(),
+                        "Count": dataframe[categorical_col].value_counts(),
+                        "Ratio": 100 * dataframe[categorical_col].value_counts() / len(dataframe)}), end="\n\n\n")
+
+for col in cat_cols:
+    target_summary_with_cat(df, "SalePrice", col)
+
 print("#"*50)
