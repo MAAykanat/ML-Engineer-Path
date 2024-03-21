@@ -189,3 +189,31 @@ for col in cat_cols:
     target_summary_with_cat(df, "SalePrice", col)
 
 print("#"*50)
+
+# 6. Target Variable Analysis (Dependent Variable) - Numeric
+"""
+Nonsensical results. Since, target variable is also numeric.
+
+"""
+
+def target_summary_with_num(dataframe, target, numerical_col):
+    """
+    This function shows the average of numerical variables according to the target variable.
+    
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    numerical_col : str
+        The name of the numerical variable.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe.groupby(target).agg({numerical_col: ["mean", "median", "count"]}), end="\n\n\n")
+
+for col in num_cols:
+    target_summary_with_num(df, "SalePrice", col)
+print("#"*50)
