@@ -535,3 +535,6 @@ print(df.head())
 scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
+
+# 6. Save the Dataset
+df.to_csv("Machine Learning/datasets/house_pricing/train_cleaned.csv", index=False)
