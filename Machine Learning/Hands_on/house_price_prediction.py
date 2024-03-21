@@ -436,3 +436,33 @@ print(drop_list)
 Drop these columns because they are highly correlated with other columns. (>0.80)
 """
 df = df.drop(drop_list, axis=1)
+
+#######################################
+######### FEATURE ENGINEERING #########
+#######################################
+
+# There are 6 steps to be taken in the Feature Engineering process.
+# 1. Missing Values
+# 2. Outlier Values Analysis
+# 3. Feature Generation
+# 4. Encoding
+# 5. Standardization
+# 6. Save the Dataset
+
+# 1. Missing Values
+"""
+    It has been filled in the previous section. EDA - 8. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 2. Outlier Values Analaysis
+"""
+    It has been filled in the previous section. EDA - 7. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 3. Feature Generation
+"""
+    At first implementation of model,
+    New features will not generated.
+"""
