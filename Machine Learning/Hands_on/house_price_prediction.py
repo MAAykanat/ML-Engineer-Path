@@ -530,3 +530,8 @@ def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
 df = one_hot_encoder(df, cat_cols, drop_first=True)
 
 print(df.head())
+
+# 5. Standardization
+scaler = StandardScaler()
+df[num_cols] = scaler.fit_transform(df[num_cols])
+print(df.head())
