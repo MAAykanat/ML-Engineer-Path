@@ -4,7 +4,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split, cross_val_score, cross_validate
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -565,15 +565,23 @@ randomForestRegressor_model = RandomForestRegressor().fit(X, y)
 #  -0.3697225848800743
 # 0.8633292737483643
 # print(sorted(sklearn.metrics.SCORERS.keys()))
-cv = cross_val_score(estimator=reg_model, 
+cv_LineerRegression = cross_val_score(estimator=reg_model, 
                      X=X, 
                      y=y, 
                      cv=10,
                      scoring="neg_mean_squared_error")
 
-print(cv)
+
+
+cv_RandomForest = cross_val_score(estimator=randomForestRegressor_model, 
+                     X=X, 
+                     y=y, 
+                     cv=10,
+                     scoring="neg_mean_squared_error")
 
 # print("RMSE:\n",cv['test_neg_root_mean_squared_error'].mean())
-print("MSE:\n",cv.mean())
+print("MSE:\n",cv_LineerRegression.mean())
+print("#"*50)
+print("MSE:\n",cv_RandomForest.mean())
 
 
