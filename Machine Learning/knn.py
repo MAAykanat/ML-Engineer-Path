@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.model_selection import cross_validate
+
+import warnings
+warnings.filterwarnings("ignore")
 
 # Cleaned dataeset import
 df = pd.read_csv("Machine Learning/datasets/diabetes_cleaned.csv")
@@ -30,3 +34,10 @@ print(classification_report(y_test, y_pred))
 # To ROC AUC
 y_prob = knn_model.predict_proba(X_test)[:, 1]
 print(roc_auc_score(y_test, y_prob))
+
+# Cross Validation from all dataset
+cv = cross_validate(estimator=knn_model, X=X, y=y, cv=10, scoring=["accuracy", "f1", "roc_auc"])
+
+print("Accuracy: ", cv["test_accuracy"].mean())
+print("F1: ", cv["test_f1"].mean())
+print("ROC AUC: ", cv["test_roc_auc"].mean())
