@@ -44,6 +44,12 @@ print("Accuracy: ", cv["test_accuracy"].mean())
 print("F1: ", cv["test_f1"].mean())
 print("ROC AUC: ", cv["test_roc_auc"].mean())
 
+"""
+Accuracy:  0.8307245386192754
+F1:  0.7447436385524892
+ROC AUC:  0.8690242165242166
+"""
+
 #################################
 ## Hyperparameter Optimization ##
 #################################
@@ -51,10 +57,31 @@ print("ROC AUC: ", cv["test_roc_auc"].mean())
 print(knn_model.get_params())
 knn_params = {"n_neighbors": np.arange(2, 100), 
               "p": [1, 2, 3]}
-knn_gridSearch_model = GridSearchCV(estimator=knn_model, param_grid=knn_params, cv=10, n_jobs=-1, verbose=1).fit(X, y)
+knn_gridSearch_best = GridSearchCV(estimator=knn_model, param_grid=knn_params, cv=10, n_jobs=-1, verbose=1).fit(X, y)
 
-print(knn_gridSearch_model.best_params_)
+print(knn_gridSearch_best.best_params_)
 
 """
 {'n_neighbors': 73, 'p': 1}
+"""
+#################
+## Final Model ##
+#################
+
+knn_tuned = KNeighborsClassifier(**knn_gridSearch_best.best_params_).fit(X_train, y_train)
+
+cv_results = cross_validate(knn_tuned,
+                            X,
+                            y,
+                            cv=10,
+                            scoring=["accuracy", "f1", "roc_auc"])
+
+print("Accuracy: ", cv_results["test_accuracy"].mean())
+print("F1: ", cv_results["test_f1"].mean())
+print("ROC AUC: ", cv_results["test_roc_auc"].mean())
+
+"""
+Accuracy:  0.8567669172932332
+F1:  0.7826029873326528
+ROC AUC:  0.9087293447293447
 """
