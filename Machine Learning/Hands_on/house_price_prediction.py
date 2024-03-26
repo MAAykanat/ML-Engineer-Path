@@ -565,23 +565,63 @@ randomForestRegressor_model = RandomForestRegressor().fit(X, y)
 #  -0.3697225848800743
 # 0.8633292737483643
 # print(sorted(sklearn.metrics.SCORERS.keys()))
+"""
 cv_LineerRegression = cross_val_score(estimator=reg_model, 
                      X=X, 
                      y=y, 
                      cv=10,
                      scoring="neg_mean_squared_error")
+"""
+cv_LineerRegression = cross_validate(estimator=reg_model,
+                                    X=X,
+                                    y=y,
+                                    cv=10,
+                                    scoring=["neg_mean_squared_error","neg_mean_absolute_error","r2"])
 
 
 
-cv_RandomForest = cross_val_score(estimator=randomForestRegressor_model, 
-                     X=X, 
-                     y=y, 
-                     cv=10,
-                     scoring="neg_mean_squared_error")
+cv_RandomForest = cross_validate(estimator=randomForestRegressor_model,
+                                    X=X,
+                                    y=y,
+                                    cv=10,
+                                    scoring=["neg_mean_squared_error","neg_mean_absolute_error","r2"])
+
 
 # print("RMSE:\n",cv['test_neg_root_mean_squared_error'].mean())
-print("MSE:\n",cv_LineerRegression.mean())
-print("#"*50)
-print("MSE:\n",cv_RandomForest.mean())
+
+print("####################")
+print("Linear Regression Model")
+
+print("RMSE:\n",cv_LineerRegression["test_neg_mean_squared_error"].mean())
+print("MSE:\n",cv_LineerRegression["test_neg_mean_absolute_error"].mean())
+print("R2 Score:\n",cv_LineerRegression["test_r2"].mean())
+
+"""
+Linear Regression Model
+RMSE:
+ -3.192779744110632e+22
+MSE:
+ -13007508995.439861
+R2 Score:
+ -3.710800298042935e+22
+"""
+
+print("####################")
+print("Random Forest Model")
+
+print("RMSE:\n",cv_RandomForest["test_neg_mean_squared_error"].mean())
+print("MSE:\n",cv_RandomForest["test_neg_mean_absolute_error"].mean())
+print("R2 Score:\n",cv_RandomForest["test_r2"].mean())
+
+"""
+Random Forest Model
+RMSE:
+ -0.14346727072250837
+MSE:
+ -0.23222719758854757
+R2 Score:
+ 0.8580981038972842
+"""
+
 
 
