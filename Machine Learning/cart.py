@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score, roc_curve, auc
 from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import GridSearchCV
 
 
 pd.set_option('display.max_columns', None)
@@ -54,3 +55,23 @@ cv_result = cross_validate(estimator=cart_model,
 
 print(cv_result["test_accuracy"].mean())
 print(cv_result["test_roc_auc"].mean())
+
+#################################
+## Hyperparameter Optimization ##
+#################################
+
+# Grid Search
+
+print(cart_model.get_params())
+
+cart_params = {"max_depth": range(1,15),
+                "min_samples_split": list(range(2,50))}
+
+cart_model_best_grid = GridSearchCV(estimator=cart_model,
+                                    param_grid=cart_params,
+                                    cv=10,
+                                    n_jobs=-1,
+                                    verbose=2).fit(X_train, y_train)
+print("#########RESULTS#########")
+print(cart_model_best_grid.best_params_)
+print(cart_model_best_grid.best_score_)
