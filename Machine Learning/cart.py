@@ -75,3 +75,18 @@ cart_model_best_grid = GridSearchCV(estimator=cart_model,
 print("#########RESULTS#########")
 print(cart_model_best_grid.best_params_)
 print(cart_model_best_grid.best_score_)
+
+#################
+## Final Model ##
+#################
+
+cart_final = cart_model.set_params(**cart_model_best_grid.best_params_).fit(X_train, y_train)
+
+# for Confusion Matrix y_pred
+y_pred = cart_model.predict(X_test)
+# for AUC y_prob
+y_prob = cart_model.predict_proba(X_test)[:, 1]
+
+print(classification_report(y_test,y_pred))
+print("Accuracy: ", accuracy_score(y_test, y_pred))
+print("AUC: ", roc_auc_score(y_test, y_prob))
