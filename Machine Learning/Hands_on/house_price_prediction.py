@@ -646,3 +646,21 @@ for name, regressor in models:
     rmse = np.mean(np.sqrt(-cross_val_score(regressor, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
     print(f"RMSE: {round(rmse, 4)} ({name}) ")
 
+"""
+RMSE: 390629688489.5203 (LR)
+RMSE: 0.4137 (Ridge) 
+RMSE: 0.9987 (Lasso)
+RMSE: 0.8207 (ElasticNet) 
+RMSE: 0.4557 (KNN)
+RMSE: 0.5547 (CART)
+RMSE: 0.3822 (RF)
+RMSE: 0.3613 (SVR)
+RMSE: 0.3398 (GBM) 
+RMSE: 0.3778 (XGBoost)
+RMSE: 0.3692 (LightGBM)
+RMSE: 0.3336 (CatBoost) 
+"""
+
+"""
+CatBoost is the best model for this dataset.
+"""
