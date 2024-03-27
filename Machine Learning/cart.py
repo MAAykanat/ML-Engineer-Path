@@ -5,6 +5,8 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score, roc_curve, auc
+from sklearn.model_selection import cross_val_score, cross_validate
+
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -40,3 +42,15 @@ print(classification_report(y_test,y_pred))
 print("Accuracy: ", accuracy_score(y_test, y_pred))
 print("AUC: ", roc_auc_score(y_test, y_prob))
 
+######################
+## Cross Validation ##
+######################
+
+cv_result = cross_validate(estimator=cart_model,
+                           X=X_train,
+                           y=y_train,
+                           cv=10,
+                           scoring=['accuracy', 'precision', 'recall', 'f1', 'roc_auc'])
+
+print(cv_result["test_accuracy"].mean())
+print(cv_result["test_roc_auc"].mean())
