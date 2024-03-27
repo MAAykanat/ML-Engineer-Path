@@ -4,11 +4,17 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.model_selection import train_test_split, cross_val_score, cross_validate
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+from catboost import CatBoostRegressor
+from sklearn.svm import SVR
 
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.model_selection import train_test_split, cross_val_score, cross_validate
 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
@@ -623,5 +629,20 @@ R2 Score:
  0.8580981038972842
 """
 
+models = [('LR', LinearRegression()),
+          ("Ridge", Ridge()),
+          ("Lasso", Lasso()),
+          ("ElasticNet", ElasticNet()),
+          ('KNN', KNeighborsRegressor()),
+          ('CART', DecisionTreeRegressor()),
+          ('RF', RandomForestRegressor()),
+          ('SVR', SVR()),
+          ('GBM', GradientBoostingRegressor()),
+          ("XGBoost", XGBRegressor(objective='reg:squarederror')),
+          ("LightGBM", LGBMRegressor()),
+          ("CatBoost", CatBoostRegressor(verbose=False))]
 
+for name, regressor in models:
+    rmse = np.mean(np.sqrt(-cross_val_score(regressor, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
+    print(f"RMSE: {round(rmse, 4)} ({name}) ")
 
