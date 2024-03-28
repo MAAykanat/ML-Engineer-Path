@@ -137,7 +137,9 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
         Scoring metric 
     cv : int
         Number of cross-validation folds
-    
+    save : bool
+        Save the plot as a png file
+        
     Returns
     -------
     None
