@@ -117,7 +117,7 @@ plot_importance(model=cart_final, features=X)
 ## 7. Analyzing Model Complexity with Learning Curves ##
 ########################################################
 
-def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv=10):
+def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv=10, save = False):
     """
     Function to plot validation curve for a given model
 
@@ -159,8 +159,14 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
     plt.ylabel(f"{scoring}")
     plt.tight_layout()
     plt.legend(loc='best')
+    if save:
+        plt.savefig("validation_curve_{param_name}.png")
     plt.show(block=True)
 
 
 val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15))
 
+cart_val_params = [["max_depth", range(1, 15)], ["min_samples_split", range(2, 50)]]
+
+for i in range(len(cart_val_params)):
+    val_curve_params(cart_model, X, y, cart_val_params[i][0], cart_val_params[i][1])
