@@ -2,14 +2,15 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import pydotplus, graphviz
 
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, export_graphviz, export_text
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score, roc_curve, auc
 from sklearn.model_selection import cross_val_score, cross_validate, validation_curve
 from sklearn.model_selection import GridSearchCV
 
-
+from IPython.display import Image 
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
 pd.set_option('display.max_rows', 20)
@@ -166,9 +167,18 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
     plt.show(block=True)
 
 
-val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15),save=True)
+val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15),save=False)
 
 cart_val_params = [["max_depth", range(1, 15)], ["min_samples_split", range(2, 50)]]
 
 for i in range(len(cart_val_params)):
     val_curve_params(cart_model, X, y, cart_val_params[i][0], cart_val_params[i][1])
+
+#######################
+## 8. Visualization  ##
+#######################
+    
+"""
+DO IT LATER
+
+"""
