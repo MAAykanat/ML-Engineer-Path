@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_auc_score, roc_curve, auc
-from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import cross_val_score, cross_validate, validation_curve
 from sklearn.model_selection import GridSearchCV
 
 
@@ -111,5 +111,56 @@ def plot_importance(model, features, num=len(X), save=False):
 
     plt.show()
 
+plot_importance(model=cart_final, features=X)
 
-plot_importance(model=cart_final, features=X, save=True)
+########################################################
+## 7. Analyzing Model Complexity with Learning Curves ##
+########################################################
+
+def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv=10):
+    """
+    Function to plot validation curve for a given model
+
+    Parameters
+    ----------
+    model : object
+        Model to be used
+    X : array-like
+        Feature dataset
+    y : array-like
+        Target dataset
+    param_name : str
+        Name of the parameter to be optimized
+    param_range : array-like
+        Range of the parameter to be optimized
+    scoring : str
+        Scoring metric 
+    cv : int
+        Number of cross-validation folds
+    
+    Returns
+    -------
+    None
+    """
+    train_score, test_score = validation_curve(
+        model, X=X, y=y, param_name=param_name, param_range=param_range, scoring=scoring, cv=cv)
+
+    mean_train_score = np.mean(train_score, axis=1)
+    mean_test_score = np.mean(test_score, axis=1)
+
+    plt.plot(param_range, mean_train_score,
+             label="Training Score", color='b')
+
+    plt.plot(param_range, mean_test_score,
+             label="Validation Score", color='g')
+
+    plt.title(f"Validation Curve for {type(model).__name__}")
+    plt.xlabel(f"Number of {param_name}")
+    plt.ylabel(f"{scoring}")
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.show(block=True)
+
+
+val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15))
+
