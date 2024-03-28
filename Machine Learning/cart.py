@@ -139,7 +139,7 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
         Number of cross-validation folds
     save : bool
         Save the plot as a png file
-        
+
     Returns
     -------
     None
@@ -162,11 +162,11 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
     plt.tight_layout()
     plt.legend(loc='best')
     if save:
-        plt.savefig("validation_curve_{param_name}.png")
+        plt.savefig(f"validation_curve_{type(model).__name__}_{param_name}.png")
     plt.show(block=True)
 
 
-val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15))
+val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15),save=True)
 
 cart_val_params = [["max_depth", range(1, 15)], ["min_samples_split", range(2, 50)]]
 
