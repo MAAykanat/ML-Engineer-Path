@@ -10,7 +10,8 @@ from sklearn.metrics import confusion_matrix, accuracy_score, classification_rep
 from sklearn.model_selection import cross_val_score, cross_validate, validation_curve
 from sklearn.model_selection import GridSearchCV
 
-from IPython.display import Image 
+from skompiler import skompile
+
 pd.set_option('display.max_columns', None)
 pd.set_option('max_colwidth', None)
 pd.set_option('display.max_rows', 20)
@@ -112,7 +113,7 @@ def plot_importance(model, features, num=len(X), save=False):
 
     plt.show()
 
-plot_importance(model=cart_final, features=X)
+# plot_importance(model=cart_final, features=X)
 
 ########################################################
 ## 7. Analyzing Model Complexity with Learning Curves ##
@@ -166,13 +167,14 @@ def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv
         plt.savefig(f"validation_curve_{type(model).__name__}_{param_name}.png")
     plt.show(block=True)
 
-
+"""
 val_curve_params(cart_final, X_train, y_train, "max_depth", range(1, 15),save=False)
 
 cart_val_params = [["max_depth", range(1, 15)], ["min_samples_split", range(2, 50)]]
 
 for i in range(len(cart_val_params)):
     val_curve_params(cart_model, X, y, cart_val_params[i][0], cart_val_params[i][1])
+"""
 
 #######################
 ## 8. Visualization  ##
@@ -182,3 +184,16 @@ for i in range(len(cart_val_params)):
 DO IT LATER
 
 """
+
+################################################
+# 10. Extracting Python Codes of Decision Rules
+################################################
+
+# sklearn '0.23.1' versiyonu ile yapılabilir.
+# pip install scikit-learn==0.23.1
+
+print(skompile(cart_final.predict).to('python/code'))
+
+print(skompile(cart_final.predict).to('sqlalchemy/sqlite'))
+
+print(skompile(cart_final.predict).to('excel'))
