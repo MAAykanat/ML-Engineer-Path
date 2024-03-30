@@ -189,10 +189,12 @@ DO IT LATER
 # 10. Extracting Python Codes of Decision Rules
 ################################################
 
-# sklearn '0.23.1' versiyonu ile yapılabilir.
-# pip install scikit-learn==0.23.1
+# expr = skompile(cart_final.predict)
+# sql = expr.to('sqlalchemy/sqlite')
 
-print(skompile(cart_final.predict).to('python/code'))
+# print(sql)
+
+# print(skompile(cart_final.predict).expr.to('sqlalchemy/sqlite'))
 
 print(skompile(cart_final.predict).to('sqlalchemy/sqlite'))
 
