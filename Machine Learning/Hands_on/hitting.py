@@ -356,6 +356,11 @@ missing_values_table(df, True)
 print("#"*50)
 
 # 9. Correlation Matrix
+"""
+There are too many high correlated variables. 
+Model will be considered by dropping some of them and not.
+"""
+
 
 def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
     """
@@ -392,3 +397,7 @@ f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 plt.show()
+
+drop_list = high_correlated_cols(df, False, 0.90)
+print(drop_list)
+# ['Hits', 'Runs', 'CAtBat', 'CHits', 'CRuns', 'CRBI', 'CWalks']
