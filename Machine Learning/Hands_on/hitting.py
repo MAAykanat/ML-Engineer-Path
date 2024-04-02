@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 df = pd.read_csv("Machine Learning/datasets/hitter/hitters.csv")
 print(df.head())
@@ -477,3 +477,8 @@ for col in binary_col:
 """
     There is no categorical variable to be one-hot encoded.
 """
+
+# 5. Standardization
+scaler = StandardScaler()
+df[num_cols] = scaler.fit_transform(df[num_cols])
+print(df.head())
