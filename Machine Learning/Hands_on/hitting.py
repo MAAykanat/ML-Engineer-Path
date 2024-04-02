@@ -482,3 +482,7 @@ for col in binary_col:
 scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
+
+# 6. Save the Dataset
+df.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed.csv", index=False)
+df_drop.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed_drop.csv", index=False)
