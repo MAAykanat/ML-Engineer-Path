@@ -196,6 +196,6 @@ DO IT LATER
 
 # print(skompile(cart_final.predict).expr.to('sqlalchemy/sqlite'))
 
-print(skompile(cart_final.predict).to('SQLAlchemy/sqlite'))
+print(skompile(cart_final.predict).to('sqlalchemy/sqlite'))
 
 print(skompile(cart_final.predict).to('excel'))
