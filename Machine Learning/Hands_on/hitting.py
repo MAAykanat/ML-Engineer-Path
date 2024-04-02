@@ -18,8 +18,9 @@ from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 from catboost import CatBoostRegressor
 
-warnings.simplefilter(action='ignore', category=Warning)
-warnings.simplefilter(action='ignore', category=FutureWarning)
+# warnings.simplefilter(action='ignore', category=Warning)
+warnings.filterwarnings("ignore",message="", category=Warning)
+# warnings.simplefilter(action='ignore', category=FutureWarning)
 
 df = pd.read_csv("Machine Learning/datasets/hitter/hitters.csv")
 print(df.head())
@@ -542,14 +543,14 @@ models = [('LR', LinearRegression()),
           ("XGBoost", XGBRegressor(random_state=42,objective='reg:squarederror')),
           ("LightGBM", LGBMRegressor(random_state=42)),
           ("CatBoost", CatBoostRegressor(random_state=42,verbose=False))]
-
+"""
 for name, regressor in models:
     rmse = np.mean(np.sqrt(-cross_val_score(regressor, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
     print(f"RMSE: {round(rmse, 4)} ({name}) ")
-    f = open('Estimators.txt', 'a')
-    f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
-    f.close()
-
+    # f = open('Estimators.txt', 'a')
+    # f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
+    # f.close()
+"""
 """
 RMSE: 0.8124 (LR)
 RMSE: 0.8017 (Ridge)
@@ -565,16 +566,15 @@ RMSE: 0.7019 (LightGBM)
 RMSE: 0.7179 (CatBoost)
 
 """
-
 print("################DROPED DATAFRAME################ ")
-
+"""
 for name, regressor in models:
     rmse = np.mean(np.sqrt(-cross_val_score(regressor, X_drop, y_drop, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
     print(f"RMSE: {round(rmse, 4)} ({name}) ")
-    f = open('Estimators_drop.txt', 'a')
-    f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
-    f.close()
-
+    # f = open('Estimators_drop.txt', 'a')
+    # f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
+    # f.close()
+"""
 """
 RMSE: 0.8519 (LR)
 RMSE: 0.8508 (Ridge)
@@ -595,6 +595,49 @@ It looks LightGBM is the best model for this dataset.
 """
 
 # 3. Hyperparameter Optimization
-lightgbm_model = LGBMRegressor(random_state=42)
+lgbm_model = LGBMRegressor(random_state=42)
 
-print(lightgbm_model.get_params())
+print(lgbm_model.get_params())
+
+cv_results = cross_val_score(lgbm_model, 
+                             X, 
+                             y, 
+                             cv=10, 
+                             n_jobs=-1, 
+                             scoring="neg_mean_squared_error", 
+                             verbose=1)
+
+print("RMEs: ", np.mean(np.sqrt(-cv_results)))
+
+lgbm_params = {"learning_rate": [0.01, 0.02, 0.05, 0.1],
+               "n_estimators": [200, 300, 350, 400],
+               "colsample_bytree": [0.9, 0.8, 1]}
+"""
+lgbm_best_grid = GridSearchCV(estimator=lgbm_model,
+                                param_grid=lgbm_params,
+                                cv=10,
+                                n_jobs=-1,
+                                verbose=True).fit(X, y)
+"""
+# print("Best Parameters: ", lgbm_best_grid.best_params_)
+
+# Best Parameters:  {'colsample_bytree': 0.9, 'learning_rate': 0.01, 'n_estimators': 300}
+
+# 4. Final Model Implementation and Evaluation
+
+lgbm_final = LGBMRegressor(colsample_bytree=0.9, 
+                           learning_rate=0.01, 
+                           n_estimators=300).fit(X, y)
+
+def func():
+    cv_results = cross_val_score(lgbm_final, 
+                             X, 
+                             y, 
+                             cv=10, 
+                             n_jobs=-1, 
+                             scoring="neg_mean_squared_error", 
+                             verbose=1)
+    return cv_results
+
+print("RMEs: ", np.mean(np.sqrt(-func())))
+# RMEs:  0.6847417434137054
