@@ -3,7 +3,23 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import warnings
+
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+
+
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.svm import SVR
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+from catboost import CatBoostRegressor
+
+warnings.simplefilter(action='ignore', category=Warning)
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 df = pd.read_csv("Machine Learning/datasets/hitter/hitters.csv")
 print(df.head())
@@ -394,12 +410,12 @@ def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
     return drop_list
 
 df_corr = df.corr()
-
+"""
 f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 plt.show()
-
+"""
 drop_list = high_correlated_cols(df, False, 0.90)
 print(drop_list)
 # ['Hits', 'Runs', 'CAtBat', 'CHits', 'CRuns', 'CRBI', 'CWalks']
@@ -467,12 +483,15 @@ def label_encoder(dataframe, binary_col):
     return dataframe
 
 binary_col = [col for col in df.columns if df[col].dtypes=='O' and df[col].nunique() == 2]
+binary_col_drop = [col for col in df_drop.columns if df_drop[col].dtypes=='O' and df_drop[col].nunique() == 2]
 
 print("BINARY COLS",binary_col)
 
 for col in binary_col:
     df = label_encoder(df, col)
 
+for col in binary_col_drop:
+    df_drop = label_encoder(df_drop, col)
 # 4.2 One-Hot Encoding
 """
     There is no categorical variable to be one-hot encoded.
@@ -483,6 +502,93 @@ scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
 
+df_drop[num_cols_drop] = scaler.fit_transform(df_drop[num_cols_drop])
+
 # 6. Save the Dataset
-df.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed.csv", index=False)
-df_drop.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed_drop.csv", index=False)
+# df.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed.csv", index=False)
+# df_drop.to_csv("Machine Learning/datasets/hitter/hitters_preprocessed_drop.csv", index=False)
+
+#######################################
+########### MODEL IMPLEMENT ###########
+#######################################
+
+# 1. Train-Test Split
+# 2. Model Selection and Evaluation
+# 3. Hyperparameter Optimization
+# 4. Final Model Implementation and Evaluation
+# 5. Feature Importance
+# 6. Analyzing Model Complexity with Learning Curves
+# 7. Prediction and Model Deployment
+
+# 1. Train-Test Split
+
+X = df.drop("Salary", axis=1)
+y = df["Salary"]
+
+X_drop = df_drop.drop("Salary", axis=1)
+y_drop = df_drop["Salary"]
+
+# 2. Model Selection and Evaluation
+
+models = [('LR', LinearRegression()),
+          ("Ridge", Ridge()),
+          ("Lasso", Lasso()),
+          ("ElasticNet", ElasticNet()),
+          ('KNN', KNeighborsRegressor()),
+          ('CART', DecisionTreeRegressor()),
+          ('RF', RandomForestRegressor()),
+          ('SVR', SVR()),
+          ('GBM', GradientBoostingRegressor()),
+          ("XGBoost", XGBRegressor(objective='reg:squarederror')),
+          ("LightGBM", LGBMRegressor()),
+          ("CatBoost", CatBoostRegressor(verbose=False))]
+
+for name, regressor in models:
+    rmse = np.mean(np.sqrt(-cross_val_score(regressor, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
+    print(f"RMSE: {round(rmse, 4)} ({name}) ")
+    f = open('Estimators.txt', 'a')
+    f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
+    f.close()
+"""
+RMSE: 0.8124 (LR)
+RMSE: 0.8017 (Ridge)
+RMSE: 0.9897 (Lasso)
+RMSE: 0.9842 (ElasticNet)
+RMSE: 0.7657 (KNN)
+RMSE: 0.9644 (CART)
+RMSE: 0.7028 (RF)
+RMSE: 0.743 (SVR)
+RMSE: 0.704 (GBM)
+RMSE: 0.7342 (XGBoost)
+RMSE: 0.7019 (LightGBM)
+RMSE: 0.7179 (CatBoost)
+
+"""
+
+print("################DROPED DATAFRAME################ ")
+
+for name, regressor in models:
+    rmse = np.mean(np.sqrt(-cross_val_score(regressor, X_drop, y_drop, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
+    print(f"RMSE: {round(rmse, 4)} ({name}) ")
+    f = open('Estimators_drop.txt', 'a')
+    f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
+    f.close()
+
+"""
+RMSE: 0.8519 (LR)
+RMSE: 0.8508 (Ridge)
+RMSE: 0.9897 (Lasso)
+RMSE: 0.9892 (ElasticNet)
+RMSE: 0.8093 (KNN)
+RMSE: 1.0881 (CART)
+RMSE: 0.7575 (RF)
+RMSE: 0.7914 (SVR)
+RMSE: 0.789 (GBM)
+RMSE: 0.8326 (XGBoost)
+RMSE: 0.7484 (LightGBM)
+RMSE: 0.7398 (CatBoost)
+"""
+
+"""
+It looks LightGBM is the best model for this dataset.
+"""
