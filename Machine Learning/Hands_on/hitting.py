@@ -348,3 +348,7 @@ def missing_values_table(dataframe, null_columns_name = False):
 missing_values_table(df, True)
 
 # There are 59 missing values in only Salary column.
+
+df["Salary"].fillna(df["Salary"].mean(), inplace=True)
+
+missing_values_table(df, True)
