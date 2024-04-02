@@ -531,17 +531,17 @@ y_drop = df_drop["Salary"]
 # 2. Model Selection and Evaluation
 
 models = [('LR', LinearRegression()),
-          ("Ridge", Ridge()),
-          ("Lasso", Lasso()),
-          ("ElasticNet", ElasticNet()),
+          ("Ridge", Ridge(random_state=42)),
+          ("Lasso", Lasso(random_state=42)),
+          ("ElasticNet", ElasticNet(random_state=42)),
           ('KNN', KNeighborsRegressor()),
-          ('CART', DecisionTreeRegressor()),
-          ('RF', RandomForestRegressor()),
+          ('CART', DecisionTreeRegressor(random_state=42)),
+          ('RF', RandomForestRegressor(random_state=42)),
           ('SVR', SVR()),
-          ('GBM', GradientBoostingRegressor()),
-          ("XGBoost", XGBRegressor(objective='reg:squarederror')),
-          ("LightGBM", LGBMRegressor()),
-          ("CatBoost", CatBoostRegressor(verbose=False))]
+          ('GBM', GradientBoostingRegressor(random_state=42)),
+          ("XGBoost", XGBRegressor(random_state=42,objective='reg:squarederror')),
+          ("LightGBM", LGBMRegressor(random_state=42)),
+          ("CatBoost", CatBoostRegressor(random_state=42,verbose=False))]
 
 for name, regressor in models:
     rmse = np.mean(np.sqrt(-cross_val_score(regressor, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
@@ -549,6 +549,7 @@ for name, regressor in models:
     f = open('Estimators.txt', 'a')
     f.writelines(f"RMSE: {round(rmse, 4)} ({name})\n")
     f.close()
+
 """
 RMSE: 0.8124 (LR)
 RMSE: 0.8017 (Ridge)
@@ -592,3 +593,8 @@ RMSE: 0.7398 (CatBoost)
 """
 It looks LightGBM is the best model for this dataset.
 """
+
+# 3. Hyperparameter Optimization
+lightgbm_model = LGBMRegressor(random_state=42)
+
+print(lightgbm_model.get_params())

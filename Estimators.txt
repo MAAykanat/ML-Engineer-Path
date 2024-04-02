@@ -10,3 +10,18 @@ RMSE: 0.704 (GBM)
 RMSE: 0.7342 (XGBoost)
 RMSE: 0.7019 (LightGBM)
 RMSE: 0.7179 (CatBoost)
+
+
+<||||random_state=42||||>
+RMSE: 0.8124 (LR)
+RMSE: 0.8017 (Ridge)
+RMSE: 0.9897 (Lasso)
+RMSE: 0.9842 (ElasticNet)
+RMSE: 0.7657 (KNN)
+RMSE: 1.0102 (CART)
+RMSE: 0.7076 (RF)
+RMSE: 0.743 (SVR)
+RMSE: 0.711 (GBM)
+RMSE: 0.7342 (XGBoost)
+RMSE: 0.7019 (LightGBM)
+RMSE: 0.7242 (CatBoost)
