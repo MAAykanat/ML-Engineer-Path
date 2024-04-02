@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import LabelEncoder
+
 df = pd.read_csv("Machine Learning/datasets/hitter/hitters.csv")
 print(df.head())
 
@@ -440,3 +442,33 @@ cat_cols_drop, num_cols_drop, cat_but_car_drop = grap_column_names(df_drop)
     At first implementation of model,
     New features will not generated.
 """
+# 4. Encoding
+
+# 4.1 Label Encoding
+
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    print(binary_col, "is encoded.")
+    return dataframe
+
+binary_col = [col for col in df.columns if df[col].dtypes=='O' and df[col].nunique() == 2]
+
+print("BINARY COLS",binary_col)
+
+for col in binary_col:
+    df = label_encoder(df, col)
