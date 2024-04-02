@@ -472,3 +472,8 @@ print("BINARY COLS",binary_col)
 
 for col in binary_col:
     df = label_encoder(df, col)
+
+# 4.2 One-Hot Encoding
+"""
+    There is no categorical variable to be one-hot encoded.
+"""
