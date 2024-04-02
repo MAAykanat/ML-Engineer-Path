@@ -406,3 +406,37 @@ df_drop = df.drop(drop_list, axis=1)
 print(df.columns.shape) # 20
 print("*"*50)
 print(df_drop.columns.shape) # 13
+
+#######################################
+######### FEATURE ENGINEERING #########
+#######################################
+
+# There are 6 steps to be taken in the Feature Engineering process.
+# 1. Missing Values
+# 2. Outlier Values Analysis
+# 3. Feature Generation
+# 4. Encoding
+# 5. Standardization
+# 6. Save the Dataset
+
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+print(" "*50)
+cat_cols_drop, num_cols_drop, cat_but_car_drop = grap_column_names(df_drop)
+
+# 1. Missing Values
+"""
+    It has been filled in the previous section. EDA - 8. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 2. Outlier Values Analaysis
+"""
+    It has been filled in the previous section. EDA - 7. Missing Value Analysis
+    df is filled with the mean of the target variable.
+"""
+
+# 3. Feature Generation
+"""
+    At first implementation of model,
+    New features will not generated.
+"""
