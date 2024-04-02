@@ -401,3 +401,8 @@ plt.show()
 drop_list = high_correlated_cols(df, False, 0.90)
 print(drop_list)
 # ['Hits', 'Runs', 'CAtBat', 'CHits', 'CRuns', 'CRBI', 'CWalks']
+
+df_drop = df.drop(drop_list, axis=1)
+print(df.columns.shape) # 20
+print("*"*50)
+print(df_drop.columns.shape) # 13
