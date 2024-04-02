@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import warnings
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.model_selection import train_test_split, cross_val_score, validation_curve
+from sklearn.model_selection import GridSearchCV
 
 
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
@@ -657,3 +658,34 @@ def plot_importance(model, features, num=len(X), save=False):
         plt.savefig("importances.png")
 
 plot_importance(lgbm_final, X)
+
+# 6. Analyzing Model Complexity with Learning Curves
+
+def val_curve_params(model, X, y, param_name, param_range, scoring="roc_auc", cv=10):
+    train_score, test_score = validation_curve(
+        model, X=X, y=y, param_name=param_name, param_range=param_range, scoring=scoring, cv=cv)
+
+    mean_train_score = np.mean(train_score, axis=1)
+    mean_test_score = np.mean(test_score, axis=1)
+
+    plt.plot(param_range, mean_train_score,
+             label="Training Score", color='b')
+
+    plt.plot(param_range, mean_test_score,
+             label="Validation Score", color='g')
+
+    plt.title(f"Validation Curve for {type(model).__name__}")
+    plt.xlabel(f"Number of {param_name}")
+    plt.ylabel(f"{scoring}")
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.show(block=True)
+
+lgbm_params = [["learning_rate", [0.01, 0.02, 0.05, 0.1]],
+               ["n_estimators", [200, 300, 350, 400]],
+               ["colsample_bytree", [0.9, 0.8, 1]]]
+
+for i in range(len(lgbm_params)):
+    val_curve_params(lgbm_final, X, y, lgbm_params[i][0], lgbm_params[i][1], scoring="neg_mean_squared_error")
+
+# lgbm_params[0][1]
