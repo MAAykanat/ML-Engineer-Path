@@ -165,6 +165,10 @@ for col in num_cols:
 print("#"*50)
 
 # 5. Target Variable Analysis (Dependent Variable) - Categorical
+"""
+It looks Division has significant effect on Salary, but League and NewLeague does not.
+"""
+
 def target_summary_with_cat(dataframe, target, categorical_col):
     """
     This function shows the mean of the target variable according to the categorical variable.
