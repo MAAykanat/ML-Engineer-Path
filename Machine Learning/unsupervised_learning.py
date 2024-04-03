@@ -72,7 +72,7 @@ plt.title("Elbow Method for Optimum Number of Clusters")
 kmeans = KMeans(random_state=17)
 elbow = KElbowVisualizer(kmeans, k=(2,20)) # k is the range of the number of clusters
 elbow.fit(df)
-# elbow.show()
+elbow.show()
 
 print(elbow.elbow_value_)
 print(elbow.elbow_score_)
@@ -98,3 +98,17 @@ df["cluster"] = df["cluster"] + 1
 # print(df[df["cluster"]==5])
 
 print(df.groupby("cluster").agg(["count","mean","median"]))
+
+# 5. Visualizing the Clusters
+
+centroid = kmeans.cluster_centers_
+
+centroids_x = centroid[:,0]
+centroids_y = centroid[:,1]
+
+# plt.scatter(df.iloc[:,0], df.iloc[:,1], c=cluster_kmeans, s=50, cmap="viridis")
+sns.scatterplot(data=df, x="Murder", y="Assault", hue=kmeans.labels_)
+plt.scatter(centroids_x, centroids_y, 
+            marker="X", c="r", s=80, label="centroids")
+plt.legend()
+plt.show()
