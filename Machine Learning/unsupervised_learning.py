@@ -202,3 +202,46 @@ pca_fit = pca.fit_transform(df)
 print(pca.explained_variance_ratio_)
 print(np.cumsum(pca.explained_variance_ratio_))
 
+plt.show()
+################################
+# Optimum Number of Components #
+################################
+
+def plot_optimum_pca(df, target_ratio):
+    """
+    Plots the cumulative variance ratio of PCA components and highlights the number of components
+    at which the cumulative variance ratio is greater than or equal to the target ratio.
+
+    Parameters:
+    df (DataFrame): The DataFrame containing the data.
+    target_ratio (float): The target cumulative variance ratio.
+
+    Returns:
+    None
+    """
+    pca = PCA().fit(df)
+    cumulative_variance_ratio = np.cumsum(pca.explained_variance_ratio_)
+    
+    plt.plot(cumulative_variance_ratio)
+    plt.xlabel("Number of Components")
+    plt.ylabel("Cumulative Variance Ratio")
+
+    # Find the number of components at which cumulative variance ratio >= target_ratio
+    num_components = None
+    for i, ratio in enumerate(cumulative_variance_ratio):
+        if ratio >= target_ratio:
+            num_components = i
+            break
+
+    if num_components is not None:
+        plt.axhline(y=ratio, color='r', linestyle='--')
+        plt.text(0, ratio + 0.02, f'{ratio}', color='r')
+        plt.axvline(x=num_components, color='g', linestyle='--')
+        plt.text(num_components + 0.2, 0, f'X = {num_components}', color='g')
+        plt.annotate((num_components, ratio))
+        plt.text(num_components + 0.2, ratio + 0.02, f'Num Components = {num_components}', color='g')
+
+    plt.show()
+
+plot_optimum_pca(df, 0.85)
+
