@@ -12,6 +12,8 @@ from scipy.cluster.hierarchy import dendrogram
 
 from yellowbrick.cluster import KElbowVisualizer
 
+from sklearn.ensemble import RandomForestRegressor
+
 
 
 df = pd.read_csv("Machine Learning/datasets/USArrests.csv", index_col=0)
@@ -217,7 +219,7 @@ def plot_optimum_pca(df, target_ratio):
     target_ratio (float): The target cumulative variance ratio.
 
     Returns:
-    None
+    num_components (int): The number of components at which the cumulative variance ratio >= target_ratio.
     """
     pca = PCA().fit(df)
     cumulative_variance_ratio = np.cumsum(pca.explained_variance_ratio_)
@@ -232,16 +234,44 @@ def plot_optimum_pca(df, target_ratio):
         if ratio >= target_ratio:
             num_components = i
             break
-
+    ratio = round(ratio, 2)
+    print(f"Number of components: {num_components}")
     if num_components is not None:
         plt.axhline(y=ratio, color='r', linestyle='--')
         plt.text(0, ratio + 0.02, f'{ratio}', color='r')
         plt.axvline(x=num_components, color='g', linestyle='--')
         plt.text(num_components + 0.2, 0, f'X = {num_components}', color='g')
-        plt.annotate((num_components, ratio))
         plt.text(num_components + 0.2, ratio + 0.02, f'Num Components = {num_components}', color='g')
-
+    
     plt.show()
+    return num_components
 
-plot_optimum_pca(df, 0.85)
 
+num_compınents = plot_optimum_pca(df, 0.85)
+
+#############
+# Final PCA #
+### Model ###
+#############
+
+df = pd.read_csv("Machine Learning/datasets/hitter/hitters_preprocessed.csv")
+print(df.head())
+
+pca_final = PCA(n_components=num_compınents)
+pca_fit_final = pca_final.fit_transform(df)
+
+num_cols = [col for col in df.columns if df[col].dtypes != "O" and col not in  ['League', 'Division', 'NewLeague', 'Salary']]
+others = [col for col in df.columns if col not in num_cols]
+
+print(len(pca_fit_final))
+print(num_cols)
+
+print(others)
+
+final_df = pd.concat([pd.DataFrame(pca_fit_final, 
+                                   columns=[f"PC{i}" for i in range(1, num_compınents + 1)]), 
+                                   df[others]], axis=1)
+
+print(final_df.head())
+
+### Model ###
