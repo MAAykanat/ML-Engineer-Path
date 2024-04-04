@@ -139,3 +139,15 @@ dendrogram(hc_average,
            show_contracted=True,
            leaf_font_size=10)
 plt.show(block=True)
+
+############################
+# Hierarchical Clustering  #
+# Decision on # of Cluster #
+############################
+
+plt.figure(figsize=(7, 5))
+plt.title("Dendrograms")
+dend = dendrogram(hc_average)
+plt.axhline(y=0.5, color='r', linestyle='--')
+plt.axhline(y=0.6, color='b', linestyle='--')
+plt.show()
