@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA
 
@@ -275,3 +276,38 @@ final_df = pd.concat([pd.DataFrame(pca_fit_final,
 print(final_df.head())
 
 ### Model ###
+X = final_df.drop("Salary", axis=1)
+y = final_df["Salary"]
+
+rf_model = RandomForestRegressor(random_state=17)
+rf_model.fit(X,y)
+
+rmse = np.mean(np.sqrt(-cross_val_score(rf_model, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
+print(rmse)
+# 0.6602660940586065
+
+# Hyperparameter Optimization
+rf_params = {"max_depth": [5,8,10],
+            "max_features": [2,5,10],
+            "n_estimators": [200,500,1000],
+            "min_samples_split": [2,5,10]}
+
+rf_best_grid = GridSearchCV(rf_model, rf_params, cv=5, n_jobs=-1, verbose=2).fit(X,y)
+
+# Final Model
+rf_final = RandomForestRegressor(**rf_best_grid.best_params_, random_state=17).fit(X,y)
+
+rmse = np.mean(np.sqrt(-cross_val_score(rf_final, X, y, cv=5, n_jobs=-1, scoring="neg_mean_squared_error")))
+print(rmse)
+# 0.6506662184269464
+
+## Conclusion ##
+
+"""
+Without PCA it was RMSE: 0.7575 (RF)
+With PCA it was RMSE: 0.6602 (RF)
+With Hyperparameter Optimization it was RMSE: 0.6506 (RF)
+
+Interesting results, right?
+"""
+
