@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import random
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import cross_val_score, GridSearchCV
@@ -310,4 +311,45 @@ With Hyperparameter Optimization it was RMSE: 0.6506 (RF)
 
 Interesting results, right?
 """
+
+################################
+#### PCA for Visualization #####
+################################
+
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 500)
+
+df = pd.read_csv("Machine Learning/datasets/breast_cancer.csv")
+
+y = df["diagnosis"]
+X = df.drop(["diagnosis", "id"], axis=1)
+
+def create_pca_df(X, y):
+    X = StandardScaler().fit_transform(X)
+    pca = PCA(n_components=2)
+    pca_fit = pca.fit_transform(X)
+    pca_df = pd.DataFrame(data=pca_fit, columns=['PC1', 'PC2'])
+    final_df = pd.concat([pca_df, pd.DataFrame(y)], axis=1)
+    return final_df
+
+pca_df = create_pca_df(X, y)
+
+def plot_pca(dataframe, target):
+    fig = plt.figure(figsize=(7, 5))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.set_xlabel('PC1', fontsize=15)
+    ax.set_ylabel('PC2', fontsize=15)
+    ax.set_title(f'{target.capitalize()} ', fontsize=20)
+
+    targets = list(dataframe[target].unique())
+    colors = random.sample(['r', 'b', "g", "y"], len(targets))
+
+    for t, color in zip(targets, colors):
+        indices = dataframe[target] == t
+        ax.scatter(dataframe.loc[indices, 'PC1'], dataframe.loc[indices, 'PC2'], c=color, s=50)
+    ax.legend(targets)
+    ax.grid()
+    plt.show()
+
+plot_pca(pca_df, "diagnosis")
 
