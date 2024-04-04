@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.decomposition import PCA
 
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram
@@ -75,7 +76,7 @@ plt.title("Elbow Method for Optimum Number of Clusters")
 kmeans = KMeans(random_state=17)
 elbow = KElbowVisualizer(kmeans, k=(2,20)) # k is the range of the number of clusters
 elbow.fit(df)
-elbow.show()
+# elbow.show()
 
 print(elbow.elbow_value_)
 print(elbow.elbow_score_)
@@ -114,7 +115,7 @@ sns.scatterplot(data=df, x="Murder", y="Assault", hue=kmeans.labels_)
 plt.scatter(centroids_x, centroids_y, 
             marker="X", c="r", s=80, label="centroids")
 plt.legend()
-plt.show()
+# plt.show()
 
 ###########################
 # Hierarchical Clustering #
@@ -138,7 +139,7 @@ dendrogram(hc_average,
            p=20,
            show_contracted=True,
            leaf_font_size=10)
-plt.show(block=True)
+# plt.show(block=True)
 
 ############################
 # Hierarchical Clustering  #
@@ -150,7 +151,7 @@ plt.title("Dendrograms")
 dend = dendrogram(hc_average)
 plt.axhline(y=0.5, color='r', linestyle='--')
 plt.axhline(y=0.6, color='b', linestyle='--')
-plt.show()
+# plt.show()
 
 ###########################
 # Hierarchical Clustering #
@@ -182,3 +183,22 @@ df["Hierarchical_Cluster"] = df["Hierarchical_Cluster"] + 1
 
 
 print(df.head())
+
+################################
+# Principal Component Analysis
+################################
+
+df = pd.read_csv("Machine Learning/datasets/hitter/hitters_preprocessed.csv")
+
+num_cols = [col for col in df.columns if df[col].dtypes != "O" and "Salary" not in col]
+
+print(num_cols)
+
+df = df[num_cols]
+
+pca = PCA()
+pca_fit = pca.fit_transform(df)
+
+print(pca.explained_variance_ratio_)
+print(np.cumsum(pca.explained_variance_ratio_))
+
