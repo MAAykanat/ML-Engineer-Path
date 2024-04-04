@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.cluster import KMeans
 
+from scipy.cluster.hierarchy import linkage
+from scipy.cluster.hierarchy import dendrogram
+
 from yellowbrick.cluster import KElbowVisualizer
 
 
@@ -112,3 +115,27 @@ plt.scatter(centroids_x, centroids_y,
             marker="X", c="r", s=80, label="centroids")
 plt.legend()
 plt.show()
+
+###########################
+# Hierarchical Clustering #
+###########################
+
+df = pd.read_csv("Machine Learning/datasets/USArrests.csv", index_col=0)
+
+scaler = MinMaxScaler((0,1))
+df = scaler.fit_transform(df)
+
+hc_average = linkage(df, "average")
+
+print(hc_average)
+
+plt.figure(figsize=(10,5))
+plt.title("Hierarcical Denogram")
+plt.xlabel("Samples")
+plt.ylabel("Distance")
+dendrogram(hc_average,
+           truncate_mode="lastp",
+           p=20,
+           show_contracted=True,
+           leaf_font_size=10)
+plt.show(block=True)
