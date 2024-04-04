@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
 
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram
@@ -151,3 +151,34 @@ dend = dendrogram(hc_average)
 plt.axhline(y=0.5, color='r', linestyle='--')
 plt.axhline(y=0.6, color='b', linestyle='--')
 plt.show()
+
+###########################
+# Hierarchical Clustering #
+####### Final Model #######
+###########################
+
+"""
+    Question: Why Kmeans and Hierarchical Clustering are not the same?
+    Answer: Because the algorithms are different. Kmeans is a centroid-based algorithm,
+    Hierarchical Clustering is a distance-based algorithm.
+"""
+
+df = pd.read_csv("Machine Learning/datasets/USArrests.csv", index_col=0)
+
+cluster = AgglomerativeClustering(n_clusters=5, affinity="euclidean", linkage="average")
+
+cluster = cluster.fit_predict(df)
+
+print(cluster)
+print(cluster.shape)
+
+df["Kmeans_Cluster"] = cluster_kmeans
+
+df["Kmeans_Cluster"] = df["Kmeans_Cluster"] + 1   
+
+
+df["Hierarchical_Cluster"] = cluster
+df["Hierarchical_Cluster"] = df["Hierarchical_Cluster"] + 1
+
+
+print(df.head())
