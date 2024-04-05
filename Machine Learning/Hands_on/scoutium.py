@@ -4,7 +4,20 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.model_selection import train_test_split, cross_val_score, cross_validate, GridSearchCV
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
+
+import warnings 
+
+warnings.filterwarnings("ignore", category=Warning)
 
 df_attribute = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_attributes.csv", sep=";")
 df_labels = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_potential_labels.csv", sep=";")
@@ -244,10 +257,85 @@ binary_col = [col for col in table.columns if table[col].dtypes=='O' and table[c
 print("BINARY COLS",binary_col)
 
 for col in binary_col:
-    df = label_encoder(df, col)
+    table = label_encoder(table, col)
 
 # 3. Standartization
 
 scaler = MinMaxScaler()
 table[num_cols] = scaler.fit_transform(table[num_cols])
 print()
+
+####################
+## MODEL BUILDING ##
+####################
+
+X = table.drop("potential_label", axis=1)
+y = table["potential_label"]
+
+
+# Base Models
+def base_models(X, y, scoring="roc_auc"):
+    print("Base Models....")
+    classifiers = [('LR', LogisticRegression()),
+                   ('KNN', KNeighborsClassifier()),
+                   ("SVC", SVC()),
+                   ("CART", DecisionTreeClassifier()),
+                   ("RF", RandomForestClassifier()),
+                   ('Adaboost', AdaBoostClassifier()),
+                   ('GBM', GradientBoostingClassifier()),
+                   ('XGBoost', XGBClassifier(use_label_encoder=False, eval_metric='logloss')),
+                   ('LightGBM', LGBMClassifier()),
+                   # ('CatBoost', CatBoostClassifier(verbose=False))
+                   ]
+    for name, classifier in classifiers:
+        cv_results = cross_validate(classifier, X, y, cv=3, scoring=scoring)
+        print(f"{scoring}: {round(cv_results['test_score'].mean(), 4)} ({name}) ")
+    
+knn_params = {"n_neighbors": range(2, 50)}
+
+cart_params = {'max_depth': range(1, 20),
+               "min_samples_split": range(2, 30)}
+
+rf_params = {"max_depth": [8, 15, None],
+             "max_features": [5, 7, "auto"],
+             "min_samples_split": [15, 20],
+             "n_estimators": [200, 300]}
+
+xgboost_params = {"learning_rate": [0.1, 0.01],
+                  "max_depth": [5, 8],
+                  "n_estimators": [100, 200],
+                  "colsample_bytree": [0.5, 1]}
+
+lightgbm_params = {"learning_rate": [0.01, 0.1],
+                   "n_estimators": [300, 500],
+                   "colsample_bytree": [0.7, 1]}
+
+classifiers = [('KNN', KNeighborsClassifier(), knn_params),
+               ("CART", DecisionTreeClassifier(), cart_params),
+               ("RF", RandomForestClassifier(), rf_params),
+               ('XGBoost', XGBClassifier(use_label_encoder=False, eval_metric='logloss'), xgboost_params),
+               ('LightGBM', LGBMClassifier(), lightgbm_params)]
+
+def hyperparameter_optimization(X, y, cv=3, scoring="roc_auc"):
+    print("Hyperparameter Optimization....")
+    best_models = {}
+    for name, classifier, params in classifiers:
+        print(f"########## {name} ##########")
+        cv_results = cross_validate(classifier, X, y, cv=cv, scoring=scoring)
+        print(f"{scoring} (Before): {round(cv_results['test_score'].mean(), 4)}")
+
+        gs_best = GridSearchCV(classifier, params, cv=cv, n_jobs=-1, verbose=False).fit(X, y)
+        final_model = classifier.set_params(**gs_best.best_params_)
+
+        cv_results = cross_validate(final_model, X, y, cv=cv, scoring=scoring)
+        print(f"{scoring} (After): {round(cv_results['test_score'].mean(), 4)}")
+        print(f"{name} best params: {gs_best.best_params_}", end="\n\n")
+
+        best_models[name] = final_model
+    return best_models
+
+base_models(X, y)
+
+best_models = hyperparameter_optimization(X, y, scoring="f1")
+
+print(best_models)
