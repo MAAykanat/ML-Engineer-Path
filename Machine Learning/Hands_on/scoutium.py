@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+
 
 df_attribute = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_attributes.csv", sep=";")
 df_labels = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_potential_labels.csv", sep=";")
@@ -37,13 +39,6 @@ print(table.head())
 
 # 1. General Picture of the Dataset
 # 2. Catch Numeric and Categorical Value
-# 3. Catetorical Variables Analysis
-# 4. Numeric Variables Analysis
-# 5. Target Variable Analysis (Dependent Variable) - Categorical
-# 6. Target Variable Analysis (Dependent Variable) - Numeric
-# 7. Outlier Detection
-# 8. Missing Value Analysis
-# 9. Correlation Matrix
 
 # 1. General Picture of the Dataset
 
@@ -114,10 +109,145 @@ def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
 
     return categorical_cols, num_cols, categorical_but_cardinal
 
-cat_cols, num_cols, cat_but_car = grap_column_names(df)
+cat_cols, num_cols, cat_but_car = grap_column_names(table)
 
 print("Categorical Columns: \n\n", cat_cols)
 print("Numeric Columns: \n\n", num_cols)
 [print("Categorical but Cardinal EMPTY!!!\n\n") if cat_but_car == [] else print("Categorical but Cardinal: \n", cat_but_car)]
 print("#"*50)
 
+#########################
+## Feature Engineering ##
+#########################
+
+# 1. Outlier Handling
+# 2. Encoding
+# 3. Standartization
+
+# 1. Outlier Handling
+
+def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+    """
+    This function calculates the lower and upper limits for the outliers.
+
+    Calculation:
+    Interquantile range = q3 - q1
+    Up limit = q3 + 1.5 * interquantile range
+    Low limit = q1 - 1.5 * interquantile range
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns
+    -------
+    low_limit, up_limit : float
+        The lower and upper limits for the outliers.
+    """
+
+    quartile1 = dataframe[col_name].quantile(q1)
+    quartile3 = dataframe[col_name].quantile(q3)
+
+    interquantile_range = quartile3 - quartile1
+
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+
+    return low_limit, up_limit
+
+def check_outlier(dataframe, col_name):
+    """
+        This function checks dataframe has outlier or not.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    Returns
+    -------
+    bool
+        True if the dataframe has outlier, False otherwise.
+    """
+
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
+    
+def replace_with_thresholds(dataframe, variable, q1=0.05, q3=0.95):
+    """
+    This function replaces the outliers with the lower and upper limits.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    variable : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns 
+    -------
+    None
+    """
+
+    low_limit, up_limit = outlier_thresholds(dataframe, variable, q1=0.05, q3=0.95)
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+
+# There are many outliers on this dataset. So, they will be surpassed.
+for col in num_cols:
+    print(f"{col}: {check_outlier(table, col)}")
+
+"""
+No outlier
+"""
+
+# 2. Encoding
+# 2.1 Label Encoding
+
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    print(binary_col, "is encoded.")
+    return dataframe
+
+binary_col = [col for col in table.columns if table[col].dtypes=='O' and table[col].nunique() == 2]
+
+print("BINARY COLS",binary_col)
+
+for col in binary_col:
+    df = label_encoder(df, col)
+
+# 3. Standartization
+
+scaler = MinMaxScaler()
+table[num_cols] = scaler.fit_transform(table[num_cols])
+print()
