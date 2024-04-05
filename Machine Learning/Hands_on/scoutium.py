@@ -23,3 +23,13 @@ df.drop(df[df["potential_label"]=="below_average"].index, inplace=True)
 
 print(df.shape)
 # (9894, 9)
+
+table = pd.pivot_table(df, values="attribute_value", 
+                       index = ["player_id", "position_id", "potential_label"], 
+                       columns="attribute_id", aggfunc="count")
+print(table.head())
+table.reset_index(inplace=True)
+print(table.head())
+
+
+# , fill_value=0)
