@@ -354,3 +354,19 @@ cv_results = cross_validate(rf_final, X, y, cv=3, scoring=["accuracy","f1","roc_
 print(f"accuracy: {round(cv_results['test_accuracy'].mean(), 4)} (RF)")
 print(f"f1_score: {round(cv_results['test_f1'].mean(), 4)} (RF)")
 print(f"roc_auc: {round(cv_results['test_roc_auc'].mean(), 4)} (RF)")
+
+# Feature Importance
+
+def plot_importance(model, features, num=len(X), save=False):
+
+    feature_imp = pd.DataFrame({"Value": model.feature_importances_, "Feature": features.columns})
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1)
+    sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value", ascending=False)[0:num])
+    plt.title("Features")
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig("importances.png")
+
+plot_importance(rf_final, X)
