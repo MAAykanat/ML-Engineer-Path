@@ -18,6 +18,8 @@ from catboost import CatBoostClassifier
 import warnings 
 
 warnings.filterwarnings("ignore", category=Warning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 
 df_attribute = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_attributes.csv", sep=";")
 df_labels = pd.read_csv("Machine Learning/datasets/scoutium/scoutium_potential_labels.csv", sep=";")
@@ -334,8 +336,21 @@ def hyperparameter_optimization(X, y, cv=3, scoring="roc_auc"):
         best_models[name] = final_model
     return best_models
 
-base_models(X, y)
+# base_models(X, y)
 
-best_models = hyperparameter_optimization(X, y, scoring="f1")
+# best_models = hyperparameter_optimization(X, y, scoring="f1")
 
-print(best_models)
+rf_model = RandomForestClassifier().fit(X, y)
+
+
+
+rf_grid_best = GridSearchCV(rf_model, rf_params, cv=3, n_jobs=-1, verbose=False).fit(X, y)
+
+rf_final = rf_model.set_params(**rf_grid_best.best_params_)
+
+cv_results = cross_validate(rf_final, X, y, cv=3, scoring=["accuracy","f1","roc_auc"])
+
+
+print(f"accuracy: {round(cv_results['test_accuracy'].mean(), 4)} (RF)")
+print(f"f1_score: {round(cv_results['test_f1'].mean(), 4)} (RF)")
+print(f"roc_auc: {round(cv_results['test_roc_auc'].mean(), 4)} (RF)")
