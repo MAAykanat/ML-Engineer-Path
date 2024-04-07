@@ -12,7 +12,6 @@ pd.set_option('display.float_format', lambda x: '%.3f' % x)
 df = pd.read_csv("Machine Learning/datasets/telco/Telco-Customer-Churn.csv")
 print(df.head())
 
-
 def check_df(dataframe, head=5):
     print("##################### Shape #####################")
     print(dataframe.shape)
