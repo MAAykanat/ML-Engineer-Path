@@ -1,4 +1,15 @@
-import numpy as np
+################################################
+# End-to-End Diabetes Machine Learning Pipeline I
+################################################
+
+# 1. Exploratory Data Analysis
+# 2. Data Preprocessing & Feature Engineering
+# 3. Base Models
+# 4. Automated Hyperparameter Optimization
+# 5. Stacking & Ensemble Learning
+# 6. Prediction for a New Observation
+# 7. Pipeline Main Function
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -11,6 +22,20 @@ pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 df = pd.read_csv("Machine Learning/datasets/telco/Telco-Customer-Churn.csv")
 print(df.head())
+
+################################################
+# 1. Exploratory Data Analysis (EDA)
+################################################
+
+# 1.1 General Picture of the Dataset
+# 1.2 Catch Numeric and Categorical Value
+# 1.3 Catetorical Variables Analysis
+# 1.4 Numeric Variables Analysis
+# 1.5 Target Variable Analysis (Dependent Variable) - Categorical
+# 1.6 Target Variable Analysis (Dependent Variable) - Numeric
+# 1.7 Outlier Detection
+# 1.8 Missing Value Analysis
+# 1.9 Correlation Matrix
 
 def check_df(dataframe, head=5):
     print("##################### Shape #####################")
