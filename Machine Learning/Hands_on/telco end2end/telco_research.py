@@ -187,3 +187,30 @@ for col in num_cols:
     numerical_col_summary(df,col)
 print("#"*50)
 
+# 1.5 Target Variable Analysis (Dependent Variable) - Categorical
+
+def target_summary_with_cat(dataframe, target, categorical_col):
+    """
+    This function shows the mean of the target variable according to the categorical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    categorical_col : str
+        The name of the categorical variable.
+    Returns
+    -------
+    None.
+    """
+    print(categorical_col)
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean(),
+                        "Count": dataframe[categorical_col].value_counts(),
+                        "Ratio": 100 * dataframe[categorical_col].value_counts() / len(dataframe)}), end="\n\n\n")
+
+for col in cat_cols:
+    target_summary_with_cat(df, "Churn", col)
+
+print("#"*50)
