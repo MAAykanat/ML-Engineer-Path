@@ -150,3 +150,34 @@ def cat_summary(dataframe, col_name, plot=False):
 for col in cat_cols:
     cat_summary(df,col)
 print("#"*50)
+
+# 1.4 Numeric Variables Analysis
+
+def numerical_col_summary(dataframe, col_name, plot=False):
+
+    """
+    This function shows the frequency of numerical variables.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    plot : bool, optional
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe[col_name].describe([0.01, 0.05, 0.75, 0.90, 0.99]).T)
+    print("##########################################")
+    if plot:
+        sns.histplot(dataframe[col_name], kde=True)
+        plt.xlabel(col_name)
+        plt.title(f"{col_name} Distribution")
+        plt.show()
+
+for col in num_cols:
+    numerical_col_summary(df,col)
+print("#"*50)
