@@ -52,5 +52,10 @@ def check_df(dataframe, head=5):
     print(dataframe.isnull().sum())
     print("##################### Quantiles #####################")
     print(dataframe.quantile([0, 0.05, 0.50, 0.95, 0.99, 1]).T)
+"""
+Shape = (7043, 21)
+Types = object(18), float64(2), int64(1)
+NA = No missing value
+"""
 
 check_df(df)
