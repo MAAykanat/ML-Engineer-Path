@@ -37,6 +37,8 @@ print(df.head())
 # 1.8 Missing Value Analysis
 # 1.9 Correlation Matrix
 
+# 1.1 General Picture of the Dataset
+
 def check_df(dataframe, head=5):
     print("##################### Shape #####################")
     print(dataframe.shape)
