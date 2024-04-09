@@ -60,6 +60,11 @@ NA = No missing value
 """
 
 check_df(df)
+
+# PUT IT ALSO PRE-PROCESSING PART
+df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce") # Convert to numeric and if error occurs, convert it to NaN
+df["Churn"] = df["Churn"].apply(lambda x: 1 if x =="Yes" else 0) # Convert to 1 if "Yes", 0 if "No"
+
 print("#"*50)
 
 # 1.2 Catch Numeric and Categorical Value
@@ -181,3 +186,4 @@ def numerical_col_summary(dataframe, col_name, plot=False):
 for col in num_cols:
     numerical_col_summary(df,col)
 print("#"*50)
+
