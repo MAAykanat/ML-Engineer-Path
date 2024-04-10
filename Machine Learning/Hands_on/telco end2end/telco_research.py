@@ -10,6 +10,17 @@
 # 6. Prediction for a New Observation
 # 7. Pipeline Main Function
 
+################################################
+####################NOTES#######################
+################################################
+
+# PRE-PROCESSING
+# 1. Convert TotatlCharges to numeric
+# 2. Convert Churn to 1 if "Yes", 0 if "No"
+# 3. Implement Outlier Handle
+
+
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -33,7 +44,7 @@ print(df.head())
 # 1.4 Numeric Variables Analysis
 # 1.5 Target Variable Analysis (Dependent Variable) - Categorical
 # 1.6 Target Variable Analysis (Dependent Variable) - Numeric
-# 1.7 Outlier Detection
+# 1.7 Outlier Analysis
 # 1.8 Missing Value Analysis
 # 1.9 Correlation Matrix
 
@@ -237,4 +248,74 @@ def target_summary_with_num(dataframe, target, numerical_col):
 
 for col in num_cols:
     target_summary_with_num(df, "Churn", col)
+print("#"*50)
+
+# 1.7 Outlier Analysis
+"""
+For this dataset, There is no need to implement outlier handle in preprocessing part.
+However, End to end pipeline should include outlier handle in any case.
+"""
+
+def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
+    """
+    This function calculates the lower and upper limits for the outliers.
+
+    Calculation:
+    Interquantile range = q3 - q1
+    Up limit = q3 + 1.5 * interquantile range
+    Low limit = q1 - 1.5 * interquantile range
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns
+    -------
+    low_limit, up_limit : float
+        The lower and upper limits for the outliers.
+    """
+
+    quartile1 = dataframe[col_name].quantile(q1)
+    quartile3 = dataframe[col_name].quantile(q3)
+
+    interquantile_range = quartile3 - quartile1
+
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+
+    return low_limit, up_limit
+
+def check_outlier(dataframe, col_name):
+    """
+        This function checks dataframe has outlier or not.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    Returns
+    -------
+    bool
+        True if the dataframe has outlier, False otherwise.
+    """
+
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
+
+for col in num_cols:
+    print(f"{col}: {check_outlier(df, col)}")
+    
 print("#"*50)
