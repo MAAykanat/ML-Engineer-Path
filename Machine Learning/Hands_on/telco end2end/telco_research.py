@@ -319,3 +319,6 @@ for col in num_cols:
     print(f"{col}: {check_outlier(df, col)}")
     
 print("#"*50)
+
+# 1.8 Missing Value Analysis
+
