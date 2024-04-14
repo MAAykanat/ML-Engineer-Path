@@ -141,7 +141,7 @@ def cat_summary(dataframe, col_name, plot=False):
         plt.show()
 
 for col in cat_cols:
-    cat_summary(df,col,True)
+    cat_summary(df,col)
 print("#"*50)
 
 
@@ -172,7 +172,7 @@ def numerical_col_summary(dataframe, col_name, plot=False):
         plt.show()
 
 for col in num_cols:
-    numerical_col_summary(df,col,True)
+    numerical_col_summary(df,col)
 print("#"*50)
 
 # 5. Target Variable Analysis (Dependent Variable) - Categorical
@@ -438,7 +438,7 @@ df_corr = df.corr()
 f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
-plt.show()
+# plt.show()
 
 drop_list = high_correlated_cols(df, False, 0.80)
 print(drop_list)
