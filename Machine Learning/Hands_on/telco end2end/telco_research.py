@@ -353,3 +353,44 @@ def missing_values_table(dataframe, null_columns_name = False):
         return null_columns  
 
 missing_values_table(df, True)
+
+# 1.9 Correlation Matrix
+
+def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
+    """
+    This function returns the columns that have a correlation higher than the threshold value.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    plot : bool, optional
+        The default is False.
+    corr_th : float, optional
+        The default is 0.90.
+    Returns
+    -------
+    drop_list : list
+        The list of columns that have a correlation higher than the threshold value.
+    """
+    corr = dataframe.corr()
+    cor_matrix = corr.abs()
+    upper_triangle_matrix = cor_matrix.where(np.triu(np.ones(cor_matrix.shape), k=1).astype(bool))
+    drop_list = [col for col in upper_triangle_matrix.columns if any(upper_triangle_matrix[col] > corr_th)]
+    if plot:
+        import seaborn as sns
+        import matplotlib.pyplot as plt
+        sns.set(rc={'figure.figsize': (15, 15)})
+        sns.heatmap(corr, cmap="RdBu")
+        plt.show()
+    return drop_list
+
+df_corr = df.corr()
+
+f, ax = plt.subplots(figsize=(18, 18))
+sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
+ax.set_title("Correlation Heatmap", color="black", fontsize=20)
+plt.show()
+
+drop_list = high_correlated_cols(df, False, 0.90)
+print(drop_list)
