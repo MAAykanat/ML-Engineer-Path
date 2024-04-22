@@ -387,10 +387,13 @@ def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
 
 df_corr = df.corr()
 
+""" 
+# Comment out plot
 f, ax = plt.subplots(figsize=(18, 18))
 sns.heatmap(df_corr, annot=True, fmt=".2f", ax=ax, cmap="magma")
 ax.set_title("Correlation Heatmap", color="black", fontsize=20)
 plt.show()
+"""
 
 drop_list = high_correlated_cols(df, False, 0.90)
 print(drop_list)
