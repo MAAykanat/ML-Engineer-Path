@@ -397,3 +397,8 @@ plt.show()
 
 drop_list = high_correlated_cols(df, False, 0.90)
 print(drop_list)
+
+################################################
+# 2. Data Preprocessing & Feature Engineering
+################################################
+
