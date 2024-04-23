@@ -402,3 +402,9 @@ print(drop_list)
 # 2. Data Preprocessing & Feature Engineering
 ################################################
 
+print(df.head())
+
+# Upper the column names
+df.columns = [col.upper() for col in df.columns]
+
+
