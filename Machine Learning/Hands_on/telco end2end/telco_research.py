@@ -21,6 +21,9 @@
 # DONE --> 3. Drop CustomerID. (It is cardinal)
 # DONE --> ?Categorical? --> 4. Add handle outlier.
 # DONE --> ?Categorical? --> 5. Add missing value imputation. Fillna with median.
+# DONE --> 6. Add feature generation.
+# DONE --> 7. Add encoding. (Label & One-Hot)
+# DONE --> 8. Add standardization.
 
 
 import numpy as np
@@ -276,3 +279,10 @@ df = one_hot_encoder(df, cat_cols, drop_first=True)
 print(df.head())
 print(df.shape)
 
+# 2.5. Standardization
+
+# Standardization will be added to the pipeline.
+
+scaler = StandardScaler()
+df[num_cols] = scaler.fit_transform(df[num_cols])
+print(df.head())

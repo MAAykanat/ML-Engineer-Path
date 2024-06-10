@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     """
@@ -285,6 +285,8 @@ def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
     return dataframe
 
 def telco_data_prep(dataframe):
+    target=["CHURN"]
+
     dataframe.columns = [col.upper() for col in dataframe.columns]
     
     dataframe["TOTALCHARGES"] = pd.to_numeric(dataframe["TOTALCHARGES"], errors="coerce")
@@ -347,9 +349,10 @@ def telco_data_prep(dataframe):
         df = label_encoder(df, col)
     
     cat_cols = [col for col in cat_cols if col not in binary_cols and col not in target]
-
     df = one_hot_encoder(df, cat_cols, drop_first=True)
 
-
+    ###STANDARDIZATION###
+    scaler = StandardScaler()
+    df[num_cols] = scaler.fit_transform(df[num_cols])
 
 
