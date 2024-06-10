@@ -76,6 +76,7 @@ Shape: (7043,21)
 Types: 18 object, 2 float64, 1 int64
 No missing values
 """
+target = ["Churn"]
 
 df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
 df["Churn"] = df["Churn"].apply(lambda x: 1 if x == "Yes" else 0)
@@ -254,5 +255,24 @@ df["NEW_AVG_SERVICE_FEE"] = df["MONTHLYCHARGES"] / (df['NEW_TOTALSERVICES'] + 1)
 print(df.head())
 print(df.shape)
 
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
 # 2.4. Encoding
 # 2.4.1. Label Encoding
+
+binary_cols = [col for col in df.columns if df[col].nunique() == 2 and df[col].dtypes == "O"]
+
+print(binary_cols)
+
+for col in binary_cols:
+    df = label_encoder(df, col)
+
+# 2.4.2. One-Hot Encoding
+
+cat_cols = [col for col in cat_cols if col not in binary_cols and col not in target]
+
+df = one_hot_encoder(df, cat_cols, drop_first=True)
+
+print(df.head())
+print(df.shape)
+

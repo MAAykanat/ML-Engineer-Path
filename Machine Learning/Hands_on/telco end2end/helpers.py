@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import LabelEncoder
+
 def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
     """
     It gives the names of categorical, numerical and categorical but cardinal variables in the data set.
@@ -242,6 +244,46 @@ def missing_values_table(dataframe, null_columns_name = False):
     if null_columns_name:
         return null_columns  
 
+def label_encoder(dataframe, binary_col):
+    """
+    This function encodes the binary variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    binary_col : str
+        The name of the column to be encoded.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    labelencoder = LabelEncoder()
+    dataframe[binary_col] = labelencoder.fit_transform(dataframe[binary_col])
+    print(binary_col, "is encoded.")
+    return dataframe
+
+def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
+    """
+    This function encodes the categorical variables to numericals.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    categorical_columns : list
+        The name of the column to be encoded.
+    drop_first : bool, optional
+        Dummy trap. The default is True.
+    Returns
+    -------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    """
+    dataframe = pd.get_dummies(dataframe, columns=categorical_columns, drop_first=drop_first)
+    return dataframe
+
 def telco_data_prep(dataframe):
     dataframe.columns = [col.upper() for col in dataframe.columns]
     
@@ -276,12 +318,10 @@ def telco_data_prep(dataframe):
     # Customers who have monthly contracts and are young
     dataframe["NEW_YOUNG_NOT_ENGAGED"] = dataframe.apply(lambda x: 1 if (x["NEW_ENGAGED"] == 0) and (x["SENIORCITIZEN"] == 0) else 0, axis=1)
 
-
     # Total number of services received by the person
     dataframe['NEW_TOTALSERVICES'] = (dataframe[['PHONESERVICE', 'INTERNETSERVICE', 'ONLINESECURITY',
                                         'ONLINEBACKUP', 'DEVICEPROTECTION', 'TECHSUPPORT',
                                         'STREAMINGTV', 'STREAMINGMOVIES']]== 'Yes').sum(axis=1)
-
 
     # People who receive any streaming service
     dataframe["NEW_FLAG_ANY_STREAMING"] = dataframe.apply(lambda x: 1 if (x["STREAMINGTV"] == "Yes") or (x["STREAMINGMOVIES"] == "Yes") else 0, axis=1)
@@ -300,6 +340,15 @@ def telco_data_prep(dataframe):
 
     cat_cols, num_cols, cat_but_car = grap_column_names(dataframe)
 
+    ###ENCODING###
+    binary_cols = [col for col in df.columns if df[col].nunique() == 2 and df[col].dtypes == "O"]
+
+    for col in binary_cols:
+        df = label_encoder(df, col)
+    
+    cat_cols = [col for col in cat_cols if col not in binary_cols and col not in target]
+
+    df = one_hot_encoder(df, cat_cols, drop_first=True)
 
 
 
