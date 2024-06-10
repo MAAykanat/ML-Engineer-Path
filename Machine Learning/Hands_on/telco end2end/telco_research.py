@@ -105,3 +105,22 @@ for col in cat_cols:
     cat_summary(df, col)
 print("#"*50)
 
+# 1.4. Numeric Variables Analysis
+
+for col in num_cols:
+    numerical_col_summary(df, col)
+print("#"*50)
+
+# 1.5. Target Variable Analysis (Dependent Variable) - Categorical
+
+for col in cat_cols:
+    target_summary_with_cat(df, "Churn", col)
+
+print("#"*50)
+
+# 1.6. Target Variable Analysis (Dependent Variable) - Numeric
+
+for col in num_cols:
+    target_summary_with_num(df, "Churn", col)
+
+print("#"*50)

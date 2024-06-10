@@ -68,6 +68,70 @@ def cat_summary(dataframe, col_name, plot=False):
         sns.countplot(x=dataframe[col_name], data=dataframe)
         plt.show()
 
+def numerical_col_summary(dataframe, col_name, plot=False):
+
+    """
+    This function shows the frequency of numerical variables.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    plot : bool, optional
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe[col_name].describe([0.01, 0.05, 0.75, 0.90, 0.99]).T)
+    print("##########################################")
+    if plot:
+        sns.histplot(dataframe[col_name], kde=True)
+        plt.xlabel(col_name)
+        plt.title(f"{col_name} Distribution")
+        plt.show()
+
+def target_summary_with_cat(dataframe, target, categorical_col):
+    """
+    This function shows the mean of the target variable according to the categorical variable.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    categorical_col : str
+        The name of the categorical variable.
+    Returns
+    -------
+    None.
+    """
+    print(categorical_col)
+    print(pd.DataFrame({"TARGET_MEAN": dataframe.groupby(categorical_col)[target].mean(),
+                        "Count": dataframe[categorical_col].value_counts(),
+                        "Ratio": 100 * dataframe[categorical_col].value_counts() / len(dataframe)}), end="\n\n\n")
+
+def target_summary_with_num(dataframe, target, numerical_col):
+    """
+    This function shows the average of numerical variables according to the target variable.
+    
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    target : str
+        The name of the target variable.
+    numerical_col : str
+        The name of the numerical variable.
+    Returns
+    -------
+    None.
+    """
+    print(dataframe.groupby(target).agg({numerical_col: ["mean", "median", "count"]}), end="\n\n\n")
+
 def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
     """
     This function calculates the lower and upper limits for the outliers.
@@ -108,3 +172,7 @@ def telco_data_prep(dataframe):
 
     dataframe["TOTALCHARGES"] = pd.to_numeric(dataframe["TOTALCHARGES"], errors="coerce")
     dataframe["CHURN"] = dataframe["CHURN"].apply(lambda x: 1 if x =="Yes" else 0)
+
+    cat_cols, num_cols, cat_but_car = grap_column_names(dataframe)
+
+
