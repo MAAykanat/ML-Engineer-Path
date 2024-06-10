@@ -43,6 +43,29 @@ def grap_column_names(dataframe, categorical_th=10, cardinal_th=20):
 
     return categorical_cols, num_cols, categorical_but_cardinal
 
+def cat_summary(dataframe, col_name, plot=False):
+    """
+    This function shows the frequency of categorical variables.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    plot : bool, optional
+        The default is False.
+    Returns
+    -------
+    None.
+    """
+    print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
+                        "Ratio": 100 * dataframe[col_name].value_counts() / len(dataframe)}))
+    print("##########################################")
+    if plot:
+        sns.countplot(x=dataframe[col_name], data=dataframe)
+        plt.show()
+
 def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
     """
     This function calculates the lower and upper limits for the outliers.
