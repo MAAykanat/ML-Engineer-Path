@@ -167,12 +167,98 @@ def outlier_thresholds(dataframe, col_name, q1=0.05, q3=0.95):
 
     return low_limit, up_limit
 
+def check_outlier(dataframe, col_name):
+    """
+        This function checks dataframe has outlier or not.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    col_name : str
+        The name of the column to be analyzed.
+    Returns
+    -------
+    bool
+        True if the dataframe has outlier, False otherwise.
+    """
+
+    lower_limit, upper_limit = outlier_thresholds(dataframe=dataframe, col_name=col_name)
+
+    if dataframe[(dataframe[col_name] > upper_limit) | (dataframe[col_name] < lower_limit)].any(axis=None):
+        print(f'{col_name} have outlier')
+        return True
+    else:
+        return False
+
+def replace_with_thresholds(dataframe, variable, q1=0.05, q3=0.95):
+    """
+    This function replaces the outliers with the lower and upper limits.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    variable : str
+        The name of the column to be analyzed.
+    q1 : float, optional
+        The default is 0.05.
+    q3 : float, optional
+        The default is 0.95.
+    Returns 
+    -------
+    None
+    """
+
+    low_limit, up_limit = outlier_thresholds(dataframe, variable, q1=0.05, q3=0.95)
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+
+def missing_values_table(dataframe, null_columns_name = False):
+    """
+    This function returns the number and percentage of missing values in a dataframe.
+    """
+    """
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        The dataframe to be analyzed.
+    null_columns_name : bool, optional
+        The default is False.
+    Returns
+    -------
+    missing_values_table : pandas dataframe
+        A dataframe that contains the number and percentage of missing values in the dataframe.
+    """
+    # Calculate total missing values in each column
+    null_columns = [col for col in dataframe.columns if dataframe[col].isnull().sum() > 0]
+
+    number_of_missing_values = dataframe[null_columns].isnull().sum().sort_values(ascending=False)
+    percentage_of_missing_values = (dataframe[null_columns].isnull().sum() / dataframe.shape[0] * 100).sort_values(ascending=False)
+
+    missing_values_table = pd.concat([number_of_missing_values, np.round(percentage_of_missing_values, 2)], axis=1, keys=["n_miss", "ratio"])
+    print(missing_values_table)
+
+    if null_columns_name:
+        return null_columns  
+
 def telco_data_prep(dataframe):
     dataframe.columns = [col.upper() for col in dataframe.columns]
-
+    
     dataframe["TOTALCHARGES"] = pd.to_numeric(dataframe["TOTALCHARGES"], errors="coerce")
     dataframe["CHURN"] = dataframe["CHURN"].apply(lambda x: 1 if x =="Yes" else 0)
 
+    dataframe.drop("CUSTOMERID", axis=1, inplace=True)
+
     cat_cols, num_cols, cat_but_car = grap_column_names(dataframe)
+
+    for col in num_cols:
+        replace_with_thresholds(dataframe, col)
+        dataframe[col].fillna(dataframe[col].median(), inplace=True)
+    
+    
+
+
+
 
 
