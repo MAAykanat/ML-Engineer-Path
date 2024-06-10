@@ -182,12 +182,14 @@ def high_correlated_cols(dataframe, plot=False, corr_th=0.90):
 
 df_corr = df.corr()
 
-drop_list = high_correlated_cols(df, plot=True, corr_th=0.90)
+drop_list = high_correlated_cols(df, plot=False, corr_th=0.90)
 print(drop_list)
 
 ##################################################
 ### 2.Data Preprocessing & Feature Engineering ###
 ##################################################
+
+df.columns = [col.upper() for col in df.columns]
 
 # There are 6 steps to be taken in the Feature Engineering process.
 # 2.1. Missing Values
@@ -208,5 +210,49 @@ DONE. Check NOTES.
 """
 
 # 2.3. Feature Generation
+print(df.head())
+
+# Creating an annual categorical variable from a tenure variable
+df.loc[(df["TENURE"]>=0) & (df["TENURE"]<=12),"NEW_TENURE_YEAR"] = "0-1 Year"
+df.loc[(df["TENURE"]>12) & (df["TENURE"]<=24),"NEW_TENURE_YEAR"] = "1-2 Year"
+df.loc[(df["TENURE"]>24) & (df["TENURE"]<=36),"NEW_TENURE_YEAR"] = "2-3 Year"
+df.loc[(df["TENURE"]>36) & (df["TENURE"]<=48),"NEW_TENURE_YEAR"] = "3-4 Year"
+df.loc[(df["TENURE"]>48) & (df["TENURE"]<=60),"NEW_TENURE_YEAR"] = "4-5 Year"
+df.loc[(df["TENURE"]>60) & (df["TENURE"]<=72),"NEW_TENURE_YEAR"] = "5-6 Year"
+
+# Specify customers with 1 or 2 years of contract as Engaged
+df["NEW_ENGAGED"] = df["CONTRACT"].apply(lambda x: 1 if x in ["One year","Two year"] else 0)
+
+# People who do not receive any support, backup or protection
+df["NEW_NOPROT"] = df.apply(lambda x: 1 if (x["ONLINEBACKUP"] != "Yes") or (x["DEVICEPROTECTION"] != "Yes") or (x["TECHSUPPORT"] != "Yes") else 0, axis=1)
+
+# Customers who have monthly contracts and are young
+df["NEW_YOUNG_NOT_ENGAGED"] = df.apply(lambda x: 1 if (x["NEW_ENGAGED"] == 0) and (x["SENIORCITIZEN"] == 0) else 0, axis=1)
 
 
+# Total number of services received by the person
+df['NEW_TOTALSERVICES'] = (df[['PHONESERVICE', 'INTERNETSERVICE', 'ONLINESECURITY',
+                                       'ONLINEBACKUP', 'DEVICEPROTECTION', 'TECHSUPPORT',
+                                       'STREAMINGTV', 'STREAMINGMOVIES']]== 'Yes').sum(axis=1)
+
+
+# People who receive any streaming service
+df["NEW_FLAG_ANY_STREAMING"] = df.apply(lambda x: 1 if (x["STREAMINGTV"] == "Yes") or (x["STREAMINGMOVIES"] == "Yes") else 0, axis=1)
+
+# Does the person make automatic payments?
+df["NEW_FLAG_AUTOPAYMENT"] = df["PAYMENTMETHOD"].apply(lambda x: 1 if x in ["Bank transfer (automatic)","Credit card (automatic)"] else 0)
+
+# Average monthly payment
+df["NEW_AVG_CHARGES"] = df["TOTALCHARGES"] / (df["TENURE"] + 1)
+
+# Rate of change the current price compared to the average price
+df["NEW_INCREASE"] = df["NEW_AVG_CHARGES"] / df["MONTHLYCHARGES"]
+
+# Fee per service
+df["NEW_AVG_SERVICE_FEE"] = df["MONTHLYCHARGES"] / (df['NEW_TOTALSERVICES'] + 1)
+
+print(df.head())
+print(df.shape)
+
+# 2.4. Encoding
+# 2.4.1. Label Encoding
