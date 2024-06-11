@@ -286,3 +286,4 @@ print(df.shape)
 scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
+
