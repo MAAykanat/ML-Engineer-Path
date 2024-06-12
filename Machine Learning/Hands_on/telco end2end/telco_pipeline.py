@@ -72,4 +72,3 @@ def telco_data_prep(dataframe):
     ###STANDARDIZATION###
     scaler = StandardScaler()
     df[num_cols] = scaler.fit_transform(df[num_cols])
-
