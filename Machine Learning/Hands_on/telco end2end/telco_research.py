@@ -289,4 +289,9 @@ print(df.head())
 
 # 2.6. Save the Dataset
 
-df.to_csv("Machine Learning/datasets/telco/telco_churn_cleaned.csv", index=False)
+# df.to_csv("Machine Learning/datasets/telco/telco_churn_cleaned.csv", index=False)
+
+######################
+### 3. Base Models ###
+######################
+
