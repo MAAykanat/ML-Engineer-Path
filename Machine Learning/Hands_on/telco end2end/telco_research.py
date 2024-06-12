@@ -295,3 +295,7 @@ print(df.head())
 ### 3. Base Models ###
 ######################
 
+# 3.1. Train-Test Split
+# 3.2. Model Selection
+# 3.3. Model Building
+
