@@ -287,3 +287,6 @@ scaler = StandardScaler()
 df[num_cols] = scaler.fit_transform(df[num_cols])
 print(df.head())
 
+# 2.6. Save the Dataset
+
+df.to_csv("Machine Learning/datasets/telco/telco_churn_cleaned.csv", index=False)
