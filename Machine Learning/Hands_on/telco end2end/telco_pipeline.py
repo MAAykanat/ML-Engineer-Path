@@ -2,7 +2,6 @@
 # End-to-End Telco Churn Machine Learning Pipeline II #
 #######################################################
 
-import pandas as pd
 from helpers import *
 
 def main():
@@ -14,7 +13,7 @@ def main():
     X_train, X_test, y_train, y_test = data_prep(df)
     
     # Base Models
-    base_models(df)
+    base_models(X_train, y_train)
     
     # Automated Hyperparameter Optimization
     hyperparameter_optimization(df)
@@ -24,3 +23,8 @@ def main():
     
     # Prediction for a New Observation
     prediction(df)
+
+if __name__ == "__main__":
+    print("Pipeline Started")
+    main()
+    print("Pipeline Completed")
