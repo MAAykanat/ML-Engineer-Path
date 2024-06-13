@@ -1,0 +1,10 @@
+roc_auc (After): 0.8286
+KNN best params: {'n_neighbors': 41}
+roc_auc (After): 0.8123
+CART best params: {'max_depth': 4, 'min_samples_split': 2}
+roc_auc (After): 0.8376
+RF best params: {'max_depth': None, 'max_features': 5, 'min_samples_split': 15, 'n_estimators': 200}
+roc_auc (After): 0.8378
+XGBoost best params: {'learning_rate': 0.01, 'max_depth': 5, 'n_estimators': 200}
+roc_auc (After): 0.8351
+LightGBM best params: {'learning_rate': 0.01, 'n_estimators': 300}
