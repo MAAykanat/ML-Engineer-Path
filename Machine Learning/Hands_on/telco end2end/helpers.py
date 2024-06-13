@@ -466,4 +466,21 @@ def hyperparameter_optimization(X, y, classifiers, cv=3, scoring="roc_auc", all_
             best_models[name] = final_model
     return best_models
 
+def voting_classifier(best_models, X, y, cv=10, voting="soft"):
+    print("Voting Classifier...")
+    voting_clf = VotingClassifier(estimators=[('KNN', best_models["KNN"]), ('RF', best_models["RF"]),
+                                              ('LightGBM', best_models["LightGBM"])],
+                                  voting=voting).fit(X, y)
+    cv_results = cross_validate(voting_clf, X, y, cv=cv, scoring=["accuracy", "f1", "roc_auc"])
+    print(f"Accuracy: {cv_results['test_accuracy'].mean()}")
+    print(f"F1Score: {cv_results['test_f1'].mean()}")
+    print(f"ROC_AUC: {cv_results['test_roc_auc'].mean()}")
 
+    f = open('Telco_Estimators_EnsembleVoting.txt', 'a')
+    f.writelines(f"### Ensemble Type: {voting} ###\n")
+    f.writelines(f"Accuracy: {cv_results['test_accuracy'].mean()}\n")
+    f.writelines(f"F1Score: {cv_results['test_f1'].mean()}\n")
+    f.writelines(f"ROC_AUC: {cv_results['test_roc_auc'].mean()}\n")
+    f.close()
+
+    return voting_clf

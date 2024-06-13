@@ -39,15 +39,11 @@ def main():
                     ('XGBoost', XGBClassifier(use_label_encoder=False, eval_metric='logloss'), xgboost_params),
                 ('LightGBM', LGBMClassifier(), lightgbm_params)]
 
-
-    hyperparameter_optimization(df,classifiers,cv=3,scoring="roc_auc")
+    best_models = hyperparameter_optimization(X_train,y_train,classifiers,cv=3,scoring="roc_auc")
     
     # Stacking & Ensemble Learning
-    stacking_ensemble(df)
+    voting_classifier(best_models=best_models, X=X_train, y=y_train,cv=3,voting="soft")
     
-    # Prediction for a New Observation
-    prediction(df)
-
 if __name__ == "__main__":
     print("Pipeline Started")
     main()
