@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split, cross_validate
+from sklearn.model_selection import GridSearchCV
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -413,5 +414,56 @@ def base_models(X, y, scoring="roc_auc", cv=10, all_metrics=False):
             f.writelines(f"Score: {round(cv_results['test_score'].mean(), 4)} ({name})\n")
             f.close()
 
+def hyperparameter_optimization(X, y, classifiers, cv=3, scoring="roc_auc", all_metrics=False):
+    print("Hyperparameter Optimization....")
+    best_models = {}
+
+    if (all_metrics == True):
+        for name, classifier, params in classifiers:
+            print(f"########## {name} ##########")
+            cv_results = cross_validate(classifier, X, y, cv=cv, scoring=scoring, n_jobs=-1)
+
+            print(f"Accuracy (Before): {round(cv_results['test_accuracy'].mean(), 4)}")
+            print(f"F1 (Before): {round(cv_results['test_f1'].mean(), 4)}")
+            print(f"ROC_AUC (Before): {round(cv_results['test_roc_auc'].mean(), 4)}")
+
+            gs_best = GridSearchCV(classifier, params, cv=cv, n_jobs=-1, verbose=False).fit(X, y)
+            final_model = classifier.set_params(**gs_best.best_params_)
+
+            cv_results = cross_validate(final_model, X, y, cv=cv, scoring=scoring, n_jobs=-1)
+
+            print(f"Accuracy: {round(cv_results['test_accuracy'].mean(), 4)} ({name}) ")
+            print(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name}) ")
+            print(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name})")
+            print(f"{name} best params: {gs_best.best_params_}", end="\n\n")
+
+            f = open('Telco_Estimators_Hyperparameter.txt', 'a')
+            f.writelines(f"Accuracy: {round(cv_results['test_accuracy'].mean(), 4)} ({name})\n")
+            f.writelines(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name})\n")
+            f.writelines(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name})\n")
+            f.writelines(f"{name} best params: {gs_best.best_params_}\n")
+            f.close()
+
+            best_models[name] = final_model
+    else:
+        for name, classifier, params in classifiers:
+            print(f"########## {name} ##########")
+            cv_results = cross_validate(classifier, X, y, cv=cv, scoring=scoring)
+            print(f"{scoring} (Before): {round(cv_results['test_score'].mean(), 4)}")
+
+            gs_best = GridSearchCV(classifier, params, cv=cv, n_jobs=-1, verbose=False).fit(X, y)
+            final_model = classifier.set_params(**gs_best.best_params_)
+
+            cv_results = cross_validate(final_model, X, y, cv=cv, scoring=scoring)
+
+            print(f"{scoring} (After): {round(cv_results['test_score'].mean(), 4)}")
+            print(f"{name} best params: {gs_best.best_params_}", end="\n\n")
+
+            f = open('Telco_Estimators_Hyperparameter.txt', 'a')
+            f.writelines(f"{scoring} (After): {round(cv_results['test_score'].mean(), 4)}\n")
+            f.writelines(f"{name} best params: {gs_best.best_params_}\n")
+            f.close()
+            best_models[name] = final_model
+    return best_models
 
 
