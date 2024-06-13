@@ -34,10 +34,15 @@ import matplotlib.pyplot as plt
 from helpers import *
 
 import warnings
+from shutil import get_terminal_size
+
 warnings.filterwarnings("ignore")
 
-pd.set_option('display.max_columns', None)
-pd.set_option('display.float_format', lambda x: '%.3f' % x)
+pd.set_option('display.max_columns', None) # Show all the columns
+pd.set_option('display.max_rows', None) # Show all the rows
+pd.set_option('max_colwidth', None) # Show all the text in the columns
+pd.set_option('display.float_format', lambda x: '%.3f' % x) # Show all the decimals
+pd.set_option('display.width', get_terminal_size()[0]) # Get bigger terminal display width
 
 df = pd.read_csv("Machine Learning/datasets/telco/Telco-Customer-Churn.csv")
 
@@ -428,3 +433,21 @@ classifiers = [('KNN', KNeighborsClassifier(), knn_params),
                ('LightGBM', LGBMClassifier(), lightgbm_params)]
 
 best_models = hyperparameter_optimization(X_train, y_train, classifiers=classifiers, cv=3)
+
+#######################################
+### 5. Stacking & Ensemble Learning ###
+#######################################
+
+def voting_classifier(best_models, X, y, cv=10):
+    print("Voting Classifier...")
+    voting_clf = VotingClassifier(estimators=[('KNN', best_models["KNN"]), ('RF', best_models["RF"]),
+                                              ('LightGBM', best_models["LightGBM"])],
+                                  voting='soft').fit(X, y)
+    cv_results = cross_validate(voting_clf, X, y, cv=cv, scoring=["accuracy", "f1", "roc_auc"])
+    print(f"Accuracy: {cv_results['test_accuracy'].mean()}")
+    print(f"F1Score: {cv_results['test_f1'].mean()}")
+    print(f"ROC_AUC: {cv_results['test_roc_auc'].mean()}")
+    return voting_clf
+
+voting_clf = voting_classifier(best_models, X_train, y_train, cv=3)
+
