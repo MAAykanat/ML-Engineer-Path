@@ -3,6 +3,8 @@
 #######################################################
 
 from helpers import *
+import joblib
+
 
 def main():
     
@@ -42,8 +44,9 @@ def main():
     best_models = hyperparameter_optimization(X_train,y_train,classifiers,cv=3,scoring="roc_auc")
     
     # Stacking & Ensemble Learning
-    voting_classifier(best_models=best_models, X=X_train, y=y_train,cv=3,voting="soft")
-    
+    voting_clf=voting_classifier(best_models=best_models, X=X_train, y=y_train,cv=3,voting="soft")
+    joblib.dump(voting_clf, "telco_voting_clf.pkl")
+
 if __name__ == "__main__":
     print("Pipeline Started")
     main()
