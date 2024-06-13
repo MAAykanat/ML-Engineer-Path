@@ -397,7 +397,7 @@ def base_models(X, y, scoring="roc_auc", cv=10, all_metrics=False):
             print(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name}) ")
             print(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name}) ")
             
-            f = open('Estimators_BaseModels.txt', 'a')
+            f = open('Telco_Estimators_BaseModels.txt', 'a')
             f.writelines(f"Accuracy: {round(cv_results['test_accuracy'].mean(), 4)} ({name})\n")
             f.writelines(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name})\n")
             f.writelines(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name})\n")
@@ -409,7 +409,7 @@ def base_models(X, y, scoring="roc_auc", cv=10, all_metrics=False):
             
             print(f"{scoring}: {round(cv_results['test_score'].mean(), 4)} ({name}) ")
             
-            f = open('Estimators.txt', 'a')
+            f = open('Telco_Estimators_BaseModels.txt', 'a')
             f.writelines(f"Score: {round(cv_results['test_score'].mean(), 4)} ({name})\n")
             f.close()
 

@@ -83,6 +83,7 @@ target = ["CHURN"]
 
 df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
 df["Churn"] = df["Churn"].apply(lambda x: 1 if x == "Yes" else 0)
+df.drop("customerID", axis=1, inplace=True)
 
 check_df(df)
 
@@ -306,6 +307,47 @@ print(target)
 X_train, X_test, y_train, y_test = split_dataset(df, target=target)
 
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+def base_models(X, y, scoring="roc_auc", cv=10, all_metrics=False):
+    print("Base Models....")
+    classifiers = [('LR', LogisticRegression()),
+                   ('KNN', KNeighborsClassifier()),
+                   ("SVC", SVC()),
+                   ("CART", DecisionTreeClassifier()),
+                   ("RF", RandomForestClassifier()),
+                   ('Adaboost', AdaBoostClassifier()),
+                   ('GBM', GradientBoostingClassifier()),
+                   ('XGBoost', XGBClassifier(use_label_encoder=False, eval_metric='logloss')),
+                   ('LightGBM', LGBMClassifier()),
+                   ('CatBoost', CatBoostClassifier(verbose=False))
+                   ]
+
+    if (all_metrics == True):
+        for name, classifier in classifiers:
+            cv_results = cross_validate(classifier, X, y, cv=cv, scoring=scoring, n_jobs=-1)
+            
+            print(f"Accuracy: {round(cv_results['test_accuracy'].mean(), 4)} ({name}) ")
+            print(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name}) ")
+            print(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name}) ")
+            
+            f = open('Telco_Estimators_BaseModels.txt', 'a')
+            f.writelines(f"Accuracy: {round(cv_results['test_accuracy'].mean(), 4)} ({name})\n")
+            f.writelines(f"F1: {round(cv_results['test_f1'].mean(), 4)} ({name})\n")
+            f.writelines(f"ROC_AUC: {round(cv_results['test_roc_auc'].mean(), 4)} ({name})\n")
+            f.close()
+
+    else:
+        for name, classifier in classifiers:
+            cv_results = cross_validate(classifier, X, y, cv=cv, scoring=scoring, n_jobs=-1)
+            
+            print(f"{scoring}: {round(cv_results['test_score'].mean(), 4)} ({name}) ")
+            
+            f = open('Telco_Estimators_BaseModels.txt', 'a')
+            f.writelines(f"Score: {round(cv_results['test_score'].mean(), 4)} ({name})\n")
+            f.close()
+
+base_models(X_train, y_train, cv=3)
+
 
 # 3.1. Train-Test Split
 # 3.2. Model Selection
