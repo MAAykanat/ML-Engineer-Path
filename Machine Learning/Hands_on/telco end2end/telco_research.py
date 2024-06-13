@@ -79,7 +79,7 @@ Shape: (7043,21)
 Types: 18 object, 2 float64, 1 int64
 No missing values
 """
-target = ["Churn"]
+target = ["CHURN"]
 
 df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
 df["Churn"] = df["Churn"].apply(lambda x: 1 if x == "Yes" else 0)
@@ -294,6 +294,18 @@ print(df.head())
 ######################
 ### 3. Base Models ###
 ######################
+
+def split_dataset(dataframe, target, test_size=0.20, random_state=42):
+
+    X_train, X_test, y_train, y_test = train_test_split(dataframe.drop(target, axis=1), dataframe[target], test_size=test_size, random_state=random_state)
+
+    return X_train, X_test, y_train, y_test
+
+print(target)
+
+X_train, X_test, y_train, y_test = split_dataset(df, target=target)
+
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 # 3.1. Train-Test Split
 # 3.2. Model Selection

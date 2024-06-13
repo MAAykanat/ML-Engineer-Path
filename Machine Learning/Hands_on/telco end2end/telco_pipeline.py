@@ -10,8 +10,8 @@ def main():
     df = pd.read_csv("Machine Learning/datasets/telco/Telco-Customer-Churn.csv")
     
     # Data Preprocessing & Feature Engineering
-    X_train, X_test, y_train, y_test = data_prep(df)
-    
+    X_train, X_test, y_train, y_test = data_prep(dataframe=df,target="Churn")
+
     # Base Models
     base_models(X_train, y_train)
     

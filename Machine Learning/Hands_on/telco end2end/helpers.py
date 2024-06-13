@@ -297,14 +297,12 @@ def one_hot_encoder(dataframe, categorical_columns, drop_first=True):
 
 def split_dataset(dataframe, target, test_size=0.20, random_state=42):
 
-    X_train, X_test, y_train, y_test = train_test_split(dataframe.drop("CHURN", axis=1), dataframe["CHURN"], test_size=test_size, random_state=random_state)
+    X_train, X_test, y_train, y_test = train_test_split(dataframe.drop(target, axis=1), dataframe[target], test_size=test_size, random_state=random_state)
 
     return X_train, X_test, y_train, y_test
 
-def data_prep(dataframe):
-    target = "CHURN"
-    target_list=["CHURN"]
-
+def data_prep(dataframe,target=["CHURN"]):
+    target = target.upper()
     dataframe.columns = [col.upper() for col in dataframe.columns]
     
     dataframe["TOTALCHARGES"] = pd.to_numeric(dataframe["TOTALCHARGES"], errors="coerce")
@@ -361,19 +359,19 @@ def data_prep(dataframe):
     cat_cols, num_cols, cat_but_car = grap_column_names(dataframe)
 
     ###ENCODING###
-    binary_cols = [col for col in df.columns if df[col].nunique() == 2 and df[col].dtypes == "O"]
+    binary_cols = [col for col in dataframe.columns if dataframe[col].nunique() == 2 and dataframe[col].dtypes == "O"]
 
     for col in binary_cols:
-        df = label_encoder(df, col)
+        dataframe = label_encoder(dataframe, col)
     
-    cat_cols = [col for col in cat_cols if col not in binary_cols and col not in target_list]
-    df = one_hot_encoder(df, cat_cols, drop_first=True)
+    cat_cols = [col for col in cat_cols if col not in binary_cols and col not in target]
+    dataframe = one_hot_encoder(dataframe, cat_cols, drop_first=True)
 
     ###STANDARDIZATION###
     scaler = StandardScaler()
-    df[num_cols] = scaler.fit_transform(df[num_cols])
+    dataframe[num_cols] = scaler.fit_transform(dataframe[num_cols])
 
-    X_train, X_test, y_train, y_test = split_dataset(dataframe=df, target=target, test_size=0.20, random_state=42)
+    X_train, X_test, y_train, y_test = split_dataset(dataframe=dataframe, target=target, test_size=0.20, random_state=42)
 
     return X_train, X_test, y_train, y_test 
 
@@ -414,5 +412,6 @@ def base_models(X, y, scoring="roc_auc", cv=10, all_metrics=False):
             f = open('Estimators.txt', 'a')
             f.writelines(f"Score: {round(cv_results['test_score'].mean(), 4)} ({name})\n")
             f.close()
+
 
 
