@@ -38,6 +38,20 @@ print(df.head())
 
 check_df(df)
 
+print("\n\n")
 # 1.2. Catch Numeric and Categorical Value
+"""
+Observations: 19945
+Variables: 12
+categorical_cols: 2
+num_cols: 4
+categorical_but_cardinal: 6
+numeric_but_categorical: 0
+"""
 
 cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
+print("Categorical Columns: \n\n", cat_cols)
+print("Numeric Columns: \n\n", num_cols)
+[print("Categorical but Cardinal EMPTY!!!\n\n") if cat_but_car == [] else print("Categorical but Cardinal: \n", cat_but_car)]
+print("#"*50)
