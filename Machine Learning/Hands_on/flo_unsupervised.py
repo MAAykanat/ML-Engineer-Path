@@ -55,3 +55,7 @@ print("Categorical Columns: \n\n", cat_cols)
 print("Numeric Columns: \n\n", num_cols)
 [print("Categorical but Cardinal EMPTY!!!\n\n") if cat_but_car == [] else print("Categorical but Cardinal: \n", cat_but_car)]
 print("#"*50)
+
+
+print(df.columns[df.columns.str.contains("date")])
+# 1.3. Catetorical Variables Analysis
