@@ -3,6 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import datetime as dt
+
+
 from shutil import get_terminal_size
 import warnings
 
@@ -19,6 +22,9 @@ pd.set_option('display.width', get_terminal_size()[0]) # Get bigger terminal dis
 
 df = pd.read_csv("Machine Learning/datasets/flo/flo_data_20K.csv")
 print(df.head())
+
+data_cols=df.columns[df.columns.str.contains("date")]
+df[data_cols] = df[data_cols].apply(pd.to_datetime)
 
 #########################################
 ### 1.EXPLORATORY DATA ANALYSIS - EDA ###
@@ -56,6 +62,15 @@ print("Numeric Columns: \n\n", num_cols)
 [print("Categorical but Cardinal EMPTY!!!\n\n") if cat_but_car == [] else print("Categorical but Cardinal: \n", cat_but_car)]
 print("#"*50)
 
-
-print(df.columns[df.columns.str.contains("date")])
 # 1.3. Catetorical Variables Analysis
+
+for col in cat_cols:
+    cat_summary(df,col, plot=False)
+
+print("#"*50)
+
+# 1.4. Numerical Variable Analysis
+
+for col in num_cols:
+    numerical_col_summary(df,num_cols,plot=False)
+print("#"*50)
