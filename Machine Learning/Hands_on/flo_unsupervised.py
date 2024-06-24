@@ -144,6 +144,8 @@ print("#"*50)
 Outliers are handled with the threshold values. IQR method is used.
 """
 
+print(df["order_num_total_ever_offline"].unique())
+
 for col in num_cols:
     replace_with_thresholds(df, col)
 
@@ -151,6 +153,9 @@ print("#"*50)
 
 for col in num_cols:
     print(col, ":", check_outlier(df, col))
+
+print(df["order_num_total_ever_offline"].unique())
+
 
 print("#"*50)
 
@@ -166,4 +171,26 @@ df["tenure"] = (df["last_order_date"]-df["first_order_date"]).astype('timedelta6
 
 cat_cols, num_cols, cat_but_car = grap_column_names(df)
 
+print("Categorical Columns: \n\n", cat_cols)
+print("Numeric Columns: \n\n", num_cols)
+[print("Categorical but Cardinal EMPTY!!!\n\n") if cat_but_car == [] else print("Categorical but Cardinal: \n", cat_but_car)]
+
+cat_cols = [col for col in cat_cols if col not in ["order_num_total_ever_offline"]]
+num_cols = num_cols + ["order_num_total_ever_offline"]
+print(num_cols)
 # 2.4. Encoding
+
+"""
+No need for label encoding (No binary columns)
+"""
+binary_cols = [col for col in df.columns if df[col].nunique() == 2 and df[col].dtypes == "O"]
+
+print("Binary Columns: \n\n", binary_cols)
+
+print(cat_cols)
+
+df=one_hot_encoder(df, cat_cols, drop_first=True)
+
+print(df.head())
+print(df.shape)
+
