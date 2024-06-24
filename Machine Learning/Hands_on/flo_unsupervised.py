@@ -23,7 +23,10 @@ pd.set_option('display.width', get_terminal_size()[0]) # Get bigger terminal dis
 df = pd.read_csv("Machine Learning/datasets/flo/flo_data_20K.csv")
 print(df.head())
 
+print(df.columns.str.contains("date"))
+
 data_cols=df.columns[df.columns.str.contains("date")]
+print(data_cols)
 df[data_cols] = df[data_cols].apply(pd.to_datetime)
 
 ##########################################
@@ -46,14 +49,31 @@ df[data_cols] = df[data_cols].apply(pd.to_datetime)
 
 check_df(df)
 
+"""
+##################### Types #####################
+master_id                                    object
+order_channel                                object
+last_order_channel                           object
+first_order_date                     datetime64[ns]
+last_order_date                      datetime64[ns]
+last_order_date_online               datetime64[ns]
+last_order_date_offline              datetime64[ns]
+order_num_total_ever_online                 float64
+order_num_total_ever_offline                float64
+customer_value_total_ever_offline           float64
+customer_value_total_ever_online            float64
+interested_in_categories_12                  object
+dtype: object
+"""
+
 print("\n\n")
 # 1.2. Catch Numeric and Categorical Value
 """
 Observations: 19945
 Variables: 12
 categorical_cols: 2
-num_cols: 4
-categorical_but_cardinal: 6
+num_cols: 8
+categorical_but_cardinal: 2
 numeric_but_categorical: 0
 """
 
@@ -75,4 +95,31 @@ print("#"*50)
 
 for col in num_cols:
     numerical_col_summary(df,num_cols,plot=False)
+print("#"*50)
+
+# 1.5. Outlier Detection
+
+"""
+Have Outliers: order_num_total_ever_online
+Have Outliers: order_num_total_ever_offline
+Have Outliers: customer_value_total_ever_offline
+Have Outliers: customer_value_total_ever_online
+
+Outliers are handled with the threshold values. IQR method is used.
+
+"""
+
+for col in num_cols:
+    print(col, ":", check_outlier(df, col))
+
+print("#"*50)
+
+for col in num_cols:
+    replace_with_thresholds(df, col)
+
+print("#"*50)
+
+for col in num_cols:
+    print(col, ":", check_outlier(df, col))
+
 print("#"*50)
