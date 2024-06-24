@@ -203,13 +203,14 @@ print(df.shape)
 
 df.reset_index(inplace=True)
 
-def check_skew(df_skew, column):
+def check_skew(df_skew, column, plot=False):
     skew = stats.skew(df_skew[column])
     skewtest = stats.skewtest(df_skew[column])
     plt.title('Distribution of ' + column)
     sns.distplot(df_skew[column],color = "g")
     print("{}'s: Skew: {}, : {}".format(column, skew, skewtest))
-    plt.show()
+    if plot:
+        plt.show()
     return
 
 for col in num_cols:
@@ -233,3 +234,7 @@ print(df.head())
 scaler = MinMaxScaler((0, 1))
 df[skew_cols] = scaler.fit_transform(df[skew_cols])
 print(df.head())
+
+# 2.6. Save the Dataset
+
+df.to_csv("Machine Learning/datasets/flo/flo_data_20K_cleaned.csv", index=False)
