@@ -153,3 +153,17 @@ for col in num_cols:
     print(col, ":", check_outlier(df, col))
 
 print("#"*50)
+
+# 2.3. Feature Generation
+
+print(df["last_order_date"].max()) # 2021-05-30
+analysis_date = dt.datetime(2021,6,1)
+# analysis_date = dt.datetime.now() # More accurate if SQL is exist
+
+
+df["recency"] = (analysis_date-df["first_order_date"]).astype('timedelta64[D]')
+df["tenure"] = (df["last_order_date"]-df["first_order_date"]).astype('timedelta64[D]')
+
+cat_cols, num_cols, cat_but_car = grap_column_names(df)
+
+# 2.4. Encoding
