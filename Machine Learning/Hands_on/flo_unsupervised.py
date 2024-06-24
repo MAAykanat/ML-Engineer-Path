@@ -26,19 +26,21 @@ print(df.head())
 data_cols=df.columns[df.columns.str.contains("date")]
 df[data_cols] = df[data_cols].apply(pd.to_datetime)
 
-#########################################
-### 1.EXPLORATORY DATA ANALYSIS - EDA ###
-#########################################
+##########################################
+##### EXPLORATORY DATA ANALYSIS - EDA ####
+### UNSUPERVISED LEARNING - CLUSTERING ###
+"""
+    Steps can be different for supervised and unsupervised learning.
+    Since, There is no target variable
+"""
+##########################################
 
 # 1.1. General Picture of the Dataset
 # 1.2. Catch Numeric and Categorical Value
 # 1.3. Catetorical Variables Analysis
 # 1.4. Numeric Variables Analysis
-# 1.5. Target Variable Analysis (Dependent Variable) - Categorical
-# 1.6. Target Variable Analysis (Dependent Variable) - Numeric
-# 1.7. Outlier Detection
-# 1.8. Missing Value Analysis
-# 1.9. Correlation Matrix
+# 1.5. Outlier Detection
+# 1.6. Missing Value Analysis
 
 # 1.1. General Picture of the Dataset
 
