@@ -29,14 +29,14 @@ data_cols=df.columns[df.columns.str.contains("date")]
 print(data_cols)
 df[data_cols] = df[data_cols].apply(pd.to_datetime)
 
-##########################################
-##### EXPLORATORY DATA ANALYSIS - EDA ####
-### UNSUPERVISED LEARNING - CLUSTERING ###
+############################################
+##### 1. EXPLORATORY DATA ANALYSIS - EDA ###
+#### UNSUPERVISED LEARNING - CLUSTERING ####
 """
     Steps can be different for supervised and unsupervised learning.
     Since, There is no target variable
 """
-##########################################
+############################################
 
 # 1.1. General Picture of the Dataset
 # 1.2. Catch Numeric and Categorical Value
@@ -105,14 +105,44 @@ Have Outliers: order_num_total_ever_offline
 Have Outliers: customer_value_total_ever_offline
 Have Outliers: customer_value_total_ever_online
 
-Outliers are handled with the threshold values. IQR method is used.
-
 """
 
 for col in num_cols:
     print(col, ":", check_outlier(df, col))
 
 print("#"*50)
+
+# 1.6. Missing Value Analysis
+
+"""
+    There is no missing value in the dataset.
+"""
+
+for col in df.columns:
+    print(col, ":", df[col].isnull().sum())
+
+print("#"*50)
+
+##############################
+##### 2. FEATURE ENGINEERING ####
+##############################
+# 2.1. Missing Values
+# 2.2. Outlier Values Analysis
+# 2.3. Feature Generation
+# 2.4. Encoding
+# 2.5. Standardization
+# 2.6. Save the Dataset
+
+# 2.1. Missing Values
+    
+"""
+    There is no missing value in the dataset.
+"""
+
+# 2.2. Outlier Values Analysis
+"""
+Outliers are handled with the threshold values. IQR method is used.
+"""
 
 for col in num_cols:
     replace_with_thresholds(df, col)
