@@ -12,6 +12,8 @@ import warnings
 from helpers import *
 from display_helpers import *
 
+from scipy import stats
+
 warnings.filterwarnings("ignore")
 
 pd.set_option('display.max_columns', None) # Show all the columns
@@ -194,3 +196,27 @@ df=one_hot_encoder(df, cat_cols, drop_first=True)
 print(df.head())
 print(df.shape)
 
+# 2.5. Standardization
+
+# Check the skewness of the data
+
+df.reset_index(inplace=True)
+
+def check_skew(df_skew, column):
+    skew = stats.skew(df_skew[column])
+    skewtest = stats.skewtest(df_skew[column])
+    plt.title('Distribution of ' + column)
+    sns.distplot(df_skew[column],color = "g")
+    print("{}'s: Skew: {}, : {}".format(column, skew, skewtest))
+    plt.show()
+    return
+
+for col in num_cols:
+    print(df[col].dtype)
+
+skew_cols = [col for col in num_cols if df[col].dtype != "datetime64[ns]"]
+
+print(skew_cols)
+
+for col in skew_cols:
+    check_skew(df, col)
