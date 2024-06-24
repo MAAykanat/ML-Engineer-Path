@@ -13,6 +13,7 @@ from helpers import *
 from display_helpers import *
 
 from scipy import stats
+from sklearn.preprocessing import MinMaxScaler
 
 warnings.filterwarnings("ignore")
 
@@ -220,3 +221,15 @@ print(skew_cols)
 
 for col in skew_cols:
     check_skew(df, col)
+
+# Normalization of the data by using log transformation
+for col in skew_cols:
+    df[col] = np.log1p(df[col])
+
+print(df.head())
+
+# Scaling
+
+scaler = MinMaxScaler((0, 1))
+df[skew_cols] = scaler.fit_transform(df[skew_cols])
+print(df.head())
