@@ -12,8 +12,12 @@ import warnings
 from helpers import *
 from display_helpers import *
 
+from yellowbrick.cluster import KElbowVisualizer
+
 from scipy import stats
+
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
 
 warnings.filterwarnings("ignore")
 
@@ -126,9 +130,9 @@ for col in df.columns:
 
 print("#"*50)
 
-##############################
-##### 2. FEATURE ENGINEERING ####
-##############################
+##################################
+##### 2. FEATURE ENGINEERING #####
+##################################
 # 2.1. Missing Values
 # 2.2. Outlier Values Analysis
 # 2.3. Feature Generation
@@ -203,6 +207,8 @@ print(df.shape)
 
 df.reset_index(inplace=True)
 
+model_df = df[["order_num_total_ever_online","order_num_total_ever_offline","customer_value_total_ever_offline","customer_value_total_ever_online","recency","tenure"]]
+
 def check_skew(df_skew, column, plot=False):
     skew = stats.skew(df_skew[column])
     skewtest = stats.skewtest(df_skew[column])
@@ -213,18 +219,25 @@ def check_skew(df_skew, column, plot=False):
         plt.show()
     return
 
-for col in num_cols:
-    print(df[col].dtype)
-
-skew_cols = [col for col in num_cols if df[col].dtype != "datetime64[ns]"]
-
-print(skew_cols)
-
-for col in skew_cols:
-    check_skew(df, col)
+plt.figure(figsize=(9, 9))
+plt.subplot(6, 1, 1)
+check_skew(model_df,'order_num_total_ever_online')
+plt.subplot(6, 1, 2)
+check_skew(model_df,'order_num_total_ever_offline')
+plt.subplot(6, 1, 3)
+check_skew(model_df,'customer_value_total_ever_offline')
+plt.subplot(6, 1, 4)
+check_skew(model_df,'customer_value_total_ever_online')
+plt.subplot(6, 1, 5)
+check_skew(model_df,'recency')
+plt.subplot(6, 1, 6)
+check_skew(model_df,'tenure')
+plt.tight_layout()
+plt.savefig('before_transform.png', format='png', dpi=1000)
+plt.show()
 
 # Normalization of the data by using log transformation
-for col in skew_cols:
+for col in model_df.columns:
     df[col] = np.log1p(df[col])
 
 print(df.head())
@@ -232,9 +245,30 @@ print(df.head())
 # Scaling
 
 scaler = MinMaxScaler((0, 1))
-df[skew_cols] = scaler.fit_transform(df[skew_cols])
-print(df.head())
+model_scaling = scaler.fit_transform(model_df)
+model_df=pd.DataFrame(model_scaling,columns=model_df.columns)
+print(model_df.head())
 
 # 2.6. Save the Dataset
 
-df.to_csv("Machine Learning/datasets/flo/flo_data_20K_cleaned.csv", index=False)
+# df.to_csv("Machine Learning/datasets/flo/flo_data_20K_cleaned.csv", index=False)
+
+########################
+##### 3. MODELLING #####
+########################
+model_df = df[["order_num_total_ever_online","order_num_total_ever_offline","customer_value_total_ever_offline","customer_value_total_ever_online","recency","tenure"]]
+
+# 3.1. K-Means Clustering
+# 3.2. Hierarchical Clustering
+# 3.3. DBSCAN Clustering
+# 3.4. Evaluation of the Clusters
+
+# 3.1. K-Means Clustering
+
+# 3.1.1. Optimum Number of Clusters
+kmeans = KMeans()
+elbow = KElbowVisualizer(kmeans, k=(2, 20))
+elbow.fit(model_df)
+elbow.show()
+
+
