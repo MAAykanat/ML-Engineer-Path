@@ -15,6 +15,7 @@ from display_helpers import *
 from yellowbrick.cluster import KElbowVisualizer
 
 from scipy import stats
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
@@ -288,3 +289,19 @@ agg_df = final_df.groupby("segment").agg({"order_num_total_ever_online":["mean",
 agg_df.reset_index(inplace=True)
 
 print(agg_df)
+
+# 3.2. Hierarchical Clustering
+# 3.2.1. Optimum Number of Clusters
+
+hc_complete = linkage(model_df, 'complete')
+
+plt.figure(figsize=(7, 5))
+plt.title("Dendrograms")
+dend = dendrogram(hc_complete,
+           truncate_mode="lastp",
+           p=10,
+           show_contracted=True,
+           leaf_font_size=10)
+plt.axhline(y=1.2, color='r', linestyle='--')
+plt.show()
+
