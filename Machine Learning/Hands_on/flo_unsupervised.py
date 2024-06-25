@@ -233,7 +233,6 @@ check_skew(model_df,'recency')
 plt.subplot(6, 1, 6)
 check_skew(model_df,'tenure')
 plt.tight_layout()
-plt.savefig('before_transform.png', format='png', dpi=1000)
 plt.show()
 
 # Normalization of the data by using log transformation
@@ -271,4 +270,21 @@ elbow = KElbowVisualizer(kmeans, k=(2, 20))
 elbow.fit(model_df)
 elbow.show()
 
+# 3.1.2. Model Building
+k_means = KMeans(n_clusters=7, random_state=42).fit(model_df)
+segment = k_means.labels_
+print(segment)
 
+final_df = df[["master_id","order_num_total_ever_online","order_num_total_ever_offline","customer_value_total_ever_offline","customer_value_total_ever_online","recency","tenure"]]
+final_df["segment"] = segment
+print(final_df.head())
+
+agg_df = final_df.groupby("segment").agg({"order_num_total_ever_online":["mean","min","max"],
+                                  "order_num_total_ever_offline":["mean","min","max"],
+                                  "customer_value_total_ever_offline":["mean","min","max"],
+                                  "customer_value_total_ever_online":["mean","min","max"],
+                                  "recency":["mean","min","max"],
+                                  "tenure":["mean","min","max","count"]})
+agg_df.reset_index(inplace=True)
+
+print(agg_df)
