@@ -305,3 +305,20 @@ dend = dendrogram(hc_complete,
 plt.axhline(y=1.2, color='r', linestyle='--')
 plt.show()
 
+# 3.2.1. Model Building
+hc = AgglomerativeClustering(n_clusters=5)
+segments = hc.fit_predict(model_df)
+
+final_df_hc = df[["master_id","order_num_total_ever_online","order_num_total_ever_offline","customer_value_total_ever_offline","customer_value_total_ever_online","recency","tenure"]]
+final_df_hc["segment"] = segments
+print(final_df_hc.head())
+
+agg_df_hc = final_df_hc.groupby("segment").agg({"order_num_total_ever_online":["mean","min","max"],
+                                  "order_num_total_ever_offline":["mean","min","max"],
+                                  "customer_value_total_ever_offline":["mean","min","max"],
+                                  "customer_value_total_ever_online":["mean","min","max"],
+                                  "recency":["mean","min","max"],
+                                  "tenure":["mean","min","max","count"]})
+agg_df_hc.reset_index(inplace=True)
+
+print(agg_df_hc)
